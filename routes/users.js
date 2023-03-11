@@ -6,7 +6,9 @@ const userController = require('../controllers/user')
 router.route('/')
     .get(userController.getUSers)
     .post(userController.createUSer)
-    .patch(userController.updateUser)
+    
+router.route('/:id')
+    .put(userController.updateUser)
     .delete(userController.deleteUser)
 
 module.exports = router

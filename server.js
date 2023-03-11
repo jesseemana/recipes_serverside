@@ -1,14 +1,15 @@
 require('colors')
 require('dotenv').config();
 require('express-async-errors');
+const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
-const express = require('express');
-const connectDB = require('./config/connectDB')
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 const corsOptions = require('./config/corsOptions');
-const {default: mongoose} = require('mongoose');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -19,14 +20,18 @@ connectDB()
 // MIDDLEWARE 
 app.use(helmet());
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/', express.static(path.join(__dirname, '/public')));
 
+
 // ROUTES 
 app.use('/users', require('./routes/users'));
+app.use('/users/:id', require('./routes/users'));
 app.use('/recipes', require('./routes/recipes'));
+app.use('/recipes/:id', require('./routes/recipes'));
 
 
 // ERROR 404 PAGE 
