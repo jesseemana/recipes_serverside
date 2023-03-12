@@ -46,7 +46,13 @@ const login = async(req, res) => {
 const refresh = async(req, res) => {}
 
 
-const logout = async(req, res) => {}
+// CLEAR THE REFESHTOKEN FROM THE COOKIE
+const logout = async (req, res) => {
+    const cookies = req.cookies
+    if(!cookies?.jwt) return res.status(204) //No content -> cookie don't exist we're good either way
+    res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
+    res.json({message: 'Cookie cleared'})
+}
 
 module.exports = {
     login,
