@@ -1,7 +1,7 @@
 const allowedOrigins = [
     'http://localhost:8080',
     'http://localhost:5173',
-    'https://www.yourwebsite.com'
+    'https://www.mydomainname.com'
 ]
 
 
