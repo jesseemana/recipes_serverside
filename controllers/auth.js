@@ -18,7 +18,7 @@ const login = async(req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "username": user.username,
+                "email": user.email,
                 "role": user.role
             }
         },
@@ -32,24 +32,48 @@ const login = async(req, res) => {
         {expiresIn: '7d'}
     )
 
-    res.cookie = ('jwt', refreshToken, {
+    // console.log(`ACCESS_TOKEN: ${accessToken}`)
+    // console.log(`REFRESH_TOKEN: ${refreshToken}`)
+
+    // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
+    res.cookie('jwt', refreshToken, {
         httpOnly: true, // -> store refresh token in memory, accessible only by web server
-        secure: true, // -> https
+        secure: false, // -> https
         sameSite: 'None', // -> cross-site access
         maxAge: 7 * 24 * 60 * 60 * 1000 // -> cookie expiry set to 7 days(same as refresh token)
     })
 
-    res.status(200).json(accessToken)
+    res.status(200).json({ACCESS_TOKEN: accessToken, REFRESH_TOKEN: refreshToken})
 }
 
 
-const refresh = async(req, res) => {}
+const refresh = async (req, res) => {
+    const cookies = req.cookies
+    if(!cookies?.jwt) return res.status(401).json({message: 'Unauthorized'}) 
+
+    // console.log(cookies.jwt)
+    const refreshToken = cookies.jwt
+
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN,
+        async (err, decoded) => {
+            if(err) return res.status(403).json({message: 'Forbiden'})
+
+            const user = await User.findOne({email: decoded.email})
+            if(!user) return res.status(401).json({message: 'Unauthorized'})
+
+
+        }
+    )
+}
 
 
 // CLEAR THE REFESHTOKEN FROM THE COOKIE
 const logout = async (req, res) => {
     const cookies = req.cookies
-    if(!cookies?.jwt) return res.status(204) //No content -> cookie don't exist we're good either way
+    if(!cookies?.jwt) return res.sendStatus(204); //No content -> cookie don't exist we're good either way
+    
     res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
     res.json({message: 'Cookie cleared'})
 }
