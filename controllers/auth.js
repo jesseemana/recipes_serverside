@@ -23,11 +23,12 @@ const login = async(req, res) => {
             }
         },
         process.env.ACCESS_TOKEN,
-        {expiresIn: '15m'}
+        {expiresIn: '10s'}
     )
 
+
     const refreshToken = jwt.sign(
-        {"username": user.username},
+        {"email": user.email},
         process.env.REFRESH_TOKEN,
         {expiresIn: '7d'}
     )
@@ -57,13 +58,25 @@ const refresh = async (req, res) => {
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN,
-        async (err, decoded) => {
-            if(err) return res.status(403).json({message: 'Forbiden'})
+        async function(err, decoded) {
+            if(err) return res.status(403).json({message: 'Forbidden'})
 
-            const user = await User.findOne({email: decoded.email})
+            const user = await User.findOne({email: decoded.email}).exec()
             if(!user) return res.status(401).json({message: 'Unauthorized'})
+            console.log(user)
 
+            const accessToken = jwt.sign(
+                {
+                    "userInfo": {
+                        "email": user.email,
+                        "role": user.role
+                    }
+                },
+                process.env.ACCESS_TOKEN,
+                {expiresIn: '10s'}
+            )
 
+            res.json(accessToken)
         }
     )
 }
@@ -77,6 +90,7 @@ const logout = async (req, res) => {
     res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
     res.json({message: 'Cookie cleared'})
 }
+
 
 module.exports = {
     login,
