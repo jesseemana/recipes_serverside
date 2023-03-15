@@ -12,8 +12,7 @@ const login = async(req, res) => {
     if(!user) return res.status(401).json({message: 'Unauthorized'})
 
     const validPassword = await bcrypt.compare(password, user.password)
-    if(!validPassword) return res.status(401).json({message: `User password doesn't match`})
-
+    if(!validPassword) return res.status(401).json({message: `Entered wrong password`})
 
     const accessToken = jwt.sign(
         {
@@ -25,7 +24,6 @@ const login = async(req, res) => {
         process.env.ACCESS_TOKEN,
         {expiresIn: '10s'}
     )
-
 
     const refreshToken = jwt.sign(
         {"email": user.email},
@@ -63,7 +61,7 @@ const refresh = async (req, res) => {
 
             const user = await User.findOne({email: decoded.email}).exec()
             if(!user) return res.status(401).json({message: 'Unauthorized'})
-            console.log(user)
+            // console.log(user)
 
             const accessToken = jwt.sign(
                 {

@@ -18,6 +18,8 @@ const PORT = process.env.PORT;
 
 connectDB();
 
+// ========================= SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =========================================
+
 // MIDDLEWARE 
 app.use(helmet());
 app.use(cors(corsOptions));
