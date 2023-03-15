@@ -4,6 +4,7 @@ const User = require('../models/users')
 
 const getRecipes = async (req, res) => {
     const recipes = await Recipe.find().lean()
+
     if(!recipes?.length) return res.status(400).json({message: 'There are currently no recipes'})
 
     // ATTACHING A SPECIFIC USER TO A RECIPE THEY CREATED 
@@ -21,9 +22,6 @@ const createRecipe = async(req, res) => {
     const {user, name, ingridients, procedure, category, time} = req.body
     
     if(!user || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields'})
-
-    const duplicate = await Recipe.findOne({name}).collation({locale: 'en', strength: 2}).lean().exec()
-    if(duplicate) return res.status(409).json({message: 'Recipe already exist'})
 
     const recipe = await Recipe.create({
         user,
@@ -43,7 +41,25 @@ const createRecipe = async(req, res) => {
 
 
 const updatetRecipe = async (req, res) => {
-    res.json({message: 'Recipe updated'});
+    const {id, name, ingridients, procedure, category, time} = req.body
+
+    if(!id || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields'})
+
+    const recipe = await Recipe.findById(id).exec()
+    if(!recipe) return res.status(400).json({message: 'Recipe not found'})
+
+    const duplicate = await Recipe.findOne({name}).collation({locale: 'en', strength: 2}).lean().exec()
+    if(duplicate && duplicate?._id.toString() !== id) return res.status(409).json({message: 'Recipe already exist'})
+
+    recipe.name = name
+    recipe.ingridients = ingridients
+    recipe.procedure = procedure
+    recipe.category = category
+    recipe.time = time
+
+    const updatedRecipe = await recipe.save()
+
+    res.json({updatedRecipe})
 }
 
 
