@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const authController = require('../controllers/auth')
-
+const loginLimiter = require('../middleware/loginLimiter')
 
 router.route('/')
-    .post(authController.login)
+    .post(loginLimiter, authController.login)
 
 router.route('/refresh')
     .get(authController.refresh)
