@@ -48,6 +48,7 @@ const login = async(req, res) => {
 
 const refresh = async (req, res) => {
     const cookies = req.cookies
+
     if(!cookies?.jwt) return res.status(401).json({message: 'Unauthorized'}) 
 
     // console.log(cookies.jwt)
@@ -85,7 +86,11 @@ const logout = async (req, res) => {
     const cookies = req.cookies
     if(!cookies?.jwt) return res.sendStatus(204); //No content -> cookie don't exist we're good either way
     
-    res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true})
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+    })
     res.json({message: 'Cookie cleared'})
 }
 

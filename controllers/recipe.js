@@ -21,7 +21,7 @@ const getRecipes = async (req, res) => {
 const createRecipe = async(req, res) => {
     const {user, name, ingridients, procedure, category, time} = req.body
     
-    if(!user || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields'})
+    if(!user || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields!'})
 
     const recipe = await Recipe.create({
         user,
@@ -33,9 +33,9 @@ const createRecipe = async(req, res) => {
     })
 
     if(recipe) {
-        return res.status(201).json({message: `Recipe for ${recipe.name} succesfully created`})
+        return res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
     } else {
-        return res.status(400).json({message: 'Inavlid data received'})
+        return res.status(400).json({message: 'Invalid data received.'})
     }
 }
 
@@ -43,13 +43,13 @@ const createRecipe = async(req, res) => {
 const updatetRecipe = async (req, res) => {
     const {id, name, ingridients, procedure, category, time} = req.body
 
-    if(!id || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields'})
+    if(!id || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields!'})
 
     const recipe = await Recipe.findById(id).exec()
-    if(!recipe) return res.status(400).json({message: 'Recipe not found'})
+    if(!recipe) return res.status(400).json({message: 'Recipe not found!'})
 
     const duplicate = await Recipe.findOne({name}).collation({locale: 'en', strength: 2}).lean().exec()
-    if(duplicate && duplicate?._id.toString() !== id) return res.status(409).json({message: 'Recipe already exist'})
+    if(duplicate && duplicate?._id.toString() !== id) return res.status(409).json({message: 'Recipe already exist!'})
 
     recipe.name = name
     recipe.ingridients = ingridients
@@ -64,7 +64,16 @@ const updatetRecipe = async (req, res) => {
 
 
 const deleteRecipe = async (req, res) => {
-    res.json({message: 'Recipe deleted'});
+    const {id} = req.body
+    if(!id) return res.status(400).json({message: 'Recipe ID is required'})
+
+    const recipe = await Recipe.findById(id)
+    if(!recipe) return res.status(400).json({message: 'Recipe not found'})
+
+    const result = recipe.deleteOne()
+    const message = `Recipe for ${result.name} with ID: ${result._id}, has been deleted`
+
+    res.json(message)
 }
 
 
