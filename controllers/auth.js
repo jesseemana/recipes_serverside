@@ -5,8 +5,8 @@ const bcrypt = require('bcrypt')
 
 const login = async(req, res) => {
     const {email, password} = req.body
-
-    if(!email || !password) return res.status(400).json({message: 'Provide email and password'})
+    if(!email || !password)
+        return res.status(400).json({message: 'Provide email and password'})
 
     const user = await User.findOne({email}).exec()
     if(!user) return res.status(401).json({message: 'Unauthorized'})
@@ -22,7 +22,7 @@ const login = async(req, res) => {
             }
         },
         process.env.ACCESS_TOKEN,
-        {expiresIn: '10s'}
+        {expiresIn: '20m'}
     )
 
     const refreshToken = jwt.sign(
@@ -72,7 +72,7 @@ const refresh = async (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN,
-                {expiresIn: '10s'}
+                {expiresIn: '20m'}
             )
 
             res.json(accessToken)
