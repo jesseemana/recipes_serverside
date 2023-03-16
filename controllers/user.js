@@ -1,12 +1,12 @@
 const User = require('../models/users')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
 
 
 const getUSers = async(req, res) => {
     const users = await User.find().select('-password').lean()
     if(!users?.length) return res.status(400).json({message: 'No users found'})
     res.json(users)
-};
+}
 
 
 const createUSer = async(req, res) => {
@@ -29,9 +29,9 @@ const createUSer = async(req, res) => {
     if(user) {
         return res.status(200).json({message: `New user ${username} has been created`})
     } else {
-        res.status(400).json({message: 'Invalid user data received'});
+        res.status(400).json({message: 'Invalid user data received'})
     }
-};
+}
 
 
 const updateUser = async (req, res) => {
@@ -55,8 +55,8 @@ const updateUser = async (req, res) => {
         user.password = await bcrypt.hash(password, 10)
     
 
-    res.json({message: `${updatedUser.username} updated`});
-};
+    res.json({message: `${updatedUser.username} updated`})
+}
 
 
 const deleteUser = async(req, res) => {
@@ -71,7 +71,7 @@ const deleteUser = async(req, res) => {
     const message = `User ${user.username} with ID ${user._id} deleted`
 
     res.json(message)
-};
+}
 
 
 module.exports = {

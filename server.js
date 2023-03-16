@@ -25,7 +25,7 @@ connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename)
-// ========================= SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =========================================
+// ========================= SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =====================================
 //INSTALL MULTER
 
 
@@ -38,9 +38,11 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+
 app.use('/', express.static(path.join(__dirname, '/public')));
 
 
+// MULTER SETUP FOR FILE UPLOAD
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'public/assets');
@@ -50,9 +52,11 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({storage})
+const upload = multer({storage});
 
-app.use('/recipe/create', upload('picture'), verifyJWT, createRecipe)
+// ROUTE FOR CREATING RECIPE WITH PICTURE 
+app.use('/recipes/create', upload('picture'), verifyJWT, createRecipe)
+
 
 // ROUTES 
 app.use('/auth', require('./routes/auth'));
@@ -77,10 +81,12 @@ app.use('*', (req, res) => {
 // ERROR HANDLER MIDDLEWARE 
 app.use(errorHandler);
 
+
 mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline);
     app.listen(PORT, () => console.log(`Server running on port: ${PORT}...`.cyan.underline));
 });
+
 
 mongoose.connection.on('error', err => {
     console.log(err);

@@ -21,7 +21,9 @@ const getRecipes = async (req, res) => {
 const createRecipe = async(req, res) => {
     const {user, name, ingridients, procedure, category, time, picturePath} = req.body
     
-    if(!user || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields!'})
+    if(!user || !name || !ingridients.length || !procedure || !category || !time) {
+        return res.status(400).json({message: 'Please provide all fields!'});
+    }
 
     const recipe = await Recipe.create({
         user,
@@ -41,11 +43,24 @@ const createRecipe = async(req, res) => {
 }
 
 
+async function getSingleRecipe() {
+    const {id} = req.params
+    if(!id) return res.status(400).json({message: 'Provide recipe id'})
+
+    const recipe = await Recipe.findById(id)
+    if(!recipe) return res.status(400).json({message: 'Recipe not found'})
+
+    res.status(200).json(recipe)
+}
+
+
 const updatetRecipe = async (req, res) => {
     const {id, name, ingridients, procedure, category, time} = req.body
 
-    if(!id || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields!'})
-
+    if(!id || !name || !ingridients.length || !procedure || !category || !time) {
+        return res.status(400).json({message: 'Please provide all fields!'})
+    }
+    
     const recipe = await Recipe.findById(id).exec()
     if(!recipe) return res.status(400).json({message: 'Recipe not found!'})
 
@@ -82,5 +97,6 @@ module.exports = {
     getRecipes,
     createRecipe,
     updatetRecipe,
-    deleteRecipe
+    deleteRecipe,
+    getSingleRecipe
 }

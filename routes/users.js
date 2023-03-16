@@ -3,11 +3,14 @@ const router = express.Router()
 const userController = require('../controllers/user')
 const verifyJWT = require('../middleware/auth')
 
+router.route('/').post(userController.createUSer)
 
+router.use(verifyJWT)
+
+// PROTECTED ROUTES 
 router.route('/')
-    .get(verifyJWT, userController.getUSers)
-    .post(userController.createUSer)
-    .patch(verifyJWT, userController.updateUser)
-    .delete(verifyJWT, userController.deleteUser)
+    .get(userController.getUSers)
+    .patch(userController.updateUser)
+    .delete(userController.deleteUser)
 
 module.exports = router
