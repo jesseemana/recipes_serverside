@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const {Schema} = mongoose;
+const {Schema} = mongoose
 
 const recipeSchema = new Schema(
     {
@@ -25,6 +25,7 @@ const recipeSchema = new Schema(
             type: String,
             required: true
         },
+        picturePath: String,
         time: {
             type: Number,
             required: true
@@ -32,6 +33,6 @@ const recipeSchema = new Schema(
     }, {
     timestamps: true
 }
-);
+)
 
-module.exports = mongoose.model('Recipe', recipeSchema);
+module.exports = mongoose.model('Recipe', recipeSchema)

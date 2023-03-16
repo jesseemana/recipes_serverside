@@ -19,7 +19,7 @@ const getRecipes = async (req, res) => {
 
 
 const createRecipe = async(req, res) => {
-    const {user, name, ingridients, procedure, category, time} = req.body
+    const {user, name, ingridients, procedure, category, time, picturePath} = req.body
     
     if(!user || !name || !ingridients.length || !procedure || !category || !time) return res.status(400).json({message: 'Please provide all fields!'})
 
@@ -29,7 +29,8 @@ const createRecipe = async(req, res) => {
         ingridients,
         procedure,
         category,
-        time
+        picturePath,
+        time,
     })
 
     if(recipe) {

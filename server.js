@@ -3,6 +3,7 @@ require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const path = require('path');
+const {fileURLToPath} = require("url");
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -11,6 +12,9 @@ const errorHandler = require('./middleware/errorHandler');
 const corsOptions = require('./config/corsOptions');
 const mongoose = require('mongoose');
 const {logger, logEvents} = require('./middleware/logger');
+// const multer = require("multer");
+const {createRecipe} = require('./controllers/recipe')
+const verifyJWT = require('./middleware/auth')
 
 const app = express();
 
@@ -18,7 +22,13 @@ const PORT = process.env.PORT;
 
 connectDB();
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
 // ========================= SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =========================================
+//INSTALL MULTER
+
+
 
 // MIDDLEWARE 
 app.use(helmet());
@@ -30,6 +40,19 @@ app.use(express.urlencoded({extended: false}));
 
 app.use('/', express.static(path.join(__dirname, '/public')));
 
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/assets');
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({storage})
+
+app.use('/recipe/create', upload('picture'), verifyJWT, createRecipe)
 
 // ROUTES 
 app.use('/auth', require('./routes/auth'));

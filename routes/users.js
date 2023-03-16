@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user')
+const verifyJWT = require('../middleware/auth')
 
 
 router.route('/')
-    .get(userController.getUSers)
+    .get(verifyJWT, userController.getUSers)
     .post(userController.createUSer)
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser)
+    .patch(verifyJWT, userController.updateUser)
+    .delete(verifyJWT, userController.deleteUser)
 
 module.exports = router
