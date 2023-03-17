@@ -62,7 +62,6 @@ app.use('/recipes/create', upload('picture'), verifyJWT, createRecipe)
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/recipes', require('./routes/recipes'));
-app.use('/recipes/:id', require('./routes/recipes'));
 
 
 // ERROR 404 PAGE 

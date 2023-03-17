@@ -5,11 +5,12 @@ const verifyJWT = require('../middleware/auth')
 
 router.use(verifyJWT)
 
-router.route('/recipes/:id', recipeController.getSingleRecipe)
-
 router.route('/')
     .get(recipeController.getRecipes)
     .patch(recipeController.updatetRecipe)
     .delete(recipeController.deleteRecipe)
 
-module.exports = router
+router.route('/:id')
+    .get(recipeController.getSingleRecipe)
+
+module.exports = router 

@@ -86,8 +86,8 @@ const deleteRecipe = async (req, res) => {
     const recipe = await Recipe.findById(id)
     if(!recipe) return res.status(400).json({message: 'Recipe not found'})
 
-    const result = recipe.deleteOne()
-    const message = `Recipe for ${result.name} with ID: ${result._id}, has been deleted`
+    const deleted = recipe.deleteOne()
+    const message = `Recipe for ${deleted.name} with ID: ${deleted._id}, has been deleted`
 
     res.json(message)
 }
