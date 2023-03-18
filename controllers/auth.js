@@ -3,6 +3,33 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
+
+const createUSer = async (req, res) => {
+    const {username, email, password} = req.body;
+    if(!username || !email || !password) return res.status(400).json({message: 'Please fill out all fields'});
+
+    const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec(); // .collation()... fir checking case sensitivity
+    if(duplicate) return res.status(409).json({message: 'email already in use'});
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+        username: username,
+        email: email,
+        password: hashedPassword
+    });
+
+    const user = await newUser.save(newUser);
+
+    if(user) {
+        return res.status(200).json({message: `New user ${username} has been created`});
+    } else {
+        res.status(400).json({message: 'Invalid user data received'});
+    }
+}
+
+
+
 const login = async(req, res) => {
     const {email, password} = req.body
     if(!email || !password)
@@ -96,6 +123,7 @@ const logout = async (req, res) => {
 
 
 module.exports = {
+    createUSer,
     login,
     refresh,
     logout
