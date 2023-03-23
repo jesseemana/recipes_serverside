@@ -35,6 +35,10 @@ const createRecipe = async(req, res) => {
         time,
     })
 
+    const recipes = await Recipe.find()
+
+    res.json(recipes)
+
     if(recipe) {
         return res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
     } else {

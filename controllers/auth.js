@@ -69,7 +69,7 @@ const login = async(req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000 // -> cookie expiry set to 7 days(same as refresh token)
     })
 
-    res.status(200).json({ACCESS_TOKEN: accessToken, REFRESH_TOKEN: refreshToken})
+    res.status(200).json({user, ACCESS_TOKEN: accessToken, REFRESH_TOKEN: refreshToken})
 }
 
 

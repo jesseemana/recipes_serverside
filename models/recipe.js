@@ -13,10 +13,10 @@ const recipeSchema = new Schema(
             type: String,
             required: true
         },
-        ingridients: [{
-            type: String,
+        ingridients: {
+            type: Array,
             required: true
-        }],
+        },
         procedure: {
             type: String,
             required: true

@@ -18,15 +18,14 @@ const verifyJWT = require('./middleware/auth')
 
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 connectDB();
 
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
-// ========================= SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =====================================
-//INSTALL MULTER
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename)
+// ===================================== SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =====================================
+// ================================================== INSTALL MULTER ==================================================
 
 
 
@@ -77,7 +76,7 @@ app.use('*', (req, res) => {
 });
 
 
-// ERROR HANDLER MIDDLEWARE 
+// ERROR HANDLING MIDDLEWARE 
 app.use(errorHandler);
 
 
@@ -90,4 +89,4 @@ mongoose.connection.once('open', () => {
 mongoose.connection.on('error', err => {
     console.log(err);
     logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');
-});
+});         
