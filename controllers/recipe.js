@@ -14,7 +14,7 @@ const getRecipes = async (req, res) => {
     }))
     
     // res.json(recipes)
-    res.json(recipeWithUser)
+    res.status(200).json(recipeWithUser)
 }
 
 
@@ -35,12 +35,12 @@ const createRecipe = async(req, res) => {
         time,
     })
 
-    const recipes = await Recipe.find()
+   
+    if(recipe){
+        res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
 
-    res.json(recipes)
-
-    if(recipe) {
-        return res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
+        const recipes = await Recipe.find()
+        return res.status(201).json(recipes)
     } else {
         return res.status(400).json({message: 'Invalid data received.'})
     }
@@ -51,7 +51,7 @@ async function getSingleRecipe() {
     const {id} = req.params
     if(!id) return res.status(400).json({message: 'Provide recipe id'})
 
-    const recipe = await Recipe.findById(id)
+    const recipe = await Recipe.findById(id).exec()
     if(!recipe) return res.status(400).json({message: 'Recipe not found'})
 
     res.status(200).json(recipe)
@@ -79,7 +79,7 @@ const updatetRecipe = async (req, res) => {
 
     const updatedRecipe = await recipe.save()
 
-    res.json({updatedRecipe})
+    res.status(201).json(updatedRecipe)
 }
 
 

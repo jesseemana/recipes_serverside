@@ -1,14 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user')
-const verifyJWT = require('../middleware/auth')
+const verifyUser = require('../middleware/auth')
 
-router.use(verifyJWT)
+router.use(verifyUser)
 
 // PROTECTED ROUTES 
 router.route('/')
-    .get(userController.getUSers)
+    .get(userController.getUsers)
     .patch(userController.updateUser)
     .delete(userController.deleteUser)
+
+router.route('/:id')
+    .get(userController.getUser)
 
 module.exports = router

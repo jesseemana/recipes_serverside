@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
-
 const createUSer = async (req, res) => {
     const {username, email, password} = req.body;
     if(!username || !email || !password) return res.status(400).json({message: 'Please fill out all fields'});
@@ -57,9 +56,6 @@ const login = async(req, res) => {
         process.env.REFRESH_TOKEN,
         {expiresIn: '7d'}
     )
-
-    // console.log(`ACCESS_TOKEN: ${accessToken}`)
-    // console.log(`REFRESH_TOKEN: ${refreshToken}`)
 
     // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
     res.cookie('jwt', refreshToken, {

@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const getUsers = async(req, res) => {
     const users = await User.find().select('-password').lean()
     if(!users?.length) return res.status(400).json({message: 'No users found'})
-    res.json(users)
+    res.status(200).json(users)
 }
 
 
@@ -13,17 +13,17 @@ async function getUser(req, res){
     const {id} = req.params
     if(!id) return res.status(400).json({message: 'Provide a user ID'})
 
-    const user = await User.findById(id)
+    const user = await User.findById(id).exec()
     if(!user) return res.status(400).json({message: 'User does not exist'})
 
-    res.json(user)
+    res.status(200).json(user)
 }
 
 
 const updateUser = async (req, res) => {
-    const {id, username, password, role} = req.body
+    const {id, username, password} = req.body
 
-    if(!id || !username || !role) return res.status(400).json({message: 'All fields except password are required'})
+    if(!id || !username) return res.status(400).json({message: 'All fields except password are required'})
 
     const user = await User.findById(id).exec()
     if(!user) return res.status(400).json({message: 'User Not Found'})
@@ -32,7 +32,6 @@ const updateUser = async (req, res) => {
     if(duplicate) return res.status(409).json({message: 'User already exist'})
 
     user.username = username
-    user.role = role
 
     const updatedUser = await user.save()
 
@@ -40,8 +39,7 @@ const updateUser = async (req, res) => {
     if(password)
         user.password = await bcrypt.hash(password, 10)
     
-
-    res.json({message: `${updatedUser.username} updated`})
+    res.status(201).json(updatedUser)
 }
 
 

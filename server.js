@@ -3,7 +3,7 @@ require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const path = require('path');
-const {fileURLToPath} = require("url");
+const { fileURLToPath } = require("url");
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -11,10 +11,10 @@ const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 const corsOptions = require('./config/corsOptions');
 const mongoose = require('mongoose');
-const {logger, logEvents} = require('./middleware/logger');
+const { logger, logEvents } = require('./middleware/logger');
 // const multer = require("multer");
-const {createRecipe} = require('./controllers/recipe')
-const verifyJWT = require('./middleware/auth')
+const { createRecipe } = require('./controllers/recipe');
+const verifyUser = require('./middleware/auth');
 
 const app = express();
 
@@ -24,9 +24,8 @@ connectDB();
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename)
-// ===================================== SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() =====================================
-// ================================================== INSTALL MULTER ==================================================
-
+// >>>>>>>>>>>>>>>>>>>>> SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() 
+//>>>>>>>>>>>>>>>>>>>>>> INSTALL MULTER 
 
 
 // MIDDLEWARE 
@@ -36,12 +35,12 @@ app.use(logger);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-
-
 app.use('/', express.static(path.join(__dirname, '/public')));
+app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
 
 
-// MULTER SETUP FOR FILE UPLOAD
+
+// MULTER SETUP FOR FILE UPLOAD 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'public/assets');
@@ -54,7 +53,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 // ROUTE FOR CREATING RECIPE WITH PICTURE 
-app.use('/recipes/create', upload('picture'), verifyJWT, createRecipe)
+app.post('/recipes', upload.single('picture'), verifyUser, createRecipe);
 
 
 // ROUTES 
