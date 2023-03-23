@@ -3,7 +3,6 @@ const router = express.Router()
 const userController = require('../controllers/user')
 const verifyJWT = require('../middleware/auth')
 
-
 router.use(verifyJWT)
 
 // PROTECTED ROUTES 

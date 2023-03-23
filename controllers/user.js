@@ -2,10 +2,21 @@ const User = require('../models/users')
 const bcrypt = require('bcrypt')
 
 
-const getUSers = async(req, res) => {
+const getUsers = async(req, res) => {
     const users = await User.find().select('-password').lean()
     if(!users?.length) return res.status(400).json({message: 'No users found'})
     res.json(users)
+}
+
+
+async function getUser(req, res){ 
+    const {id} = req.params
+    if(!id) return res.status(400).json({message: 'Provide a user ID'})
+
+    const user = await User.findById(id)
+    if(!user) return res.status(400).json({message: 'User does not exist'})
+
+    res.json(user)
 }
 
 
@@ -50,8 +61,8 @@ const deleteUser = async(req, res) => {
 
 
 module.exports = {
-    getUSers,
-    createUSer,
+    getUsers,
+    getUser,
     updateUser,
     deleteUser,
 }
