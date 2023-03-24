@@ -24,7 +24,7 @@ connectDB();
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename)
-// >>>>>>>>>>>>>>>>>>>>> SET SECURE TO TRUE IN LOGIN CONTROLLER RES.COOKIE() 
+// >>>>>>>>>>>>>>>>>>>>> SET SECURE TO TRUE IN AUTH CONTROLLER RES.COOKIE() IN DEPLOYMENT
 //>>>>>>>>>>>>>>>>>>>>>> INSTALL MULTER 
 
 
@@ -35,9 +35,10 @@ app.use(logger);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
+
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
-
 
 
 // MULTER SETUP FOR FILE UPLOAD 
@@ -49,7 +50,6 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-
 const upload = multer({storage});
 
 // ROUTE FOR CREATING RECIPE WITH PICTURE 

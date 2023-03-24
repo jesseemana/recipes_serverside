@@ -21,7 +21,7 @@ const createUSer = async (req, res) => {
     const user = await newUser.save(newUser);
 
     if(user) {
-        return res.status(200).json({message: `New user ${username} has been created`});
+        return res.status(201).json({message: `New user ${username} has been created`});
     } else {
         res.status(400).json({message: 'Invalid user data received'});
     }
@@ -60,7 +60,7 @@ const login = async(req, res) => {
     // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
     res.cookie('jwt', refreshToken, {
         httpOnly: true, // -> store refresh token in memory, accessible only by web server
-        secure: false, // -> https
+        secure: process.env.MODE = 'development' ? false : true, // -> https
         sameSite: 'None', // -> cross-site access
         maxAge: 7 * 24 * 60 * 60 * 1000 // -> cookie expiry set to 7 days(same as refresh token)
     })
