@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 
 
 const createUSer = async (req, res) => {
-    const {username, email, password} = req.body;
-    if(!username || !email || !password) return res.status(400).json({message: 'Please fill out all fields'});
+    const {firstname, lastname, email, password} = req.body;
+    if(!firstname || !lastname || !email || !password) return res.status(400).json({message: 'Please fill out all fields'});
 
     const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec(); // .collation()... fir checking case sensitivity
     if(duplicate) return res.status(409).json({message: 'email already in use'});

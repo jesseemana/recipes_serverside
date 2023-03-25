@@ -11,9 +11,9 @@ const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 const corsOptions = require('./config/corsOptions');
 const mongoose = require('mongoose');
-const { logger, logEvents } = require('./middleware/logger');
-// const multer = require("multer");
+const multer = require("multer");
 const { createRecipe } = require('./controllers/recipe');
+const { logger, logEvents } = require('./middleware/logger');
 const verifyUser = require('./middleware/auth');
 
 const app = express();
@@ -29,9 +29,9 @@ connectDB();
 
 
 // MIDDLEWARE 
+app.use(logger);
 app.use(helmet());
 app.use(cors(corsOptions));
-app.use(logger);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
@@ -50,6 +50,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
+
 const upload = multer({storage});
 
 // ROUTE FOR CREATING RECIPE WITH PICTURE 
