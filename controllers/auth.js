@@ -4,16 +4,19 @@ const bcrypt = require('bcrypt')
 
 
 const createUSer = async (req, res) => {
-    const {firstname, lastname, email, password} = req.body;
-    if(!firstname || !lastname || !email || !password) return res.status(400).json({message: 'Please fill out all fields'});
+    const {firstName, lastName, email, password} = req.body;
+    if(!firstName || !lastName || !email || !password) { 
+        return res.status(400).json({message: 'Please fill out all fields'})
+    }
 
     const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec(); // .collation()... fir checking case sensitivity
-    if(duplicate) return res.status(409).json({message: 'email already in use'});
+    if(duplicate) return res.status(409).json({message: 'email already in use'})
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = new User({
-        username: username,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: hashedPassword
     });
@@ -21,7 +24,7 @@ const createUSer = async (req, res) => {
     const user = await newUser.save(newUser);
 
     if(user) {
-        return res.status(201).json({message: `New user ${username} has been created`});
+        return res.status(201).json({message: `New user ${firstName} ${lastName} has been created`})
     } else {
         res.status(400).json({message: 'Invalid user data received'});
     }
@@ -31,8 +34,9 @@ const createUSer = async (req, res) => {
 
 const login = async(req, res) => {
     const {email, password} = req.body
-    if(!email || !password)
+    if(!email || !password) {
         return res.status(400).json({message: 'Provide email and password'})
+    }
 
     const user = await User.findOne({email}).exec()
     if(!user) return res.status(401).json({message: 'Unauthorized'})

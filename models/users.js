@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const {Schema} = mongoose;
+const {Schema} = mongoose
 
 const userSchema = new Schema(
     {
-        firstname: {
+        firstName: {
             type: String,
             min: 3,
             max: 20,
             required: true
         },
-        lastname: {
+        lastName: {
             type: String,
             min: 3,
             max: 20,
@@ -30,6 +30,6 @@ const userSchema = new Schema(
             default: 'User'
         }
     }
-);
+)
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema)
