@@ -48,13 +48,13 @@ const login = async(req, res) => {
             }
         },
         process.env.ACCESS_TOKEN,
-        {expiresIn: '20m'}
+        {expiresIn: '7d'}
     )
 
     const refreshToken = jwt.sign(
         {"email": user.email},
         process.env.REFRESH_TOKEN,
-        {expiresIn: '7d'}
+        {expiresIn: '14d'}
     )
 
     // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
@@ -95,7 +95,7 @@ const refresh = async (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN,
-                {expiresIn: '20m'}
+                {expiresIn: '7d'}
             )
 
             res.json(accessToken)
