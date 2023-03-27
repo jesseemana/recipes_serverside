@@ -10,7 +10,7 @@ const getRecipes = async (req, res) => {
     // ATTACHING A SPECIFIC USER TO A RECIPE THEY CREATED 
     const recipeWithUser = await Promise.all(recipes.map(async (recipe) => {
         const user = await User.findById(recipe.user).lean().exec()
-        return {...recipe, username: user.username}
+        return {...recipe, username: `${user.firstName} ${user.lastName}`}
     }))
     
     // res.json(recipes)
@@ -69,7 +69,8 @@ const updatetRecipe = async (req, res) => {
     if(!recipe) return res.status(400).json({message: 'Recipe not found!'})
 
     const duplicate = await Recipe.findOne({name}).collation({locale: 'en', strength: 2}).lean().exec()
-    if(duplicate && duplicate?._id.toString() !== id) return res.status(409).json({message: 'Recipe already exist!'})
+    if(duplicate && duplicate?._id.toString() !== id)
+        return res.status(409).json({message: 'Recipe already exist!'})
 
     recipe.name = name
     recipe.ingridients = ingridients
