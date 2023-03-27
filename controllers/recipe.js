@@ -38,9 +38,8 @@ const createRecipe = async(req, res) => {
    
     if(recipe){
         res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
-
         const recipes = await Recipe.find()
-        return res.status(201).json(recipes)
+        return res.status(200).json(recipes)
     } else {
         return res.status(400).json({message: 'Invalid data received.'})
     }
