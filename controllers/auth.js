@@ -93,7 +93,7 @@ const refresh = async (req, res) => {
 
             const accessToken = jwt.sign(
                 {
-                    "userInfo": {
+                    "UserInfo": {
                         "email": user.email,
                         "role": user.role
                     }
