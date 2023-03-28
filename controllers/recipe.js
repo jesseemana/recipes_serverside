@@ -57,7 +57,7 @@ async function getSingleRecipe() {
 }
 
 
-const updatetRecipe = async (req, res) => {
+const updatedRecipe = async (req, res) => {
     const {id, name, ingridients, procedure, category, time} = req.body
 
     if(!id || !name || !ingridients.length || !procedure || !category || !time) {
@@ -100,7 +100,7 @@ const deleteRecipe = async (req, res) => {
 module.exports = {
     getRecipes,
     createRecipe,
-    updatetRecipe,
+    updatedRecipe,
     deleteRecipe,
     getSingleRecipe
 }

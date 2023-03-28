@@ -7,7 +7,7 @@ router.use(verifyJWT)
 
 router.route('/')
     .get(recipeController.getRecipes)
-    .patch(recipeController.updatetRecipe)
+    .patch(recipeController.updatedRecipe)
     .delete(recipeController.deleteRecipe)
 
 router.route('/:id')
