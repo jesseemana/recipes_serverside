@@ -46,14 +46,17 @@ const createRecipe = async(req, res) => {
 }
 
 
-async function getSingleRecipe() {
-    const {id} = req.params
-    if(!id) return res.status(400).json({message: 'Provide recipe id'})
+async function getSingleRecipe(req, res)    {
+    const {id} = req.params;
+    if(!id) return res.status(400).json({message: 'Provide recipe id'});
 
-    const recipe = await Recipe.findById(id).exec()
-    if(!recipe) return res.status(400).json({message: 'Recipe not found'})
-
-    res.status(200).json(recipe)
+    const recipe = await Recipe.findById(id).exec();
+    if(!recipe) return res.status(400).json({message: 'Recipe not found'});
+        
+    const user = await User.findById(recipe.user).lean().exec();
+    const owner = `${user.firstName} ${user.lastName}`
+    
+    res.status(200).json({recipe, owner})
 }
 
 
