@@ -21,7 +21,7 @@ const createUSer = async (req, res) => {
         password: hashedPassword
     });
 
-    const user = await newUser.save(newUser);
+    const user = await newUser.save();
 
     if(user) {
         return res.status(201).json({message: `New user ${firstName} ${lastName} has been created`})
