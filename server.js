@@ -15,6 +15,7 @@ const multer = require("multer");
 const { createRecipe } = require('./controllers/recipe');
 const { logger, logEvents } = require('./middleware/logger'); // Morgan can also be used for logging
 const verifyUser = require('./middleware/auth');
+const { cluster } = require('cluster')
 
 const app = express();
 
