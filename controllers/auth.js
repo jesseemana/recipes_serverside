@@ -87,7 +87,7 @@ const refresh = async (req, res) => {
         async function(err, decoded) {
             if(err) return res.status(403).json({message: 'Forbidden'})
 
-            const user = await User.findOne({email: decoded.email}).exec()
+            const user = await User.findOne({email: decoded.email}).exec() // -> decoding the refresh token
             if(!user) return res.status(401).json({message: 'Unauthorized'})
             // console.log(user)
 
