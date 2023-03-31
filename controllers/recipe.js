@@ -18,6 +18,17 @@ const getRecipes = async (req, res) => {
 }
 
 
+const getUSerRecipes = async (req, res) => {
+    const {userId} = req.params
+    if(!userId) return res.status(400).json({message: 'Provide a user ID'})
+
+    const recipes = await Recipe.findById(userId)
+    if(!recipes) return res.status(400).json({message: `User doens't have any recipes`});
+
+    res.status(200).json(recipes)
+}
+
+
 const createRecipe = async(req, res) => {
     const {user, name, ingridients, procedure, category, time, picturePath} = req.body
     
@@ -102,6 +113,7 @@ const deleteRecipe = async (req, res) => {
 
 module.exports = {
     getRecipes,
+    getUSerRecipes,
     createRecipe,
     updatedRecipe,
     deleteRecipe,
