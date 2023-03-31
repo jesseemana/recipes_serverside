@@ -3,7 +3,7 @@ const router = express.Router()
 const recipeController = require('../controllers/recipe')
 const verifyJWT = require('../middleware/auth')
 
-// router.use(verifyJWT)
+router.use(verifyJWT)
 
 router.route('/')
     .get(recipeController.getRecipes)
