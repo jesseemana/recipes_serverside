@@ -50,17 +50,15 @@ const addRemoveBookamrk = async (req, res) => {
 
 
 const updateUser = async (req, res) => {
-    const {id, username, password} = req.body
+    const {id, firstName, lastName, password} = req.body
 
-    if(!id || !username) return res.status(400).json({message: 'All fields except password are required'})
+    if(!id || !firstName || !lastName) return res.status(400).json({message: 'All fields except password are required'})
 
     const user = await User.findById(id).exec()
     if(!user) return res.status(400).json({message: 'User Not Found'})
 
-    const duplicate = await User.findOne({username}).collation({locale: 'en', strength: 2}).lean().exec()
-    if(duplicate) return res.status(409).json({message: 'User already exist'})
-
-    user.username = username
+    user.firstName = firstName
+    user.lastName = lastName
 
     const updatedUser = await user.save()
 
