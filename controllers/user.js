@@ -1,4 +1,5 @@
 const User = require('../models/users')
+const Recipe = require('../models/recipe')
 const bcrypt = require('bcrypt')
 
 
@@ -17,6 +18,34 @@ async function getUser(req, res){
     if(!user) return res.status(400).json({message: 'User does not exist'})
 
     res.status(200).json(user)
+}
+
+
+const addRemoveBookamrk = async (req, res) => {
+    const {id, recipeId} = req.params
+    if(!id || !recipeId) return res.status(400).json({messae: 'id or recipeId is not provided'})
+
+    const user = await User.findById(id).lean().exec()
+
+    if(!user) return res.status(400).json({messae: 'User or recipe does not exist'})
+
+    if(user.bookmarks.include(recipeId)) {
+        user.bookmarks = user.bookmarks.filter((id) => id !== recipeId) // REMOVE RECIPE FROM BOOKMARKS
+    } else {
+        user.bookmarks.push(recipeId) // ADD(PUSH) RECIPE INTO BOOKAMRKS
+    }
+
+    await user.save()
+
+    const userBookmarks = await Promise.all(
+        user.bookmarks.map((id) => Recipe.findById(id))
+    )
+
+    const formattedBookamrks = userBookmarks.map(({_id, name, ingridients, procedure, category, picture, time}) => {
+        return {_id, name, ingridients, procedure, category, picture, time}
+    })
+
+    res.status(200).json(formattedBookamrks)
 }
 
 
@@ -63,4 +92,5 @@ module.exports = {
     getUser,
     updateUser,
     deleteUser,
+    addRemoveBookamrk,
 }

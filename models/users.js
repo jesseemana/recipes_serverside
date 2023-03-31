@@ -25,6 +25,10 @@ const userSchema = new Schema(
             type: String,
             required: true
         },
+        bookmarks: {
+            type: Array,
+            default: []
+        },
         role: {
             type: String,
             default: 'User'
