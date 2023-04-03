@@ -13,7 +13,7 @@ router.route('/')
 router.route('/:id')
     .get(recipeController.getSingleRecipe)
 
-router.route('/user/:userId')
+router.route('/user/:user')
     .get(recipeController.getUserRecipes)
 
 module.exports = router 

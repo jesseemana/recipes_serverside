@@ -20,10 +20,10 @@ const getRecipes = async (req, res) => {
 
 const getUserRecipes = async (req, res) => {
     const {user} = req.params;
-    if(!user) return res.status(400).json({message: 'Provide a user ID'});
+    if(!user) return res.status(400).json({message: 'Provide a user name'});
 
     const recipes = await Recipe.find({user});
-    if(!recipes?.length) return res.status(400).json({message: `User doens't have any recipes`});
+    if(!recipes?.length) return res.status(400).json({message: `User doesn't have any recipes`});
 
     res.status(200).json(recipes);
 };
