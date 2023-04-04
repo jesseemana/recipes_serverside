@@ -32,7 +32,7 @@ const getUserRecipes = async (req, res) => {
 const createRecipe = async (req, res) => {
     const {user, name, ingridients, procedure, category, time, picturePath} = req.body;
 
-    if(!user || !name || !ingridients.length || !procedure || !category || !time) {
+    if(!user || !name || !ingridients?.length || !procedure || !category || !time) {
         return res.status(400).json({message: 'Please provide all fields!'});
     }
 
@@ -74,7 +74,7 @@ async function getSingleRecipe(req, res) {
 const updatedRecipe = async (req, res) => {
     const {id, name, ingridients, procedure, category, time} = req.body;
 
-    if(!id || !name || !ingridients.length || !procedure || !category || !time) {
+    if(!id || !name || !ingridients?.length || !procedure || !category || !time) {
         return res.status(400).json({message: 'Please provide all fields!'});
     }
 

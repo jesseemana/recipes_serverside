@@ -14,7 +14,7 @@ router.route('/')
 router.route('/:id')
     .get(userController.getUser)
 
-router.route('/:id/:recipeId')
+router.route('/:id')
     .patch(userController.addRemoveBookamrk)
 
 module.exports = router

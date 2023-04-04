@@ -22,30 +22,31 @@ async function getUser(req, res) {
 
 
 const addRemoveBookamrk = async (req, res) => {
-    const {id, recipeId} = req.params;
-    if(!id || !recipeId) return res.status(400).json({messae: 'id or recipeId is not provided'});
+    const { id } = req.params;
+    const { recipeId } = req.body;
+    if(!id) return res.status(400).json({messae: 'id is not provided'});
+    if(!recipeId) return res.status(400).json({messae: 'recipeId is not provided'});
 
     const user = await User.findById(id).lean().exec();
-
-    if(!user) return res.status(400).json({messae: 'User or recipe does not exist'});
-
-    if(user.bookmarks.include(recipeId)) {
-        user.bookmarks = user.bookmarks.filter((id) => id !== recipeId); // REMOVE RECIPE FROM BOOKMARKS
-    } else {
+    if(!user) return res.status(400).json({messae: 'User does not exist'});
+    
+    if(!user.bookmarks.includes(recipeId)) {
         user.bookmarks.push(recipeId); // ADD(PUSH) RECIPE INTO BOOKAMRKS
+    } else {
+        user.bookmarks = user.bookmarks.filter((id) => id !== recipeId); // REMOVE RECIPE FROM BOOKMARKS
     }
-
+    
     await user.save();
 
     const userBookmarks = await Promise.all(
         user.bookmarks.map((id) => Recipe.findById(id))
     );
 
-    const formattedBookamrks = userBookmarks.map(({_id, name, ingridients, procedure, category, picture, time}) => {
+    const formattedBookmarks = userBookmarks.map(({_id, name, ingridients, procedure, category, picture, time}) => {
         return {_id, name, ingridients, procedure, category, picture, time};
     });
 
-    res.status(200).json(formattedBookamrks);
+    res.status(200).json(formattedBookmarks);
 };
 
 
