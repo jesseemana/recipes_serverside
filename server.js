@@ -2,7 +2,7 @@ require('colors')
 require('dotenv').config()
 require('express-async-errors')
 const express = require('express')
-const path = require('path')
+const path = require('node:path')
 const { fileURLToPath } = require("url")
 const cors = require('cors')
 const helmet = require('helmet')
@@ -34,22 +34,22 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 app.use('/', express.static(path.join(__dirname, '/public')))
-app.use('/assets', express.static(path.join(__dirname, '/public/assets')))
+app.use('/assets', express.static(path.join(__dirname, '/uploaads')))
 
 
 // MULTER SETUP FOR FILE UPLOAD 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'public/assets')
+        cb(null, 'public/uploads')
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname)
     }
 })
 
-const upload = multer({storage})
+const upload = multer({storage: storage})
 
-app.post('/recipes', upload.single('picture'), verifyUser, createRecipe)
+app.post('/recipes', verifyUser, upload.single('picture'), createRecipe)
 
 
 // ROUTES 
@@ -69,6 +69,6 @@ mongoose.connection.once('open', () => {
 
 
 mongoose.connection.on('error', err => {
-    console.log(err);
+    console.log(err)
     logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
 })  
