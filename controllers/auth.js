@@ -5,8 +5,7 @@ const bcrypt = require('bcrypt');
 
 const createUSer = async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
-    if(!firstName || !lastName || !email || !password)
-    {
+    if(!firstName || !lastName || !email || !password) {
         return res.status(400).json({message: 'Please fill out all fields'});
     }
 
@@ -24,11 +23,9 @@ const createUSer = async (req, res) => {
 
     const user = await newUser.save();
 
-    if(user)
-    {
+    if(user) {
         return res.status(201).json({message: `New user ${firstName} ${lastName} has been created`});
-    } else
-    {
+    } else {
         res.status(400).json({message: 'Invalid user data received'});
     }
 };

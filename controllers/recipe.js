@@ -25,7 +25,10 @@ const getUserRecipes = async (req, res) => {
     const recipes = await Recipe.find({user});
     if(!recipes?.length) return res.status(400).json({message: `User doesn't have any recipes`});
 
-    res.status(200).json(recipes);
+    const owner = await User.findById(user);
+    const fullName = `${owner.firstName} ${owner.lastName}`;
+
+    res.status(200).json({recipes, fullName});
 };
 
 
@@ -49,6 +52,7 @@ const createRecipe = async (req, res) => {
 
     if(recipe) {
         res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`});
+
         const recipes = await Recipe.find();
         return res.status(200).json(recipes);
     } else {
