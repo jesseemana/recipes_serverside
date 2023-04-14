@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 
 const getRecipes = async (req, res) => {
-    const recipes = await Recipe.find().lean();
+    const recipes = await Recipe.find().lean().sort({createdAt: -1});
 
     if(!recipes?.length) return res.status(400).json({message: 'There are currently no recipes'});
 
