@@ -3,7 +3,13 @@ const User = require('../models/User');
 
 
 const getRecipes = async (req, res) => {
-    const recipes = await Recipe.find().lean().sort({createdAt: -1});
+    const {page} = req.query
+    
+    const LIMIT = 12
+    const startIndex = (Number(page) - 1) * LIMIT;  // starting index of every page
+    const total = await Recipe.countDocuments({})
+    
+    const recipes = await Recipe.find().lean().sort({createdAt: -1}).limit(LIMIT).skip(startIndex);
 
     if(!recipes?.length) return res.status(400).json({message: 'There are currently no recipes'});
 
@@ -14,7 +20,7 @@ const getRecipes = async (req, res) => {
     }));
 
     // res.json(recipes)
-    res.status(200).json(recipeWithUser);
+    res.status(200).json({data: recipeWithUser, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
 };
 
 
