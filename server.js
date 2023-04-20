@@ -53,9 +53,9 @@ app.post('/recipes', verifyUser, upload.single('picture'), createRecipe)
 
 
 // ROUTES 
-app.use('/auth', require('./routes/auth'))
-app.use('/users', require('./routes/users'))
-app.use('/recipes', require('./routes/recipes'))
+app.use('/api/v1/auth', require('./routes/auth'))
+app.use('/api/v1/users', require('./routes/users'))
+app.use('/api/v1/recipes', require('./routes/recipes'))
 
 
 // ERROR HANDLING MIDDLEWARE 
