@@ -9,9 +9,13 @@ router.route('/')
     .patch(verifyJWT, recipeController.updatedRecipe)
     .delete(verifyJWT, recipeController.deleteRecipe)
 
-router.route('/bookmark/:recipeId/:userId')
+router.route('/bookmark/:id')
     .post(verifyJWT, recipeController.bookmarkRecipe)
     .delete(verifyJWT, recipeController.removeBookmark)
+
+// router.route('/bookmark/:recipeId/:userId')
+//     .post(verifyJWT, recipeController.bookmarkRecipe)
+//     .delete(verifyJWT, recipeController.removeBookmark)
 
 // router.route('/category')
 //     .get(recipeController.filterRecipe)
