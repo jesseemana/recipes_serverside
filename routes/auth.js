@@ -10,6 +10,9 @@ router.route('/login')
 router.route('/register')
     .post(authController.createUSer)
 
+router.route('/reset')
+    .post(authController.resetPwd)
+
 router.route('/refresh')
     .get(verifyUser, authController.refresh)
 

@@ -57,18 +57,18 @@ const login = async (req, res) => {
     const refreshToken = jwt.sign(
         { "email": user.email },
         process.env.REFRESH_TOKEN,
-        { expiresIn: '14d' }
+        { expiresIn: '7d' }
     )
 
     // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
     res.cookie('jwt', refreshToken, {
         httpOnly: true, // -> store refresh token in memory, accessible only by web server
-        secure: process.env.MODE = false, // -> https, set to true when not in dev mode
+        secure: false, // -> for http, set to true when not in dev mode(https)
         sameSite: 'None', // -> cross-site access
         maxAge: 7 * 24 * 60 * 60 * 1000 // -> cookie expiry set to 7 days(same as refresh token)
     })
 
-    res.status(200).json({user, ACCESS_TOKEN: accessToken, REFRESH_TOKEN: refreshToken})
+    res.status(200).json({user, accessToken}) 
 }
 
 
@@ -96,12 +96,17 @@ const refresh = async (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN,
-                {expiresIn: '7d'}
-            );
+                { expiresIn: '7d' }
+            )
 
             res.json(accessToken)
         }
     )
+}
+ 
+
+const resetPwd = async (req, res) => {
+
 }
 
 
@@ -116,7 +121,7 @@ const logout = async (req, res) => {
         sameSite: 'None',
     })
 
-    res.json({message: 'Cookie cleared'})
+    res.json({ message: 'Cookie cleared' })
 }
 
 
@@ -124,5 +129,6 @@ module.exports = {
     createUSer,
     login,
     refresh,
+    resetPwd,
     logout
-}   
+}       
