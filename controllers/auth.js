@@ -38,7 +38,7 @@ const login = async (req, res) => {
     }
 
     const user = await User.findOne({email}).exec()
-    if(!user) return res.status(401).json({message: 'Unauthorized'})
+    if(!user) return res.status(401).json({message: `User doesn't exist`})
 
     const validPassword = await bcrypt.compare(password, user.password)
     if(!validPassword) return res.status(400).json({message: `Entered wrong password`})
