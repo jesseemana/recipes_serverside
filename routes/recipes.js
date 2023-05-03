@@ -9,18 +9,18 @@ router.route('/')
     .patch(verifyJWT, recipeController.updatedRecipe)
     .delete(verifyJWT, recipeController.deleteRecipe)
 
+router.route('/:id/:userId')
+    .get(recipeController.getSingleRecipe)
+
 router.route('/bookmark/:recipeId/:userId')
     .post(recipeController.bookmarkRecipe)
     .delete(verifyJWT, recipeController.removeBookmark)
 
 router.route('/bookmarks')
-    .get(recipeController.userBookmarks)
+    .get(verifyJWT, recipeController.userBookmarks)
 
 // router.route('/category')
 //     .get(recipeController.filterRecipe)
-
-router.route('/:id/:userId')
-    .get(recipeController.getSingleRecipe)
 
 router.route('/user/:user')
     .get(recipeController.getUserRecipes)

@@ -58,6 +58,7 @@ async function getSingleRecipe(req, res) {
     // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
     const loggedInUser = await User.findById(userId).lean().exec()
     
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
     const bookmarks = []
 
     for(const bookmark of loggedInUser.bookmarks) {
@@ -131,7 +132,7 @@ async function userBookmarks(req, res) {
     const user = await User.findById(userId)
     if(!user) return res.status(401).json({message: 'user not found'})
 
-
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
     const bookmarks = []
 
     for(const bookmark of user.bookmarks) {
@@ -161,6 +162,7 @@ const bookmarkRecipe = async (req, res) => {
     user.bookmarks.push(recipeId)
     await user.save()
 
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
     const bookmarks = []
 
     for(const bookmark of user.bookmarks) {
@@ -170,7 +172,7 @@ const bookmarkRecipe = async (req, res) => {
         }
     }
 
-    res.status(200).json({message: 'Recipe added to bookmarks', user})
+    res.status(200).json({message: 'Recipe added to bookmarks', user, bookmarks})
 }
 
 
@@ -185,6 +187,7 @@ const removeBookmark = async (req, res) => {
     user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.toString() !== recipeId)
     await user.save()
 
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
     const bookmarks = []
 
     for(const bookmark of user.bookmarks) {
@@ -194,7 +197,7 @@ const removeBookmark = async (req, res) => {
         }
     }
 
-    res.status(200).json({ message: 'Recipe removed from bookmarks', user })
+    res.status(200).json({ message: 'Recipe removed from bookmarks', user, bookmarks})
 }
 
 
