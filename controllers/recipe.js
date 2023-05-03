@@ -55,7 +55,7 @@ async function getSingleRecipe(req, res) {
     const user = await User.findById(recipe.user).lean().exec()
     const fullName = `${user.firstName} ${user.lastName}`
 
-
+    // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
     const loggedInUser = await User.findById(userId).lean().exec()
     
     const bookmarks = []
@@ -124,6 +124,27 @@ const updatedRecipe = async (req, res) => {
 }
 
 
+async function userBookmarks(req, res) {
+    const { userId } = req.params
+    if(!userId) return res.status(400).json({message: 'provide a user id'})
+
+    const user = await User.findById(userId)
+    if(!user) return res.status(401).json({message: 'user not found'})
+
+
+    const bookmarks = []
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark)
+        if(recipe) {
+            bookmarks.push(recipe)
+        }
+    }
+
+    res.status(200).json(bookmarks)
+}
+
+
 const bookmarkRecipe = async (req, res) => {
     const { recipeId, userId } = req.params
 
@@ -140,6 +161,15 @@ const bookmarkRecipe = async (req, res) => {
     user.bookmarks.push(recipeId)
     await user.save()
 
+    const bookmarks = []
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark)
+        if(recipe) {
+            bookmarks.push(recipe)
+        }
+    }
+
     res.status(200).json({message: 'Recipe added to bookmarks', user})
 }
 
@@ -154,6 +184,15 @@ const removeBookmark = async (req, res) => {
     
     user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.toString() !== recipeId)
     await user.save()
+
+    const bookmarks = []
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark)
+        if(recipe) {
+            bookmarks.push(recipe)
+        }
+    }
 
     res.status(200).json({ message: 'Recipe removed from bookmarks', user })
 }
@@ -180,6 +219,7 @@ module.exports = {
     updatedRecipe,
     deleteRecipe,
     getSingleRecipe,
+    userBookmarks,
     bookmarkRecipe,
     removeBookmark,
 }  

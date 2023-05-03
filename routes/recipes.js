@@ -9,13 +9,12 @@ router.route('/')
     .patch(verifyJWT, recipeController.updatedRecipe)
     .delete(verifyJWT, recipeController.deleteRecipe)
 
-// router.route('/bookmark/:id')
-//     .post(verifyJWT, recipeController.bookmarkRecipe)
-//     .delete(verifyJWT, recipeController.removeBookmark)
-
-router.route('/bookmark/:recipeId/:user')
+router.route('/bookmark/:recipeId/:userId')
     .post(recipeController.bookmarkRecipe)
     .delete(verifyJWT, recipeController.removeBookmark)
+
+router.route('/bookmarks')
+    .get(recipeController.userBookmarks)
 
 // router.route('/category')
 //     .get(recipeController.filterRecipe)
@@ -26,4 +25,4 @@ router.route('/:id/:userId')
 router.route('/user/:user')
     .get(recipeController.getUserRecipes)
 
-module.exports = router 
+module.exports = router         

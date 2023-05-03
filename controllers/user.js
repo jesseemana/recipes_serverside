@@ -21,35 +21,6 @@ async function getUser(req, res) {
 }
 
 
-const addRemoveBookamrk = async (req, res) => {
-    const { id } = req.params;
-    const { recipeId } = req.body;
-    if(!id) return res.status(400).json({messae: 'id is not provided'});
-    if(!recipeId) return res.status(400).json({messae: 'recipeId is not provided'});
-
-    const user = await User.findById(id).lean().exec();
-    if(!user) return res.status(400).json({messae: 'User does not exist'});
-    
-    if(!user.bookmarks.includes(recipeId)) {
-        user.bookmarks.push(recipeId); // ADD(PUSH) RECIPE INTO BOOKAMRKS
-    } else {
-        user.bookmarks = user.bookmarks.filter((id) => id !== recipeId); // REMOVE RECIPE FROM BOOKMARKS
-    }
-    
-    await user.save();
-
-    const userBookmarks = await Promise.all(
-        user.bookmarks.map((id) => Recipe.findById(id))
-    );
-
-    const formattedBookmarks = userBookmarks.map(({_id, name, ingridients, procedure, category, picture, time}) => {
-        return {_id, name, ingridients, procedure, category, picture, time};
-    });
-
-    res.status(200).json(formattedBookmarks);
-};
-
-
 const updateUser = async (req, res) => {
     const {id, firstName, lastName, password} = req.body;
 
@@ -91,5 +62,4 @@ module.exports = {
     getUser,
     updateUser,
     deleteUser,
-    addRemoveBookamrk,
 };
