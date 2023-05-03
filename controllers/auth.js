@@ -105,9 +105,7 @@ const refresh = async (req, res) => {
 }
  
 
-const resetPwd = async (req, res) => {
-
-}
+const resetPwd = async (req, res) => { }
 
 
 // CLEAR THE REFESHTOKEN FROM THE COOKIE
