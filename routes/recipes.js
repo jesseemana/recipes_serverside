@@ -6,17 +6,17 @@ const verifyJWT = require('../middleware/auth')
 
 router.route('/')
     .get(recipeController.getRecipes)
-    .patch(verifyJWT, recipeController.updatedRecipe)
+    .patch(verifyJWT, recipeController.updateRecipe)
     .delete(verifyJWT, recipeController.deleteRecipe)
 
 router.route('/:id/:userId')
     .get(recipeController.getSingleRecipe)
 
 router.route('/bookmark/:recipeId/:userId')
-    .post(recipeController.bookmarkRecipe)
+    .post(verifyJWT, recipeController.bookmarkRecipe)
     .delete(verifyJWT, recipeController.removeBookmark)
 
-router.route('/bookmarks')
+router.route('/saved/:userId')
     .get(verifyJWT, recipeController.userBookmarks)
 
 // router.route('/category')

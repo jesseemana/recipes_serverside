@@ -25,7 +25,10 @@ const recipeSchema = new Schema(
             type: String,
             required: true
         },
-        picturePath: String,
+        picturePath: {
+            type: String,
+            required: true
+        },
         time: {
             type: String,
             required: true
