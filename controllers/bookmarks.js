@@ -1,0 +1,85 @@
+const User = require('../models/User')
+const Recipe = require('../models/Recipe')
+
+
+const userBookmarks = async (req, res) => {
+    const {userId} = req.params;
+
+    if(!userId) return res.status(400).json({message: 'provide a user id'});
+
+    const user = await User.findById(userId);
+    if(!user) return res.status(401).json({message: 'user not found'});
+
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
+    const bookmarks = [];
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark);
+        if(recipe) {
+            bookmarks.push(recipe)
+        }
+    }
+
+    res.status(200).json(bookmarks);
+};
+
+
+const bookmarkRecipe = async (req, res) => {
+    const {recipeId, userId} = req.params;
+
+    const recipe = await Recipe.findById(recipeId);
+    if(!recipe) return res.status(404).json({message: 'Recipe not found'});
+
+    const user = await User.findById(userId);
+    if(!user) return res.status(404).json({message: 'User not found'});
+
+    if(user.bookmarks.includes(recipeId)) return res.status(400).json({message: 'Recipe already bookmarked'});
+
+    user.bookmarks.push(recipeId);
+
+    await user.save();
+
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
+    const bookmarks = [];
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark);
+        if(recipe) {
+            bookmarks.push(recipe);
+        }
+    }
+
+    res.status(200).json({message: 'Recipe added to bookmarks', user, bookmarks});
+};
+
+
+const removeBookmark = async (req, res) => {
+    const {recipeId, userId} = req.params;
+
+    const user = await User.findById(userId);
+    if(!user.bookmarks.includes(recipeId)) {
+        return res.status(400).json({message: 'Recipe not bookmarked'});
+    }
+
+    user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.toString() !== recipeId);
+
+    await user.save();
+
+    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
+    const bookmarks = [];
+
+    for(const bookmark of user.bookmarks) {
+        const recipe = await Recipe.findById(bookmark);
+        if(recipe) {
+            bookmarks.push(recipe);
+        }
+    }
+
+    res.status(200).json({message: 'Recipe removed from bookmarks', user, bookmarks});
+};
+
+module.exports = {
+    userBookmarks,
+    bookmarkRecipe,
+    removeBookmark,
+}

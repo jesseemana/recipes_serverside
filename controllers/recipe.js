@@ -75,7 +75,6 @@ async function getSingleRecipe(req, res) {
 const createRecipe = async (req, res) => {
     const {user, name, ingridients, category, time, procedure, picturePath} = req.body
 
-
     if(!user || !name || !ingridients || !procedure || !category || !time || !picturePath) {
         return res.status(400).json({message: 'Please provide all fields!'})
     }
@@ -127,81 +126,6 @@ const updateRecipe = async (req, res) => {
 }
 
 
-const userBookmarks = async (req, res) => {
-    const { userId } = req.params
-
-    if(!userId) return res.status(400).json({message: 'provide a user id'})
-
-    const foundUser = await User.findById(userId)
-
-    if(!foundUser) return res.status(401).json({message: 'user not found'})
-
-    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
-    const bookmarks = []
-
-    for(const bookmark of foundUser.bookmarks) {
-        const recipe = await Recipe.findById(bookmark);
-        if(recipe) { bookmarks.push(recipe) }
-    }
-
-    res.status(200).json(bookmarks)
-}
-
-
-const bookmarkRecipe = async (req, res) => {
-    const { recipeId, userId } = req.params
-
-    const recipe = await Recipe.findById(recipeId)
-    if(!recipe) return res.status(404).json({message: 'Recipe not found'})
-    
-
-    const user = await User.findById(userId)
-    if(user.bookmarks.includes(recipeId)) return res.status(400).json({message: 'Recipe already bookmarked'})
-    
-    user.bookmarks.push(recipeId)
-
-    await user.save()
-
-    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
-    const bookmarks = []
-
-    for(const bookmark of user.bookmarks) {
-        const recipe = await Recipe.findById(bookmark)
-        if(recipe) {
-            bookmarks.push(recipe)
-        }
-    }
-
-    res.status(200).json({message: 'Recipe added to bookmarks', user, bookmarks})
-}
-
-
-const removeBookmark = async (req, res) => {
-    const { recipeId, userId } = req.params
-
-    const user = await User.findById(userId)
-    if (!user.bookmarks.includes(recipeId)) {
-      return res.status(400).json({ message: 'Recipe not bookmarked' })
-    }
-    
-    user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.toString() !== recipeId)
-
-    await user.save()
-
-    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
-    const bookmarks = []
-
-    for(const bookmark of user.bookmarks) {
-        const recipe = await Recipe.findById(bookmark)
-        if(recipe) {
-            bookmarks.push(recipe)
-        }
-    }
-
-    res.status(200).json({ message: 'Recipe removed from bookmarks', user, bookmarks})
-}
-
-
 const deleteRecipe = async (req, res) => {
     const { id } = req.body
     if(!id) return res.status(400).json({message: 'Recipe ID is required'})
@@ -223,7 +147,5 @@ module.exports = {
     updateRecipe,
     deleteRecipe,
     getSingleRecipe,
-    userBookmarks,
-    bookmarkRecipe,
-    removeBookmark,
+    
 }  
