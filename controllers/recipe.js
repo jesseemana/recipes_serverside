@@ -6,7 +6,7 @@ const getRecipes = async (req, res) => {
     const { page } = req.query
     
     // PAGINATION SETUP
-    const LIMIT = 16
+    const LIMIT = 20
     const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
     const total = await Recipe.countDocuments({})
     
@@ -58,7 +58,6 @@ async function getSingleRecipe(req, res) {
     // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
     const loggedInUser = await User.findById(userId).lean().exec()
     
-    // EMPTY BOOKMARKS ARRAY TO HOLD ALL THE USER BOOKMARKS
     const bookmarks = []
 
     for(const bookmark of loggedInUser.bookmarks) {
@@ -71,7 +70,7 @@ async function getSingleRecipe(req, res) {
     res.status(200).json({recipe, fullName, bookmarks})
 }
 
-
+ 
 const createRecipe = async (req, res) => {
     const {user, name, ingridients, category, time, procedure, picturePath} = req.body
 

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const verifyJWT = require('../middleware/auth')
 const bookmarksController = require('../controllers/bookmarks')
+const verifyJWT = require('../middleware/auth')
 
 
 router.route('/:userId')
