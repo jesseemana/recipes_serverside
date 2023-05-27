@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const Recipe = require('../models/Recipe')
+const Reviews = require('../models/Review')
 
 
 const getRecipes = async (req, res) => {
@@ -45,15 +46,14 @@ const getUserRecipes = async (req, res) => {
 }
 
 
-const likeRecipe = async (req, res) => {}
-
-
-async function getSingleRecipe(req, res) {
+const getSingleRecipe = async (req, res) => {
     const { id, userId } = req.params
     if(!id) return res.status(400).json({message: 'Provide recipe id'})
 
-    const recipe = await Recipe.findById(id).exec()
+    const recipe = await Recipe.findById(id).lean().exec()
     if(!recipe) return res.status(400).json({message: 'Recipe not found'})
+
+    const reviews = await Reviews.find({recipe: id}).sort({createdAt: 'desc'}).lean() // START HERE ONCE WE'RE RUNNING
 
     const user = await User.findById(recipe.user).lean().exec()
     const fullName = `${user.firstName} ${user.lastName}`
@@ -65,15 +65,16 @@ async function getSingleRecipe(req, res) {
 
     for(const bookmark of loggedInUser.bookmarks) {
         const recipe = await Recipe.findById(bookmark)
-        if(recipe) {
-            bookmarks.push(recipe)
-        }
+        if(recipe) { bookmarks.push(recipe) }
     }
 
-    res.status(200).json({recipe, fullName, bookmarks})
+    res.status(200).json({recipe, fullName, bookmarks, reviews})
 }
 
- 
+
+const likeRecipe = async (req, res) => {}
+
+
 const createRecipe = async (req, res) => {
     const {user, name, ingridients, category, time, procedure, picturePath} = req.body
 
@@ -112,9 +113,8 @@ const updateRecipe = async (req, res) => {
     if(!recipe) return res.status(400).json({message: 'Recipe not found!'})
 
     const duplicate = await Recipe.findOne({name}).collation({locale: 'en', strength: 2}).lean().exec()
-    if(duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({message: 'Recipe already exist!'});
-    }
+    if(duplicate && duplicate?._id.toString() !== id) return res.status(409).json({message: 'Recipe already exist!'})
+    
 
     recipe.time = time
     recipe.name = name

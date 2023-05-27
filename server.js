@@ -18,7 +18,6 @@ const PORT = process.env.PORT || 8080
 
 connectDB()
 
-
 // MIDDLEWARE 
 app.use(logger)
 app.use(helmet())
@@ -35,11 +34,12 @@ app.use('/assets', express.static(path.join(__dirname, 'public/uploads')))
 app.use('/api/v1/auth', require('./routes/auth'))
 app.use('/api/v1/users', require('./routes/users'))
 app.use('/api/v1/recipes', require('./routes/recipes'))
+app.use('/api/v1/reviews', require('./routes/reviews'))
 app.use('/api/v1/bookmarks', require('./routes/bookmarks'))
 
 
 // ERROR HANDLING MIDDLEWARE 
-app.use(errorHandler)
+app.use(errorHandler)   
 
 
 mongoose.connection.once('open', () => {
