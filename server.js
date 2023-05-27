@@ -11,10 +11,7 @@ const connectDB = require('./config/connectDB')
 const errorHandler = require('./middleware/errorHandler')
 const corsOptions = require('./config/corsOptions')
 const mongoose = require('mongoose')
-const multer = require("multer")
-const { createRecipe } = require('./controllers/recipe')
 const { logger, logEvents } = require('./middleware/logger') // Morgan can also be used for logging
-const verifyUser = require('./middleware/auth')
 
 const app = express()
 
@@ -33,21 +30,6 @@ app.use(express.urlencoded({extended: true}))
 
 app.use('/', express.static(path.join(__dirname, '/public')))
 app.use('/assets', express.static(path.join(__dirname, 'public/uploads')))
-
-
-// MULTER SETUP FOR FILE UPLOAD 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'public/uploads')
-    },
-    filename: function(req, file, cb) {
-        cb(null, file.originalname)
-    }
-})
-
-const upload = multer({storage: storage})
-
-app.post('/api/v1/recipes', verifyUser, upload.single('picture'), createRecipe)
 
 
 // ROUTES 
