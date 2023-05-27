@@ -1,5 +1,4 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const multer = require("multer")
 const verifyJWT = require('../middleware/auth')
 const recipeController = require('../controllers/recipe')
