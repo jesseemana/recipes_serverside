@@ -22,6 +22,9 @@ router.route('/')
     .patch(verifyJWT, recipeController.updateRecipe)
     .delete(verifyJWT, recipeController.deleteRecipe)
 
+router.route('/like/:id')
+    .post(verifyJWT, recipeController.likeRecipe)
+
 router.route('/:id/:userId')
     .get(recipeController.getSingleRecipe)
 

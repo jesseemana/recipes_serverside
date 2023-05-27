@@ -45,6 +45,9 @@ const getUserRecipes = async (req, res) => {
 }
 
 
+const likeRecipe = async (req, res) => {}
+
+
 async function getSingleRecipe(req, res) {
     const { id, userId } = req.params
     if(!id) return res.status(400).json({message: 'Provide recipe id'})
@@ -56,7 +59,7 @@ async function getSingleRecipe(req, res) {
     const fullName = `${user.firstName} ${user.lastName}`
 
     // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
-    const loggedInUser = await User.findById(userId).lean().exec()
+    const loggedInUser = await User.findById(userId).lean().exec() // TRY WITH req.user 
     
     const bookmarks = []
 
@@ -142,9 +145,9 @@ const deleteRecipe = async (req, res) => {
 module.exports = {
     getRecipes,
     getUserRecipes,
+    likeRecipe,
     createRecipe,
     updateRecipe,
     deleteRecipe,
     getSingleRecipe,
-    
 }  

@@ -1,5 +1,4 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const bookmarksController = require('../controllers/bookmarks')
 const verifyJWT = require('../middleware/auth')
 

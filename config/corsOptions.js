@@ -1,6 +1,6 @@
 const allowedOrigins = [
     'http://localhost:8080',
-    'http://localhost:5173', // FOR REACT WHEN USING VITE, CHANGE IT TO WHATEVER PORT YOUR ON IN YOUR LOCALHOST
+    'http://localhost:5173', // FOR REACT WHEN USING VITE, CHANGE IT TO WHATEVER PORT YOUR'E ON IN YOUR LOCALHOST
     'https://www.mydomainname.com'
 ]
 

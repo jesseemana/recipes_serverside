@@ -1,5 +1,4 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const userController = require('../controllers/user')
 const verifyUser = require('../middleware/auth')
 
@@ -14,4 +13,4 @@ router.route('/')
 router.route('/:id')
     .get(userController.getUser)
 
-module.exports = router
+module.exports = router     
