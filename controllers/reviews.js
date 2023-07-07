@@ -1,4 +1,4 @@
-const Reviews = require('../models/Review');
+const Reviews = require('../models/Review')
 
 
 const getReviews = async (req, res) => {
@@ -9,20 +9,19 @@ const getReviews = async (req, res) => {
 
 
 const createReview = async (req, res) => {
-    const { review } = req.body
-    const { id } = req.params
+    const { recipe, review } = req.body
 
-    if(!review) return res.satus(400).json({message: 'Review field cannot be blank'})
+    if(!review || !recipe) return res.satus(400).json({message: 'Review and recipe fields cannot be blank.'})
 
     const new_review = new Reviews({
+        recipe,
         review,
-        post: id
     })
 
     await new_review.save()
 
     if(new_review) {
-        return res.status(201).json({message: 'Review has been posted'})
+        return res.status(201).json({message: 'Review has been posted.'})
     } else {
         return res.status(400).json({message: 'Invalid data received.'})
     }
@@ -31,4 +30,4 @@ const createReview = async (req, res) => {
 module.exports = {
     getReviews,
     createReview
-}
+}   

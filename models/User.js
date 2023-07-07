@@ -3,13 +3,13 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const userSchema = new Schema({
-    firstName: {
+    first_name: {
         type: String,
         min: 3,
         max: 20,
         required: true
     },
-    lastName: {
+    last_name: {
         type: String,
         min: 3,
         max: 20,
@@ -27,10 +27,6 @@ const userSchema = new Schema({
     bookmarks: {
         type: Array,
         default: []
-    },
-    role: {
-        type: String,
-        default: 'User'
     },
 })
 

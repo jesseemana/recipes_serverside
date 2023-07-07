@@ -11,5 +11,4 @@ router.route('/:recipeId/:userId')
     .post(verifyJWT, bookmarksController.addBookmark)
     .delete(verifyJWT, bookmarksController.removeBookmark)
 
-
 module.exports = router     

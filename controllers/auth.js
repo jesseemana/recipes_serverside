@@ -4,27 +4,27 @@ const bcrypt = require('bcrypt')
 
 
 const createUSer = async (req, res) => {
-    const { firstName, lastName, email, password } = req.body
-    if(!firstName || !lastName || !email || !password) {
+    const { first_name, last_name, email, password } = req.body
+    if (!first_name || !last_name || !email || !password) {
         return res.status(400).json({message: 'Please fill out all fields'})
     }
 
     const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec(); // .collation()... fir checking case sensitivity
-    if(duplicate) return res.status(409).json({message: 'email already in use'})
+    if (duplicate) return res.status(409).json({message: 'email already in use'})
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = new User({
-        firstName: firstName,
-        lastName: lastName,
+        first_name: first_name,
+        last_name: last_name,
         email: email,
         password: hashedPassword
     })
 
     const user = await newUser.save()
 
-    if(user) {
-        return res.status(201).json({message: `New user ${firstName} ${lastName} has been created`})
+    if (user) {
+        return res.status(201).json({message: `New user ${first_name} ${last_name} has been created`})
     } else {
         res.status(400).json({message: 'Invalid user data received'})
     }
@@ -33,23 +33,18 @@ const createUSer = async (req, res) => {
 
 const login = async (req, res) => {
     const { email, password } = req.body
-    if(!email || !password) {
+    if (!email || !password){
         return res.status(400).json({message: 'Provide email and password'})
     }
 
     const user = await User.findOne({email}).exec()
-    if(!user) return res.status(401).json({message: `User doesn't exist`})
+    if (!user) return res.status(401).json({message: `User doesn't exist`})
 
     const validPassword = await bcrypt.compare(password, user.password)
-    if(!validPassword) return res.status(400).json({message: `Entered wrong password`})
+    if (!validPassword) return res.status(400).json({message: `Invalid password`})
 
     const accessToken = jwt.sign(
-        {
-            "UserInfo": {
-                "email": user.email,
-                "role": user.role
-            }
-        },
+        { "email": user.email, },
         process.env.ACCESS_TOKEN,
         { expiresIn: '7d' }
     )
@@ -60,9 +55,9 @@ const login = async (req, res) => {
         { expiresIn: '7d' }
     )
 
-    // STORING THE REFRESH TOKEN IN COOKIE(MEMORY) 
+    // STORE THE REFRESH TOKEN IN COOKIE(MEMORY) 
     res.cookie('jwt', refreshToken, {
-        httpOnly: true, // -> store refresh token in memory, accessible only by web server
+        httpOnly: true, // -> store refresh token in memory, accessible only by web server not JS
         secure: false, // -> for http, set to true when not in dev mode(https)
         sameSite: 'None', // -> cross-site access
         maxAge: 7 * 24 * 60 * 60 * 1000 // -> cookie expiry set to 7 days(same as refresh token)
@@ -82,7 +77,7 @@ const refresh = async (req, res) => {
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN,
-        async function(err, decoded) {
+        async function (err, decoded) {
             if(err) return res.status(403).json({message: 'Forbidden'})
 
             const user = await User.findOne({email: decoded.email}).exec() // -> decoding the refresh token
