@@ -10,13 +10,13 @@ const createUSer = async (req, res) => {
 
   const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec() // .collation()
   if (duplicate) return res.status(409).json({message: 'email already in use'})
-  const hashedPassword = await bcrypt.hash(password, 10)
+  const hashed_password = await bcrypt.hash(password, 10)
 
   const new_user = new User({
     first_name: first_name,
     last_name: last_name,
     email: email,
-    password: hashedPassword
+    password: hashed_password
   })
 
   const user = await new_user.save()
