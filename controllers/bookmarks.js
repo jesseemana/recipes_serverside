@@ -3,7 +3,7 @@ const Recipe = require('../models/Recipe');
 
 const userBookmarks = async (req, res) => {
   const {userId} = req.params;
-  
+
   if (!userId) return res.status(400).json({message: 'Provide a user id'});
   const user = await User.findById(userId);
   if (!user) return res.status(401).json({message: 'user not found'});
