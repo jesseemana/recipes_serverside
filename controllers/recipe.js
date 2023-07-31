@@ -4,7 +4,7 @@ const Reviews = require('../models/Review')
 
 
 const getRecipes = async (req, res) => {
-  const { page } = req.query
+  const {page} = req.query
   // PAGINATION SETUP
   const LIMIT = 20
   const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
@@ -29,8 +29,8 @@ const getRecipes = async (req, res) => {
 
  
 const getUserRecipes = async (req, res) => {
-  const { user } = req.params
-  const { page } = req.query
+  const {user} = req.params
+  const {page} = req.query
   const LIMIT = 16
   const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
   // const total = await Recipe.countDocuments({})
@@ -47,7 +47,7 @@ const getUserRecipes = async (req, res) => {
 
 
 const getSingleRecipe = async (req, res) => {
-  const { id, userId } = req.params
+  const {id, userId} = req.params
   if (!id) return res.status(400).json({message: 'Provide recipe id'})
   const recipe = await Recipe.findById(id).lean().exec()
   if (!recipe) return res.status(400).json({message: 'Recipe not found'})
@@ -77,7 +77,7 @@ const likeRecipe = async (req, res) => {}
 
 
 const createRecipe = async (req, res) => {
-  const { user, name, ingridients, category, time, procedure, picture_path } = req.body
+  const {user, name, ingridients, category, time, procedure, picture_path} = req.body
   if (!user || !name || !ingridients || !procedure || !category || !time || !picture_path)
     return res.status(400).json({message: 'Please provide all fields!'})
 
@@ -96,13 +96,13 @@ const createRecipe = async (req, res) => {
   if (recipe) {
     return res.status(201).json({message: `Recipe for ${recipe.name} created succesfully.`})
   } else {
-    return res.status(400).json({message: 'Invalid data received.'})
+    res.status(400).json({message: 'Invalid data received.'})
   }
 }
 
 
 const updateRecipe = async (req, res) => {
-  const { id, name, ingridients, procedure, category, time } = req.body
+  const {id, name, ingridients, procedure, category, time} = req.body
   if (!id || !name || !ingridients || !procedure || !category || !time)
     return res.status(400).json({message: 'Please provide all fields!'})
 
@@ -123,7 +123,7 @@ const updateRecipe = async (req, res) => {
 
 
 const deleteRecipe = async (req, res) => {
-  const { id } = req.body
+  const {id} = req.body
   if (!id) return res.status(400).json({message: 'Recipe ID is required'})
 
   const recipe = await Recipe.findById(id)
