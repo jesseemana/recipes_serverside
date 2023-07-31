@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
-const createUSer = async (req, res) => {
-  const { first_name, last_name, email, password } = req.body
+const createUser = async (req, res) => {
+  const {first_name, last_name, email, password} = req.body
   if (!first_name || !last_name || !email || !password) 
     return res.status(400).json({message: 'Please fill out all fields'})
 
-  const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec() // .collation()
+  const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec() 
   if (duplicate) return res.status(409).json({message: 'email already in use'})
   const hashed_password = await bcrypt.hash(password, 10)
 
@@ -30,7 +30,7 @@ const createUSer = async (req, res) => {
 
 
 const login = async (req, res) => {
-  const { email, password } = req.body
+  const {email, password} = req.body
   if (!email || !password) 
     return res.status(400).json({message: `Provide email and password`})
     
@@ -40,14 +40,14 @@ const login = async (req, res) => {
   if (!valid_password) return res.status(400).json({message: `Invalid password`})
 
   const access_token = jwt.sign(
-    { "email": user.email, },
+    {'email': user.email},
     process.env.ACCESS_TOKEN,
-    { expiresIn: '1d' }
+    {expiresIn: '1d'}
   )
   const refresh_token = jwt.sign(
-    { "email": user.email },
+    {'email': user.email},
     process.env.REFRESH_TOKEN,
-    { expiresIn: '7d' }
+    {expiresIn: '7d'}
   )
 
   // STORE THE REFRESH TOKEN IN COOKIE(MEMORY) 
@@ -76,9 +76,9 @@ const refresh = async (req, res) => {
       const user = await User.findOne({email: decoded.email}).exec() 
       if (!user) return res.status(401).json({message: 'Unauthorized'})
       const access_token = jwt.sign(
-        { "email": user.email, },
+        {'email': user.email},
         process.env.ACCESS_TOKEN,
-        { expiresIn: '7d' }
+        {expiresIn: '7d'}
       )
       res.json(access_token)
     }
@@ -94,7 +94,6 @@ const logout = async (req, res) => {
   const cookies = req.cookies
   // No content, cookie don't exist we're good either way
   if (!cookies?.jwt) return res.sendStatus(204) 
-
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: true,
@@ -105,7 +104,7 @@ const logout = async (req, res) => {
 
 
 module.exports = {
-  createUSer,
+  createUser,
   login,
   refresh,
   resetPwd,

@@ -1,21 +1,21 @@
-const router = require('express').Router()
-const authController = require('../controllers/auth')
-const loginLimiter = require('../middleware/loginLimiter')
-const verifyUser = require('../middleware/auth')
+const router = require('express').Router();
+const verifyUser = require('../middleware/auth');
+const authController = require('../controllers/auth').default;
+const loginLimiter = require('../middleware/loginLimiter');
 
 router.route('/login')
-  .post(loginLimiter, authController.login)
+  .post(loginLimiter, authController.login);
 
 router.route('/register')
-  .post(authController.createUSer)
+  .post(authController.createUser);
 
 router.route('/reset')
-  .post(authController.resetPwd)
+  .post(authController.resetPwd);
 
 router.route('/refresh')
-  .get(verifyUser, authController.refresh)
+  .get(verifyUser, authController.refresh);
 
 router.route('/logout')
-  .post(verifyUser, authController.logout)
+  .post(verifyUser, authController.logout);
 
-module.exports = router
+module.exports = router;

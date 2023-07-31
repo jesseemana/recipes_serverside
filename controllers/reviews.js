@@ -6,7 +6,7 @@ const getReviews = async (req, res) => {
 }
 
 const createReview = async (req, res) => {
-  const { recipe, review } = req.body
+  const {recipe, review} = req.body
   if (!review || !recipe)
     return res.satus(400).json({message: 'Review and recipe fields cannot be blank.'})
 
@@ -14,12 +14,13 @@ const createReview = async (req, res) => {
     recipe,
     review,
   })
+
   await new_review.save()
   
   if (new_review) {
     return res.status(201).json({message: 'Review has been posted.'})
   } else {
-    return res.status(400).json({message: 'Invalid data received.'})
+    res.status(400).json({message: 'Invalid data received.'})
   }
 }
 

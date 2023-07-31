@@ -16,7 +16,7 @@ async function getUser(req, res) {
 
 
 const updateUser = async (req, res) => {
-  const { id, first_name, last_name, password } = req.body;
+  const {id, first_name, last_name, password} = req.body;
 
   if (!id || !first_name || !last_name) 
     return res.status(400).json({ message: 'All fields except password are required' });
