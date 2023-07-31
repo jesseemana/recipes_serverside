@@ -12,14 +12,12 @@ const getRecipes = async (req, res) => {
 
   const recipes = await Recipe.find().lean().sort({createdAt: -1}).limit(LIMIT).skip(startIndex)
   if (!recipes?.length) return res.status(400).json({message: 'There are no recipes found'})
-
   // ATTACHING A SPECIFIC USER TO A RECIPE THEY CREATED 
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
     const user = await User.findById(recipe.user).lean().exec()
     return { ...recipe, username: `${user.first_name} ${user.last_name}` }
   }))
 
-  // res.json(recipes)
   res.status(200).json({
     data: recipes_with_user, 
     current_page: Number(page), 
@@ -36,7 +34,6 @@ const getUserRecipes = async (req, res) => {
   // const total = await Recipe.countDocuments({})
 
   if (!user) return res.status(400).json({ message: 'Provide a user name' })
-
   const recipes = await Recipe.find({user}).limit(LIMIT).skip(startIndex)
   if (!recipes?.length) return res.status(400).json({message: `User doesn't have any recipes`})
   const owner = await User.findById(user)
@@ -56,10 +53,10 @@ const getSingleRecipe = async (req, res) => {
   const user = await User.findById(recipe.user).lean().exec()
   const full_name = `${user.first_name} ${user.last_name}`
   // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
-  const loggedInUser = await User.findById(userId).lean().exec() // TRY WITH req.user 
+  const logged_in_user = await User.findById(userId).lean().exec() // TRY WITH req.user 
 
   const bookmarks = []
-  for (const bookmark of loggedInUser.bookmarks) {
+  for (const bookmark of logged_in_user.bookmarks) {
     const recipe = await Recipe.findById(bookmark)
     if (recipe) { bookmarks.push(recipe) }
   }
@@ -107,7 +104,6 @@ const updateRecipe = async (req, res) => {
     return res.status(400).json({message: 'Please provide all fields!'})
 
   const recipe = await Recipe.findById(id).exec()
-
   if (!recipe) return res.status(400).json({message: 'Recipe not found!'})
 
   recipe.time = time
@@ -125,10 +121,8 @@ const updateRecipe = async (req, res) => {
 const deleteRecipe = async (req, res) => {
   const {id} = req.body
   if (!id) return res.status(400).json({message: 'Recipe ID is required'})
-
   const recipe = await Recipe.findById(id)
   if (!recipe) return res.status(400).json({message: 'Recipe not found'})
-
   const deleted = recipe.deleteOne()
   const message = `Recipe for ${deleted.name} with ID: ${deleted._id}, has been deleted`
   res.json(message)
