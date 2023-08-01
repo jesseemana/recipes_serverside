@@ -10,7 +10,7 @@ const userBookmarks = async (req, res) => {
   const user_bookmarks = [...(user.bookmarks || [])];
 
   const bookmarks = [];
-  for(const bookmark of user_bookmarks) {
+  for (const bookmark of user_bookmarks) {
     const recipe = await Recipe.findById(bookmark);
     if (recipe) { bookmarks.push(recipe) }
   }
@@ -24,8 +24,10 @@ const addBookmark = async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) return res.status(404).json({message: 'User not found'});
+  
   const user_bookmarks = [...(user.bookmarks || [])];
-  if (user_bookmarks.includes(recipeId)) return res.status(400).json({message: 'Recipe already bookmarked'})
+  if (user_bookmarks.includes(recipeId)) 
+    return res.status(400).json({message: 'Recipe already bookmarked'})
 
   user_bookmarks.push(recipeId);
 
