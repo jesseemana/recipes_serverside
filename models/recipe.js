@@ -6,7 +6,7 @@ const recipeSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'users'
+    ref: 'User'
   },
   name: {
     type: String,
@@ -25,6 +25,10 @@ const recipeSchema = new Schema({
     required: true
   },
   picture_path: {
+    type: String,
+    required: true
+  },
+  cloudinary_id: {
     type: String,
     required: true
   },
