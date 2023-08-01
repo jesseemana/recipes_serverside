@@ -32,10 +32,7 @@ const addBookmark = async (req, res) => {
 
   await user.save();
 
-  res.status(200).json({ 
-    user, 
-    message: 'Recipe added to bookmarks', 
-  });
+  res.status(200).json({message: 'Recipe added to bookmarks'});
 };
 
 const removeBookmark = async (req, res) => {
@@ -51,10 +48,7 @@ const removeBookmark = async (req, res) => {
 
   await user.save();
 
-  res.status(200).json({ 
-    user, 
-    message: 'Recipe removed from bookmarks', 
-  });
+  res.status(200).json({message: 'Recipe removed from bookmarks'});
 };
 
 module.exports = {
