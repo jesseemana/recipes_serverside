@@ -1,18 +1,7 @@
 const router = require('express').Router()
-const multer = require("multer")
+const upload = require('../middleware/multer')
 const verifyJWT = require('../middleware/auth')
 const recipeController = require('../controllers/recipe')
-
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'public/uploads')
-  },
-  filename: function(req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
-
-const upload = multer({ storage: storage })
 
 router.route('/')
   .get(recipeController.getRecipes)
