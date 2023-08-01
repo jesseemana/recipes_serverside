@@ -5,7 +5,7 @@ const recipeController = require('../controllers/recipe')
 
 router.route('/')
   .get(recipeController.getRecipes)
-  .post(verifyJWT, upload.single('picture'), recipeController.createRecipe)
+  .post(verifyJWT, upload.single('file'), recipeController.createRecipe)
   .patch(verifyJWT, recipeController.updateRecipe)
   .delete(verifyJWT, recipeController.deleteRecipe)
 
