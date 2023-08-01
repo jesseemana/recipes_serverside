@@ -15,7 +15,6 @@ const { logger, logEvents } = require('./middleware/logger') // Morgan can also 
 const app = express()
 
 const PORT = process.env.PORT || 8080
-
 connectDB()
 
 // MIDDLEWARE 
@@ -27,8 +26,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.use('/', express.static(path.join(__dirname, '/public')))
-app.use('/assets', express.static(path.join(__dirname, 'public/uploads')))
-
 
 // ROUTES 
 app.use('/api/v1/auth', require('./routes/auth'))
@@ -37,16 +34,13 @@ app.use('/api/v1/recipes', require('./routes/recipes'))
 app.use('/api/v1/reviews', require('./routes/reviews'))
 app.use('/api/v1/bookmarks', require('./routes/bookmarks'))
 
-
 // ERROR HANDLING MIDDLEWARE 
 app.use(errorHandler)   
-
 
 mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline)
     app.listen(PORT, () => console.log(`Server running on port: ${PORT}...`.cyan.underline))
 })
-
 
 mongoose.connection.on('error', err => {
     console.log(err)
