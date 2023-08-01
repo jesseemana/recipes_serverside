@@ -3,7 +3,6 @@ const Recipe = require('../models/Recipe');
 
 const userBookmarks = async (req, res) => {
   const {userId} = req.params;
-
   if (!userId) return res.status(400).json({message: 'Provide a user id'});
   const user = await User.findById(userId);
   if (!user) return res.status(401).json({message: 'user not found'});
@@ -24,7 +23,7 @@ const addBookmark = async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) return res.status(404).json({message: 'User not found'});
-  
+
   const user_bookmarks = [...(user.bookmarks || [])];
   if (user_bookmarks.includes(recipeId)) 
     return res.status(400).json({message: 'Recipe already bookmarked'})
@@ -33,15 +32,8 @@ const addBookmark = async (req, res) => {
 
   await user.save();
 
-  const bookmarks = [];
-  for (const bookmark of user_bookmarks) {
-    const recipe = await Recipe.findById(bookmark);
-    if (recipe) { bookmarks.push(recipe) }
-  }
-
   res.status(200).json({ 
     user, 
-    bookmarks, 
     message: 'Recipe added to bookmarks', 
   });
 };
@@ -59,19 +51,11 @@ const removeBookmark = async (req, res) => {
 
   await user.save();
 
-  const bookmarks = [];
-  for (const bookmark of user_bookmarks) {
-    const recipe = await Recipe.findById(bookmark);
-    if (recipe) { bookmarks.push(recipe) }
-  }
-
   res.status(200).json({ 
     user, 
-    bookmarks,
     message: 'Recipe removed from bookmarks', 
   });
 };
-
 
 module.exports = {
   userBookmarks,

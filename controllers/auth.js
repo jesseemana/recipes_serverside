@@ -19,9 +19,9 @@ const createUser = async (req, res) => {
     password: hashed_password
   })
 
-  const user = await new_user.save()
+  await new_user.save()
   
-  if (user) {
+  if (new_user) {
     return res.status(201).json({message: `New user ${first_name} ${last_name} has been created`})
   } else {
     res.status(400).json({message: 'Invalid user data received'})

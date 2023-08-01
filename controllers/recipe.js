@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const Recipe = require('../models/Recipe')
 const Reviews = require('../models/Review')
+const cloudinary = require('../middleware/cloudinary')
 
 
 const getRecipes = async (req, res) => {
@@ -49,22 +50,22 @@ const getSingleRecipe = async (req, res) => {
   const recipe = await Recipe.findById(id).lean().exec()
   if (!recipe) return res.status(400).json({message: 'Recipe not found'})
   
-  // const reviews = await Reviews.find({recipe: id}).sort({createdAt: 'desc'}).lean() // START HERE ONCE WE'RE RUNNING
+  // const reviews = await Reviews.find({recipe: id}).sort({createdAt: 'desc'}).lean()
+  // getting recipe owner
   const user = await User.findById(recipe.user).lean().exec()
   const full_name = `${user.first_name} ${user.last_name}`
-  // FINDING THE LOGGED IN USER IN THE DATABASE AND RETURNING THEIR SAVED RECIPES 
-  const logged_in_user = await User.findById(userId).lean().exec() // TRY WITH req.user 
+  // getting current user, also try with req.user
+  const current_user = await User.findById(userId).lean().exec() 
 
-  const bookmarks = []
-  for (const bookmark of logged_in_user.bookmarks) {
-    const recipe = await Recipe.findById(bookmark)
-    if (recipe) { bookmarks.push(recipe) }
-  }
+  let bookmarked = false
+  const user_bookmarks = [...(current_user.bookmarks || [])]
+  if (user_bookmarks.includes(id))
+    bookmarked = true
 
   res.status(200).json({
     recipe, 
     full_name, 
-    bookmarks, 
+    bookmarked, 
     // reviews,
   })
 }
@@ -74,9 +75,11 @@ const likeRecipe = async (req, res) => {}
 
 
 const createRecipe = async (req, res) => {
-  const {user, name, ingridients, category, time, procedure, picture_path} = req.body
-  if (!user || !name || !ingridients || !procedure || !category || !time || !picture_path)
+  const {user, name, ingridients, category, time, procedure} = req.body
+  if (!user || !name || !ingridients || !procedure || !category || !time )
     return res.status(400).json({message: 'Please provide all fields!'})
+  
+  const result = await cloudinary.uploader.upload(req.file.path)
 
   const recipe = new Recipe({
     user,
@@ -84,8 +87,9 @@ const createRecipe = async (req, res) => {
     ingridients,
     category,
     time,
-    picture_path,
     procedure,
+    picture_path: result.secure_url,
+    cloudinary_id: result.public_id,
   })
 
   await recipe.save()
