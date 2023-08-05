@@ -65,6 +65,7 @@ const login = async (req, res) => {
 const refresh = async (req, res) => {
   const cookies = req.cookies
   if (!cookies?.jwt) return res.status(401).json({message: 'Unauthorized'})
+
   const refresh_token = cookies.jwt
 
   jwt.verify(
@@ -89,8 +90,7 @@ const refresh = async (req, res) => {
 // CLEAR THE REFESHTOKEN FROM THE COOKIE
 const logout = async (req, res) => {
   const cookies = req.cookies
-  // No content, cookie don't exist we're good either way
-  if (!cookies?.jwt) return res.sendStatus(204) 
+  if (!cookies?.jwt) return res.sendStatus(204) // No cookie, we're good either way
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: true,
@@ -104,6 +104,5 @@ module.exports = {
   createUser,
   login,
   refresh,
-  resetPwd,
   logout
 }       
