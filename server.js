@@ -33,6 +33,7 @@ app.use('/api/v1/users', require('./routes/users'))
 app.use('/api/v1/recipes', require('./routes/recipes'))
 app.use('/api/v1/reviews', require('./routes/reviews'))
 app.use('/api/v1/bookmarks', require('./routes/bookmarks'))
+app.use('/api/v1/reset', require('./routes/resetPassword'))
 
 // ERROR HANDLING MIDDLEWARE 
 app.use(errorHandler)   
