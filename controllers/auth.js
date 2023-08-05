@@ -86,9 +86,6 @@ const refresh = async (req, res) => {
 }
 
 
-const resetPwd = async (req, res) => { }
-
-
 // CLEAR THE REFESHTOKEN FROM THE COOKIE
 const logout = async (req, res) => {
   const cookies = req.cookies
