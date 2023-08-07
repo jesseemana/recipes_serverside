@@ -10,6 +10,7 @@ const createUser = async (req, res) => {
 
   const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec() 
   if (duplicate) return res.status(409).json({message: 'email already in use'})
+
   const hashed_password = await bcrypt.hash(password, 10)
 
   const new_user = new User({
@@ -96,6 +97,7 @@ const logout = async (req, res) => {
     secure: true,
     sameSite: 'None',
   })
+  
   res.json({message: 'Cookie cleared'})
 }
 

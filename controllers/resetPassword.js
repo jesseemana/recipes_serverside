@@ -27,6 +27,7 @@ const resetPassword = async (req, res) => {
 
   const user = await User.findById(id)
   if (!user) return res.status(401).json({'message': `User doesn't exist`})
+  console.log(user)
 
   const secret = process.env.JWT_SECRET + user.password
   
@@ -42,7 +43,7 @@ const resetPassword = async (req, res) => {
       // if (!user) return res.status(401).json({'message': 'User does not exist'})
       user.password = hashed_passord
       await user.save()
-      res.json(200).json({'message': 'User passwod has been updated'})
+      res.json(200).json({'message': 'User password has been updated'})
     }
   )
 } 
