@@ -6,10 +6,10 @@ const bcrypt = require('bcrypt')
 const createUser = async (req, res) => {
   const {first_name, last_name, email, password} = req.body
   if (!first_name || !last_name || !email || !password) 
-    return res.status(400).json({message: 'Please fill out all fields'})
+    return res.status(400).json({message: 'Please fill out all fields.'})
 
   const duplicate = await User.findOne({email}).collation({locale: 'en', strength: 2}).lean().exec() 
-  if (duplicate) return res.status(409).json({message: 'email already in use'})
+  if (duplicate) return res.status(409).json({message: 'email already in use.'})
 
   const hashed_password = await bcrypt.hash(password, 10)
 
@@ -23,9 +23,9 @@ const createUser = async (req, res) => {
   await new_user.save()
   
   if (new_user) {
-    return res.status(201).json({message: `New user ${first_name} ${last_name} has been created`})
+    return res.status(201).json({message: `New user ${first_name} ${last_name} has been created.`})
   } else {
-    res.status(400).json({message: 'Invalid user data received'})
+    res.status(400).json({message: 'Invalid user data received.'})
   }
 }
 
@@ -33,25 +33,26 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
   const {email, password} = req.body
   if (!email || !password) 
-    return res.status(400).json({message: `Provide email and password`})
+    return res.status(400).json({message: `Provide email and password.`})
     
   const user = await User.findOne({email}).exec()
-  if (!user) return res.status(401).json({message: `User doesn't exist`})
+  if (!user) return res.status(401).json({message: `User doesn't exist.`})
   const valid_password = await bcrypt.compare(password, user.password)
-  if (!valid_password) return res.status(400).json({message: `Invalid password`})
+  if (!valid_password) return res.status(400).json({message: `Invalid password.`})
 
   const access_token = jwt.sign(
     {'email': user.email},
     process.env.ACCESS_TOKEN,
     {expiresIn: '1d'}
   )
+
   const refresh_token = jwt.sign(
     {'email': user.email},
     process.env.REFRESH_TOKEN,
     {expiresIn: '7d'}
   )
 
-  // STORE THE REFRESH TOKEN IN COOKIE(MEMORY) 
+  // SEND/STORE THE REFRESH TOKEN IN COOKIE(MEMORY) 
   res.cookie('jwt', refresh_token, {
     httpOnly: true, // store refresh token in memory, accessible only by web server not JS
     secure: false, // for http, set to true when not in dev mode(https)
@@ -65,18 +66,18 @@ const login = async (req, res) => {
 
 const refresh = async (req, res) => {
   const cookies = req.cookies
-  if (!cookies?.jwt) return res.status(401).json({message: 'Unauthorized'})
+  if (!cookies?.jwt) return res.status(401).json({message: 'Unauthorized.'})
 
   const refresh_token = cookies.jwt
+  console.log(refresh_token)
 
   jwt.verify(
     refresh_token,
     process.env.REFRESH_TOKEN,
     async function (err, decoded) {
-      if (err) return res.status(403).json({message: 'Forbidden'})
-      // decoding the refresh token
+      if (err) return res.status(403).json({message: 'Forbidden.'})
       const user = await User.findOne({email: decoded.email}).exec() 
-      if (!user) return res.status(401).json({message: 'Unauthorized'})
+      if (!user) return res.status(401).json({message: 'Unauthorized.'})
       const access_token = jwt.sign(
         {'email': user.email},
         process.env.ACCESS_TOKEN,
@@ -98,7 +99,7 @@ const logout = async (req, res) => {
     sameSite: 'None',
   })
   
-  res.json({message: 'Cookie cleared'})
+  res.json({message: 'Cookie cleared.'})
 }
 
 
