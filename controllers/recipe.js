@@ -20,7 +20,7 @@ const getRecipes = async (req, res) => {
   }))
 
   res.status(200).json({
-    data: recipes_with_user, 
+    recipes: recipes_with_user, 
     current_page: Number(page), 
     total_pages: Math.ceil(total / LIMIT)
   })
