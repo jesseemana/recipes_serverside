@@ -1,8 +1,8 @@
 const allowedOrigins = [
-    'http://localhost:5173', // FOR REACT USING VITE, CHANGE IT TO WHATEVER PORT YOUR'E ON IN YOUR LOCALHOST
-    'http://localhost:8080',
-    'http://localhost:3000',
-    'https://www.mydomainname.com'
+  'http://localhost:8080',
+  'http://localhost:3000',
+  'http://localhost:5173', // YOUR FRONTEND PORT
+  'https://www.mydomainname.com' // HOSTING DOMAIN NAME
 ]
 
 const corsOptions = {
