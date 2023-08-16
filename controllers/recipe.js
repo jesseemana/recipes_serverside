@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const Recipe = require('../models/Recipe')
 const Reviews = require('../models/Review')
-const cloudinary = require('../middleware/cloudinary')
+const cloudinary = require('../utils/cloudinary')
 
 
 const getRecipes = async (req, res) => {
@@ -79,7 +79,7 @@ const createRecipe = async (req, res) => {
   if (!user || !name || !ingridients || !procedure || !category || !time )
     return res.status(400).json({message: 'Please provide all fields!'})
   
-  const result = await cloudinary.uploader.upload(req.file.path)
+  const response = await cloudinary.uploader.upload(req.file.path)
 
   const recipe = new Recipe({
     user,
@@ -88,8 +88,8 @@ const createRecipe = async (req, res) => {
     category,
     time,
     procedure,
-    picture_path: result.secure_url,
-    cloudinary_id: result.public_id,
+    picture_path: response.secure_url,
+    cloudinary_id: response.public_id,
   })
 
   await recipe.save()
@@ -104,7 +104,7 @@ const createRecipe = async (req, res) => {
 
 const updateRecipe = async (req, res) => {
   const {id, name, ingridients, procedure, category, time} = req.body
-  if (!id || !name || !ingridients || !procedure || !category || !time)
+  if (!id || !name || !ingridients || !procedure || !category || !isNaN(Number(time)))
     return res.status(400).json({message: 'Please provide all fields!'})
 
   const recipe = await Recipe.findById(id).exec()
@@ -125,8 +125,12 @@ const updateRecipe = async (req, res) => {
 const deleteRecipe = async (req, res) => {
   const {id} = req.body
   if (!id) return res.status(400).json({message: 'Recipe ID is required'})
+
   const recipe = await Recipe.findById(id)
   if (!recipe) return res.status(400).json({message: 'Recipe not found'})
+  // delete from cloudinary
+  await cloudinary.uploader.destroy(recipe.cloudinary_id)
+  // delete from db
   const deleted = recipe.deleteOne()
   const message = `Recipe for ${deleted.name} with ID: ${deleted._id}, has been deleted`
   res.json(message)
