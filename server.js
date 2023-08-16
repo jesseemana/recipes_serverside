@@ -1,20 +1,20 @@
-const express = require('express')
-const cors = require('cors')
-const helmet = require('helmet')
-const mongoose = require('mongoose')
-const cookieParser = require('cookie-parser')
-const connectDB = require('./config/connectDB')
-const errorHandler = require('./middleware/errorHandler')
-const corsOptions = require('./config/corsOptions')
-const { logger, logEvents } = require('./middleware/logger') // Morgan can also be used for logging
-const path = require('node:path')
-const cpus = require('node:os').cpus()
-const cluster = require('node:cluster')
-const cloudinary = require('./middleware/cloudinary')
-const verifyToken = require('./middleware/auth')
-require('colors')
-require('dotenv').config()
-require('express-async-errors')
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/connectDB');
+const errorHandler = require('./middleware/errorHandler');
+const corsOptions = require('./config/corsOptions');
+const { logger, logEvents } = require('./middleware/logger'); // Morgan can also be used for logging
+const path = require('node:path');
+const cpus = require('node:os').cpus();
+const cluster = require('node:cluster');
+const cloudinary = require('./middleware/cloudinary');
+const verifyToken = require('./middleware/auth');
+require('colors');
+require('dotenv').config();
+require('express-async-errors');
 
 const app = express();
 
@@ -27,8 +27,8 @@ app.use(logger);
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json({limit: '20MB'}));
-app.use(express.urlencoded({extended: true}));
+app.use(express.json({ limit: '50MB' }));
+app.use(express.urlencoded({ limit: '50MB', extended: true }));
 app.use('/', express.static(path.join(__dirname, '/public')));
 
 // ROUTES 
@@ -39,7 +39,9 @@ app.use('/api/v1/bookmarks', require('./routes/bookmarks'));
 app.use('/api/v1/reset', require('./routes/resetPassword'));
 
 app.post('/api/v1/upload', verifyToken, async(req, res) => {
-  const response = await cloudinary.uploader.upload(req.body.data);
+  const response = await cloudinary.uploader.upload(req.body.data, {
+    upload_preset: 'recipes'
+  });
   res.status(200).json({
     url: response.secure_url,
     id: response.public_url
