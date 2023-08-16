@@ -10,6 +10,8 @@ const { logger, logEvents } = require('./middleware/logger') // Morgan can also 
 const path = require('node:path')
 const cpus = require('node:os').cpus()
 const cluster = require('node:cluster')
+const cloudinary = require('./middleware/cloudinary')
+const verifyToken = require('./middleware/auth')
 require('colors')
 require('dotenv').config()
 require('express-async-errors')
@@ -25,7 +27,7 @@ app.use(logger);
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({limit: '20MB'}));
 app.use(express.urlencoded({extended: true}));
 app.use('/', express.static(path.join(__dirname, '/public')));
 
@@ -36,6 +38,14 @@ app.use('/api/v1/reviews', require('./routes/reviews'));
 app.use('/api/v1/bookmarks', require('./routes/bookmarks'));
 app.use('/api/v1/reset', require('./routes/resetPassword'));
 
+app.post('/api/v1/upload', verifyToken, async(req, res) => {
+  const response = await cloudinary.uploader.upload(req.body.data);
+  res.status(200).json({
+    url: response.secure_url,
+    id: response.public_url
+  });
+});
+
 // ERROR HANDLING MIDDLEWARE 
 app.use(errorHandler);
 
@@ -45,14 +55,14 @@ if (cluster.isMaster) {
     cluster.fork();
   }
   cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died...`);
+    console.log(`Worker ${worker.process.pid} has died...`);
     cluster.fork();
   })
 } else {
-  console.log(`Worker ${process.pid} started...`)
+  console.log(`Worker ${process.pid} started...`);
   mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline);
-    app.listen(PORT, () => console.log(`Server running on port: ${PORT}...`.cyan.underline));
+    app.listen(PORT, () => console.log(`Server ${process.pid} running on port: ${PORT}...`.cyan.underline));
   });
 
   mongoose.connection.on('error', err => {
