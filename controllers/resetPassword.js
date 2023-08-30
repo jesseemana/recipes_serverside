@@ -5,17 +5,17 @@ const transporter = require('../utils/nodeMailer')
 
 
 const forgotPassword = async (req, res) => {
-  const {email} = req.body
+  const { email } = req.body
   if (!email) 
-    return res.status(400).json({'message': 'please provide an email adress.'})
+    return res.status(400).json({ 'message': 'please provide an email adress.' })
 
   const user = await User.findOne({email}).exec()
   if (!user) 
-    return res.status(401).json({'message': `User doesn't exist.`})
+    return res.status(401).json({ 'message': `User doesn't exist.` })
 
-  // create a one time link valid for 10 minutes
+  // create a one time link valid for 5 minutes(30 minutes in production)
   const secret = process.env.JWT_SECRET + user.password
-  const token = jwt.sign({'email': user.email}, secret, {expiresIn: '10m'})
+  const token = jwt.sign({'email': user.email}, secret, { expiresIn: '5m' })
   const link = `http://localhost:5173/reset-password/${user._id}/${token}`
   console.log(link) // send this link users' email
 
@@ -29,18 +29,18 @@ const forgotPassword = async (req, res) => {
 
   // await transporter.sendMail(mailOptions)
 
-  res.status(200).json({'message': `Password reset link sent to users' email.`})
+  res.status(200).json({ 'message': `Password reset link sent to users' email.` })
 } 
-
+ 
 
 const resetPassword = async (req, res) => {
-  const {id, token} = req.params
-  const {password} = req.body
+  const { id, token } = req.params
+  const { password } = req.body
   if (!id || !token || !password) 
-    return res.status(400).json({'message': 'Please provide user id, token and password.'})
+    return res.status(400).json({ 'message': 'Please provide user id, token and password.' })
 
   const user = await User.findById(id)
-  if (!user) return res.status(401).json({'message': `User doesn't exist.`})
+  if (!user) return res.status(401).json({ 'message': `User doesn't exist.` })
   console.log(user)
 
   const secret = process.env.JWT_SECRET + user.password
@@ -50,11 +50,11 @@ const resetPassword = async (req, res) => {
   jwt.verify(
     token, 
     secret,
-    async function (err, decoded) {
-      if (err) return res.status(403).json({'message': 'Forbidded.'})
+    async function (err) {
+      if (err) return res.status(403).json({ 'message': 'Forbidded.' })
       user.password = hashed_passord
       await user.save()
-      res.json(200).json({'message': 'User password has been updated.'})
+      res.json(200).json({ 'message': 'User password has been updated.' })
     }
   )
 }    
