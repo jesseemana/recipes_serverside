@@ -10,7 +10,7 @@ const { logger, logEvents } = require('./middleware/logger'); // Morgan can also
 const path = require('node:path');
 const cpus = require('node:os').cpus();
 const cluster = require('node:cluster');
-const cloudinary = require('./middleware/cloudinary');
+const cloudinary = require('./utils/cloudinary');
 const verifyToken = require('./middleware/auth');
 require('colors');
 require('dotenv').config();
@@ -64,7 +64,7 @@ if (cluster.isMaster) {
   console.log(`Worker ${process.pid} started...`);
   mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline);
-    app.listen(PORT, () => console.log(`Server ${process.pid} running on port: ${PORT}...`.cyan.underline));
+    app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
   });
 
   mongoose.connection.on('error', err => {
