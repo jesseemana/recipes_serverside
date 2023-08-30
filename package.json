@@ -4,8 +4,8 @@
   "description": "backend rest api for the recipes app",
   "main": "server.js",
   "scripts": {
-    "run dev": "node server.js",
-    "start": "nodemon server.js",
+    "run dev": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesse Emana",
