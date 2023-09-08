@@ -61,7 +61,7 @@ if (cluster.isMaster) {
     cluster.fork();
   })
 } else {
-  console.log(`Worker ${process.pid} started...`);
+  // console.log(`Worker ${process.pid} started...`);
   mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline);
     app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
