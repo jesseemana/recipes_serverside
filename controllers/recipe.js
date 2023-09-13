@@ -29,7 +29,7 @@ const getRecipes = async (req, res) => {
  
 const getUserRecipes = async (req, res) => {
   const { user } = req.params
-  const LIMIT = 16
+  const LIMIT = 20
   const startIndex = (Number(req.query.page) - 1) * LIMIT // starting index of every page
   // const total = await Recipe.countDocuments({})
 
@@ -44,7 +44,7 @@ const getUserRecipes = async (req, res) => {
 
 
 const getSingleRecipe = async (req, res) => {
-  const { id, userId } = req.params
+  const { id } = req.params
   if (!id) return res.status(400).json({ 'message': 'Provide recipe id' })
   const recipe = await Recipe.findById(id).lean().exec()
   if (!recipe) return res.status(400).json({ 'message': 'Recipe not found' })
@@ -52,19 +52,11 @@ const getSingleRecipe = async (req, res) => {
   // const reviews = await Reviews.find({recipe: id}).sort({createdAt: 'desc'}).lean()
   // getting recipe owner
   const user = await User.findById(recipe.user).lean().exec()
-  const full_name = `${user.first_name} ${user.last_name}`
-  // getting current user, also try with req.user
-  const current_user = await User.findById(userId).lean().exec() 
-
-  let bookmarked = false
-  const user_bookmarks = current_user.bookmarks
-  if (user_bookmarks.includes(id))
-    bookmarked = true
+  const owner = `${user.first_name} ${user.last_name}`
 
   res.status(200).json({
     recipe, 
-    full_name, 
-    bookmarked, 
+    owner, 
     // reviews,
   })
 }
@@ -123,14 +115,14 @@ const updateRecipe = async (req, res) => {
 
 const deleteRecipe = async (req, res) => {
   const { id } = req.body
-  if (!id) return res.status(400).json({ 'message': 'Recipe ID is required' })
+  if (!id) return res.status(400).json({ 'message': 'Recipe id is required' })
   const recipe = await Recipe.findById(id)
   if (!recipe) return res.status(400).json({ 'message': 'Recipe not found' })
   // delete from cloudinary
   await cloudinary.uploader.destroy(recipe.cloudinary_id)
   // delete from db
   const deleted = recipe.deleteOne()
-  const message = `Recipe for ${deleted.name} with ID: ${deleted._id}, has been deleted`
+  const message = `Recipe has been deleted`
   res.json(message)
 }
 

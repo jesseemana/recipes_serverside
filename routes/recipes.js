@@ -12,7 +12,7 @@ router.route('/')
 // router.route('/like/:id')
 //   .post(verifyJWT, recipeController.likeRecipe)
 
-router.route('/:id/:userId')
+router.route('/:id')
   .get(recipeController.getSingleRecipe)
 
 router.route('/user/:user')
