@@ -10,7 +10,7 @@ router.route('/register')
   .post(authController.createUser);
 
 router.route('/refresh')
-  .get(verifyUser, authController.refresh);
+  .get(authController.refresh);
 
 router.route('/logout')
   .post(verifyUser, authController.logout);
