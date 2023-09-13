@@ -34,8 +34,8 @@ const login = async (req, res) => {
   const { email, password } = req.body
   if (!email || !password) 
     return res.status(400).json({ 'message': `Provide email and password.` })
-    
-  const user = await User.findOne({email}).exec()
+
+  const user = await User.findOne({ email }).exec()
   if (!user) return res.status(401).json({ 'message': `User doesn't exist.` })
   const valid_password = await bcrypt.compare(password, user.password)
   if (!valid_password) return res.status(400).json({ 'message': `Invalid password.` })
@@ -54,8 +54,8 @@ const login = async (req, res) => {
 
   // SEND/STORE THE REFRESH TOKEN IN COOKIE 
   res.cookie('jwt', refresh_token, {
-    httpOnly: true, // store refresh token in memory, accessible only by web server not JS
-    secure: false, // for http, set to true when not in dev mode(https)
+    httpOnly: true, // store refresh token in cookie, accessible only by web server not JS
+    secure: process.env.NODE_ENV = 'development' ? false : true, // for http, set to true when not in dev mode(https)
     sameSite: 'None', // cross-site access
     maxAge: 7 * 24 * 60 * 60 * 1000 // cookie expiry set to 7 days(same as refresh token)
   })
@@ -69,21 +69,20 @@ const refresh = async (req, res) => {
   if (!cookies?.jwt) return res.status(401).json({ 'message': 'Unauthorized.' })
 
   const refresh_token = cookies.jwt
-  console.log(refresh_token)
 
   jwt.verify(
     refresh_token,
     process.env.REFRESH_TOKEN,
     async function (err, decoded) {
       if (err) return res.status(403).json({ 'message': 'Forbidden.' })
-      const user = await User.findOne({email: decoded.email}).exec() 
+      const user = await User.findOne({ email: decoded.email }).exec() 
       if (!user) return res.status(401).json({ 'message': 'Unauthorized.' })
       const access_token = jwt.sign(
         {'email': user.email},
         process.env.ACCESS_TOKEN,
-        {expiresIn: '7d'}
+        {expiresIn: '1d'} // SHOULD HAVE THE SAME AGE AS ORIGINAL ACCESS TOKEN IN LOGIN e.g 10 SECONDS
       )
-      res.json(access_token)
+      res.json({'new_token': access_token})
     }
   )
 }
@@ -108,4 +107,4 @@ module.exports = {
   login,
   refresh,
   logout
-}       
+}    
