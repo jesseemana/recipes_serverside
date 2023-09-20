@@ -6,13 +6,13 @@ const userSchema = new Schema({
   first_name: {
     type: String,
     min: 3,
-    max: 20,
+    max: 24,
     required: true
   },
   last_name: {
     type: String,
     min: 3,
-    max: 20,
+    max: 24,
     required: true
   },
   email: {
