@@ -1,18 +1,20 @@
 const User = require('../models/User')
 const Recipe = require('../models/Recipe')
-const Reviews = require('../models/Review')
 const cloudinary = require('../utils/cloudinary')
 
 
 const getRecipes = async (req, res) => {
   const { page } = req.query
+
   // PAGINATION SETUP
   const LIMIT = 20
   const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
   const total = await Recipe.countDocuments({})
 
   const recipes = await Recipe.find().lean().sort({createdAt: -1}).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) return res.status(400).json({ 'message': 'There are no recipes found' })
+  if (!recipes?.length) 
+    return res.status(400).json({ 'message': 'There are no recipes found' })
+
   // ATTACHING A SPECIFIC USER TO A RECIPE THEY CREATED 
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
     const user = await User.findById(recipe.user).lean().exec()
@@ -32,14 +34,15 @@ const getUserRecipes = async (req, res) => {
   const LIMIT = 20
   const startIndex = (Number(req.query.page) - 1) * LIMIT // starting index of every page
   // const total = await Recipe.countDocuments({})
-
-  if (!user) return res.status(400).json({ 'message': 'Provide a user name' })
-  const recipes = await Recipe.find({user}).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) return res.status(400).json({ 'message': `User doesn't have any recipes` })
+  if (!user) 
+    return res.status(400).json({ 'message': 'Provide a user id' })
+  const recipes = await Recipe.find({ user }).limit(LIMIT).skip(startIndex)
+  if (!recipes?.length) 
+    return res.status(400).json({ 'message': `User doesn't have any recipes` })
   const owner = await User.findById(user)
   const full_name = `${owner.first_name} ${owner.last_name}`
 
-  res.status(200).json({recipes, full_name})
+  res.status(200).json({ recipes, full_name })
 }
 
 
@@ -49,20 +52,14 @@ const getSingleRecipe = async (req, res) => {
   const recipe = await Recipe.findById(id).lean().exec()
   if (!recipe) return res.status(400).json({ 'message': 'Recipe not found' })
   
-  // const reviews = await Reviews.find({recipe: id}).sort({createdAt: 'desc'}).lean()
-  // getting recipe owner
   const user = await User.findById(recipe.user).lean().exec()
   const owner = `${user.first_name} ${user.last_name}`
 
   res.status(200).json({
     recipe, 
     owner, 
-    // reviews,
   })
 }
-
-
-// const likeRecipe = async (req, res) => {} 
 
 
 const createRecipe = async (req, res) => {
@@ -115,13 +112,13 @@ const updateRecipe = async (req, res) => {
 
 const deleteRecipe = async (req, res) => {
   const { id } = req.body
-  if (!id) return res.status(400).json({ 'message': 'Recipe id is required' })
+  if (!id) 
+    return res.status(400).json({ 'message': 'Recipe id is required' })
   const recipe = await Recipe.findById(id)
-  if (!recipe) return res.status(400).json({ 'message': 'Recipe not found' })
-  // delete from cloudinary
-  await cloudinary.uploader.destroy(recipe.cloudinary_id)
-  // delete from db
-  const deleted = recipe.deleteOne()
+  if (!recipe) 
+    return res.status(400).json({ 'message': 'Recipe not found' })
+  await cloudinary.uploader.destroy(recipe.cloudinary_id) // delete from cloudinary
+  await recipe.deleteOne() // delete from db
   const message = `Recipe has been deleted`
   res.json(message)
 }
@@ -130,7 +127,6 @@ const deleteRecipe = async (req, res) => {
 module.exports = {
   getRecipes,
   getUserRecipes,
-  // likeRecipe,
   createRecipe,
   updateRecipe,
   deleteRecipe,
