@@ -13,7 +13,7 @@ const createUser = async (req, res) => {
   if (duplicate) 
     return res.status(409).json({ message: 'email already in use.' })
 
-  const hashed_password = await bcrypt.hash(value.password, 10)
+  const hashed_password = bcrypt.hashSync(value.password, 10)
 
   const new_user = new User({
     first_name: value.first_name,
@@ -38,9 +38,12 @@ const login = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message })
 
   const user = await User.findOne({ email: value.email }).exec()
-  if (!user) return res.status(401).json({ message: `User doesn't exist.` })
-  const valid_password = await bcrypt.compare(value.password, user.password)
-  if (!valid_password) return res.status(400).json({ message: `Invalid password.` })
+  if (!user) return res.status(401).json({ message: `User doesn't exist.` }) 
+
+  const valid_password = bcrypt.compareSync(value.password, user.password)
+
+  if (!valid_password) 
+    return res.status(400).json({ message: `Invalid password.` })
 
   const access_token = jwt.sign(
     { 'email': user.email },
@@ -54,7 +57,6 @@ const login = async (req, res) => {
     { expiresIn: '7d' }
   )
 
-  // SEND/STORE THE REFRESH TOKEN IN COOKIE 
   res.cookie('jwt', refresh_token, {
     httpOnly: true, // store refresh token in cookie, accessible only by web server not JS
     secure: process.env.NODE_ENV = 'development' ? false : true, // for http, set to true when not in dev mode(https)
