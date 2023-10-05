@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "09a362b6-ce1b-4bc6-b7d5-2b4194056963",
+		"name": "Recipes API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"glenquagmire@gmail.com\",\r\n    \"password\": \"quagmire1234\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{recipes}}/auth/login",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ2Mzc1NjEsImV4cCI6MTY5NTI0MjM2MX0.QcglFxu7uci-ffZVeH9eXJqHXxnF60ZIqckt66YyclY",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{recipes}}/auth/refresh",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ2MzcyNjUsImV4cCI6MTY5NDYzNzY4NX0.PG3TUknkmnyNU3zujQWny1-Lzi3O01VAiuNDk8P53dM",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{recipes}}/auth/logout",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Glen\",\r\n    \"last_name\": \"Quagmire\",\r\n    \"email\": \"glenquagmire@gmail.com\",\r\n    \"password\": \"quagmire1234\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{recipes}}/auth/register",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipes",
+			"item": [
+				{
+					"name": "Get Recipes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJlbWFpbCI6InBldGVyZ3JpZmZpbkBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciJ9LCJpYXQiOjE2ODA1NDgwNDUsImV4cCI6MTY4MTE1Mjg0NX0.9AHgTphfFp1GhiZnEvMl153qgRJAKy4jfk2zRRVfn3k",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{recipes}}/recipes?page=1",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"recipes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Recipe",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJlbWFpbCI6InBldGVyZ3JpZmZpbkBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciJ9LCJpYXQiOjE2ODA1NDgwNDUsImV4cCI6MTY4MTE1Mjg0NX0.9AHgTphfFp1GhiZnEvMl153qgRJAKy4jfk2zRRVfn3k",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{recipes}}/recipes/65022ef6a8fc76fa766d93a0",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"recipes",
+								"65022ef6a8fc76fa766d93a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ3MTAwNjcsImV4cCI6MTY5NDc5NjQ2N30.QGuC3MgBzCXZEZqIuHXh0WswOt70dESLl4eUyE2QeCY",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "muffins",
+									"type": "default"
+								},
+								{
+									"key": "user",
+									"value": "65021cb703210be1500bdca7",
+									"type": "default"
+								},
+								{
+									"key": "ingridients",
+									"value": "baking powder, yeast, flour, olive oil",
+									"type": "default"
+								},
+								{
+									"key": "category",
+									"value": "snack",
+									"type": "default"
+								},
+								{
+									"key": "time",
+									"value": "30 minutes",
+									"type": "default"
+								},
+								{
+									"key": "procedure",
+									"value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam varius tempor est, sit amet fermentum dolor auctor eget. Suspendisse in diam laoreet, laoreet ligula vitae, ultrices metus. Sed accumsan mattis urna, sit amet lobortis tellus fermentum ut. Vestibulum et lobortis odio. Phasellus suscipit dolor et urna consectetur, sed convallis lacus facilisis.",
+									"type": "default"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/hey/Desktop/recipes/muffins.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{recipes}}/recipes",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Recipe",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ2MzkyNjUsImV4cCI6MTY5NDcyNTY2NX0.Xiys47tUqsulG0Zbta7b3Q5TiJb5EI9EtPweJYLoT7Y",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"65022f787ebbf0081c4f857e\",\r\n    \"name\": \"Bean Stew\",\r\n    \"ingridients\": \"beans, seasoning, water, onions\",\r\n    \"procedure\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam varius tempor est, sit amet fermentum dolor auctor eget. Suspendisse in diam laoreet, laoreet ligula vitae, ultrices metus. Sed accumsan mattis urna, sit amet lobortis tellus fermentum ut. Vestibulum et lobortis odio. Phasellus suscipit dolor et urna consectetur, sed convallis lacus facilisis.\",\r\n    \"category\": \"main course\",\r\n    \"time\": \"2 hours\"\r\n}"
+						},
+						"url": {
+							"raw": "{{recipes}}/recipes",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Recipe",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ2MzkyNjUsImV4cCI6MTY5NDcyNTY2NX0.Xiys47tUqsulG0Zbta7b3Q5TiJb5EI9EtPweJYLoT7Y",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"6502365cbe1d36813bbe05b4\"\r\n}"
+						},
+						"url": {
+							"raw": "{{recipes}}/recipes",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookmarks",
+			"item": [
+				{
+					"name": "Get Bookmarks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdsZW5xdWFnbWlyZUBnbWFpbC5jb20iLCJpYXQiOjE2OTUyMzEwNjAsImV4cCI6MTY5NTMxNzQ2MH0.djrYzRLyHhiyp71JEZkVRf-EqrMQpsnHaJ-C24TW9TA",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{recipes}}/bookmarks/65048f75552e856a35523b5d",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"bookmarks",
+								"65048f75552e856a35523b5d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Bookmark",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdsZW5xdWFnbWlyZUBnbWFpbC5jb20iLCJpYXQiOjE2OTUyMzEwNjAsImV4cCI6MTY5NTMxNzQ2MH0.djrYzRLyHhiyp71JEZkVRf-EqrMQpsnHaJ-C24TW9TA",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{recipes}}/bookmarks/65048f75552e856a35523b5d/65033a799f8940474992d7a3",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"bookmarks",
+								"65048f75552e856a35523b5d",
+								"65033a799f8940474992d7a3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bookmark",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdsZW5xdWFnbWlyZUBnbWFpbC5jb20iLCJpYXQiOjE2OTUyMzEwNjAsImV4cCI6MTY5NTMxNzQ2MH0.djrYzRLyHhiyp71JEZkVRf-EqrMQpsnHaJ-C24TW9TA",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{recipes}}/bookmarks/65048f75552e856a35523b5d/65033a3e1a90d9dfa9a44816",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"bookmarks",
+								"65048f75552e856a35523b5d",
+								"65033a3e1a90d9dfa9a44816"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reset",
+			"item": [
+				{
+					"name": "Send link",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"petergriffin@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{recipes}}/reset",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":  \"griffin1972\"\r\n}"
+						},
+						"url": {
+							"raw": "{{recipes}}/reset/64ff4697578e5534051124f0/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBldGVyZ3JpZmZpbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ3MjU0ODgsImV4cCI6MTY5NDcyNjY4OH0.PXbKbYfwAjb5xalFLhrlkXOG8otdfwBig7q27pOqP2g",
+							"host": [
+								"{{recipes}}"
+							],
+							"path": [
+								"reset",
+								"64ff4697578e5534051124f0",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBldGVyZ3JpZmZpbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ3MjU0ODgsImV4cCI6MTY5NDcyNjY4OH0.PXbKbYfwAjb5xalFLhrlkXOG8otdfwBig7q27pOqP2g"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJlbWFpbCI6InBldGVyZ3JpZmZpbkBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciJ9LCJpYXQiOjE2ODQ5NDU0MjEsImV4cCI6MTY4NTU1MDIyMX0.DUMvS7Ufn5DbkNDhSgcWknwpTlBDf6_EYlpDlKqG8co",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhvbWVyc2ltcHNvbkBnbWFpbC5jb20iLCJpYXQiOjE2OTQ2MzkyNjUsImV4cCI6MTY5NDcyNTY2NX0.Xiys47tUqsulG0Zbta7b3Q5TiJb5EI9EtPweJYLoT7Y",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/hey/Desktop/recipes/groundbeef.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{recipes}}/upload",
+					"host": [
+						"{{recipes}}"
+					],
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "recipes",
+			"value": "http://localhost:8080/api/v1"
+		}
+	]
+}	
