@@ -2,7 +2,7 @@ const allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:3000', // CREATE REACT APP / CREATE NEXT APP
   'http://localhost:5173', // VITE
-  'https://www.mydomainname.com' // HOSTING DOMAIN NAME
+  'https://gourmands-portal.vercel.app' // HOSTING DOMAIN NAME
 ]
 
 const corsOptions = {
