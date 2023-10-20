@@ -1,18 +1,20 @@
 require('colors');
 require('dotenv').config();
 require('express-async-errors');
+const cors = require('cors');
+const helmet = require('helmet');
+const express = require('express');
 const mongoose = require('mongoose');
 const cpus = require('node:os').cpus();
 const cluster = require('node:cluster');
 const routes = require('./utils/routes');
-const connectDB = require('./config/connectDB');
-const errorHandler = require('./middleware/errorHandler');
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const connectDB = require('./config/connectDB');
 const { logger } = require('./middleware/logger');
-const corsOptions = require('./config/corsOptions') 
+const corsOptions = require('./config/corsOptions');
+const errorHandler = require('./middleware/errorHandler');
+
+const PORT = process.env.PORT;
 
 const app = express();
 
@@ -22,8 +24,6 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '50MB' }));
 app.use(express.urlencoded({ limit: '50MB', extended: true }))
-
-const PORT = process.env.PORT;
 
 connectDB();
 

@@ -16,7 +16,7 @@ const sendLink = async (req, res) => {
   const token = jwt.sign({ 'email': user.email }, SECRET_TOKEN, { expiresIn: '30m' })
   const link = `https://gourmands-portal.vercel.app/reset-password/${user._id}/${token}` // FOR FRONTEND
   const dev_link = `http://localhost:8080/api/v1/reset/${user._id}/${token}` // FOR DEV MODE(POSTMAN)
-  console.log(dev_link)   
+  console.log(link)   
 
   // NODEMAILER SETUP
   const mailOptions = {
