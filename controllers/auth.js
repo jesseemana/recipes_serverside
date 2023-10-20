@@ -6,12 +6,10 @@ const { registerSchema, loginSchema } = require('../utils/schema')
 
 const createUser = async (req, res) => {
   const { error, value } = registerSchema.validate(req.body)
-  if (error)
-    return res.status(400).json({ message: error.details[0].message })
+  if (error) return res.status(400).json({ message: error.details[0].message })
 
   const duplicate = await User.findOne({ email: value.email }).collation({ locale: 'en', strength: 2 }).lean().exec() 
-  if (duplicate) 
-    return res.status(409).json({ message: 'email already in use.' })
+  if (duplicate) return res.status(409).json({ message: 'email already taken.' })
 
   const hashed_password = bcrypt.hashSync(value.password, 10)
 
@@ -34,28 +32,17 @@ const createUser = async (req, res) => {
 
 const login = async (req, res) => {
   const { error, value } = loginSchema.validate(req.body);
-  if (error)
-    return res.status(400).json({ message: error.details[0].message })
+  if (error) return res.status(400).json({ message: error.details[0].message })
 
   const user = await User.findOne({ email: value.email }).exec()
   if (!user) return res.status(401).json({ message: `User doesn't exist.` }) 
 
   const valid_password = bcrypt.compareSync(value.password, user.password)
+  if (!valid_password) return res.status(400).json({ message: `Invalid password.` })
 
-  if (!valid_password) 
-    return res.status(400).json({ message: `Invalid password.` })
+  const access_token = jwt.sign({ 'email': user.email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
 
-  const access_token = jwt.sign(
-    { 'email': user.email },
-    process.env.ACCESS_TOKEN,
-    { expiresIn: '1d' }
-  )
-
-  const refresh_token = jwt.sign(
-    { 'email': user.email },
-    process.env.REFRESH_TOKEN,
-    { expiresIn: '7d' }
-  )
+  const refresh_token = jwt.sign({ 'email': user.email }, process.env.REFRESH_TOKEN, { expiresIn: '7d' })
 
   res.cookie('jwt', refresh_token, {
     httpOnly: true, // store refresh token in cookie, accessible only by web server not JS
@@ -92,7 +79,6 @@ const refresh = async (req, res) => {
 }
 
 
-// CLEAR THE REFESHTOKEN FROM THE COOKIE
 const logout = async (req, res) => {
   const cookies = req.cookies
   if (!cookies?.jwt) return res.sendStatus(204) // No cookie, we're good either way
