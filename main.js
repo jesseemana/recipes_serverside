@@ -5,6 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const express = require('express');
 const mongoose = require('mongoose');
+const cpus = require('node:os').cpus();
+const cluster = require('node:cluster');
 const routes = require('./utils/routes');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/connectDB');
@@ -29,10 +31,20 @@ routes(app);
 
 app.use(errorHandler);  
 
-mongoose.connection.once('open', () => {
-  console.log(`Database connected...`.cyan.underline);
-  app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
-});
+if (cluster.isMaster) {
+  console.log(`Master process ${process.pid} has started...`);
+  for (let i = 0; i < cpus.length; i++) {
+    cluster.fork();
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} has died...`);
+    cluster.fork();
+  });
+} else {
+  mongoose.connection.once('open', () => {
+    console.log(`Database connected...`.cyan.underline);
+    app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
+  });
 
-mongoose.connection.on('error', (err) => console.log(err));
- 
+  mongoose.connection.on('error', (err) => console.log(err));
+}   
