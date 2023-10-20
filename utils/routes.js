@@ -2,8 +2,7 @@
 import cloudinary from './cloudinary';
 import verifyToken from '../middleware/auth';
 
-const routes = (app) =>
-{
+const routes = (app) => {
   app.use('/api/v1/auth', require('../routes/auth'));
   app.use('/api/v1/recipes', require('../routes/recipes'));
   app.use('/api/v1/bookmarks', require('../routes/bookmarks'));
@@ -11,8 +10,7 @@ const routes = (app) =>
   app.use('/api/v1/reviews', require('../routes/reviews'));
 
   // WHEN UPLOADING THE PICTURE SEPARATELY FROM THE FORMDATA 
-  app.post('/api/v1/upload', verifyToken, async (req, res) =>
-  {
+  app.post('/api/v1/upload', verifyToken, async (req, res) => {
     const response = await cloudinary.uploader.upload(req.body.data, {
       upload_preset: 'recipes' // CONFIGURE UPLOAD_PRESET IN CLOUDINARY
     });

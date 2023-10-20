@@ -8,7 +8,6 @@ const cluster = require('node:cluster');
 const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 const { default: createServer } = require('./utils/server');
-const { logger, logEvents } = require('./middleware/logger');
 // const express = require('express');
 // const cors = require('cors');
 // const helmet = require('helmet');
@@ -40,16 +39,10 @@ if (cluster.isMaster) {
 } else {
   mongoose.connection.once('open', () => {
     console.log(`Database connected...`.cyan.underline);
-    app.listen(PORT, () =>
-    {
-      console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline);
-    });
+    app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
   });
 
-  mongoose.connection.on('error', (err) => {
-    console.log(err);
-    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');
-  });
+  mongoose.connection.on('error', (err) => console.log(err));
 }   
 
 // ROUTES

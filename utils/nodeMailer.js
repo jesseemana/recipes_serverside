@@ -6,15 +6,15 @@ const transporter = nodemailer.createTransport({
     user: process.env.AUTH_EMAIL,
     pass: process.env.AUTH_PASS
   }
-});
+})
 
-transporter.verify((error, succes) => {
+transporter.verify((error, success) => {
   if (error) {
-    console.log(error);
+    console.log(error)
   } else {
-    console.log('Ready for message');
-    console.log(succes);
+    console.log('Ready for message')
+    console.log(success)
   }
-});
+})
 
-module.exports = transporter; 
+module.exports = transporter 
