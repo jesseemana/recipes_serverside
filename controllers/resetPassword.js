@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
-const transporter = require('../utils/nodeMailer')
+// const transporter = require('../utils/nodeMailer')
 
 
 const sendLink = async (req, res) => {
