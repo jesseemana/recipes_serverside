@@ -1,6 +1,6 @@
 // import { Express, Request, Response } from 'express'
-import cloudinary from './cloudinary';
-import verifyToken from '../middleware/auth';
+const cloudinary = require('./cloudinary');
+const verifyToken = require('../middleware/auth');
 
 const routes = (app) => {
   app.use('/api/v1/auth', require('../routes/auth'));
@@ -21,4 +21,4 @@ const routes = (app) => {
   });
 };
 
-export default routes;    
+module.exports = routes;    

@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import User from '../models/User'
-import transporter from '../utils/nodeMailer'
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const User = require('../models/User')
+const transporter = require('../utils/nodeMailer')
 
 
 const sendLink = async (req, res) => {
@@ -53,4 +53,4 @@ const resetPassword = async (req, res) => {
 }    
 
 
-export { sendLink, resetPassword }     
+module.exports = { sendLink, resetPassword }     

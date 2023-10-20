@@ -1,34 +1,38 @@
 require('colors');
 require('dotenv').config();
 require('express-async-errors');
-const routes = require('./utils/routes');
 const mongoose = require('mongoose');
 const cpus = require('node:os').cpus();
 const cluster = require('node:cluster');
+const routes = require('./utils/routes');
 const connectDB = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
-const { default: createServer } = require('./utils/server');
-// const express = require('express');
-// const cors = require('cors');
-// const helmet = require('helmet');
-// const cookieParser = require('cookie-parser');
-// const cloudinary = require('./utils/cloudinary');
-// const verifyToken = require('./middleware/auth');
-// const corsOptions = require('./config/corsOptions');
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const { logger } = require('./middleware/logger');
+const corsOptions = require('./config/corsOptions') 
 
-const PORT = process.env.PORT || 8080;
+const app = express();
+
+app.use(logger);
+app.use(helmet());
+app.use(cookieParser());
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '50MB' }));
+app.use(express.urlencoded({ limit: '50MB', extended: true }))
+
+const PORT = process.env.PORT;
 
 connectDB();
 
-const app = createServer();
-
 routes(app);
 
-// ERROR HANDLING MIDDLEWARE  
-app.use(errorHandler);
+app.use(errorHandler);  
 
 if (cluster.isMaster) {
-  console.log(`Master process ${process.pid} has started..`);
+  console.log(`Master process ${process.pid} has started...`);
   for (let i = 0; i < cpus.length; i++) {
     cluster.fork();
   }
@@ -44,20 +48,3 @@ if (cluster.isMaster) {
 
   mongoose.connection.on('error', (err) => console.log(err));
 }   
-
-// ROUTES
-// app.use('/api/v1/auth', require('./routes/auth'));
-// app.use('/api/v1/recipes', require('./routes/recipes'));
-// app.use('/api/v1/reviews', require('./routes/reviews'));
-// app.use('/api/v1/bookmarks', require('./routes/bookmarks'));
-// app.use('/api/v1/reset', require('./routes/resetPassword'));
-
-// app.post('/api/v1/upload', verifyToken, async(req, res) => {
-//   const response = await cloudinary.uploader.upload(req.body.data, {
-//     upload_preset: 'recipes' // CONFIGURE UPLOAD_PRESET IN CLOUDINARY
-//   });
-//   res.status(200).json({
-//     id: response.public_id,
-//     url: response.secure_url,
-//   });
-// });    

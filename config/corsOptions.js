@@ -5,7 +5,7 @@ const allowedOrigins = [
   'https://gourmands-portal.vercel.app' // HOSTING DOMAIN NAME
 ]
 
-export const corsOptions = {
+const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
@@ -16,3 +16,5 @@ export const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200
 };  
+
+module.exports = corsOptions  
