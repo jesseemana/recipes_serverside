@@ -1,5 +1,5 @@
 const multer = require('multer')
-const path = require('node:path')
+const path = require('path')
 
 module.exports = multer({
   storage: multer.diskStorage({}),
@@ -11,4 +11,4 @@ module.exports = multer({
     }
     cb(null, true)
   }
-})
+})  
