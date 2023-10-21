@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const { Schema, model } = mongoose
+const { Schema } = mongoose
 
 const recipeSchema = new Schema(
   {
@@ -18,4 +18,4 @@ const recipeSchema = new Schema(
   }
 )
 
-module.exports = model('Recipe', recipeSchema) 
+module.exports = mongoose.model('Recipe', recipeSchema) 

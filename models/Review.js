@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { Schema, model } = mongoose
+const { Schema } = mongoose
 
 const ReviewSchema = new Schema({
   user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'users' },
@@ -9,4 +9,4 @@ const ReviewSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 })
 
-module.exports = model('Review', ReviewSchema)    
+module.exports = mongoose.model('Review', ReviewSchema)    

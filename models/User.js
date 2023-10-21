@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const { Schema, model } = mongoose
+const { Schema } = mongoose
 
 const userSchema = new Schema({
   first_name: { type: String, min: 3, max: 24, required: true },
@@ -10,4 +10,4 @@ const userSchema = new Schema({
   bookmarks: { type: Array, default: [] },
 })
 
-module.exports = model('User', userSchema) 
+module.exports = mongoose.model('User', userSchema) 
