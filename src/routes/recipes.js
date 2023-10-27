@@ -4,7 +4,7 @@ const verifyJWT = require('../middleware/auth')
 const recipeController = require('../controllers/recipe')
 
 router.route('/')
-  .get(recipeController.getRecipes)
+  .get(recipeController.getAllRecipes)
   .post(verifyJWT, upload.single('file'), recipeController.createRecipe)
   .patch(verifyJWT, recipeController.updateRecipe)
 

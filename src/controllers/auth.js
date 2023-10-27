@@ -41,8 +41,7 @@ const login = async (req, res) => {
   if (!valid_password) return res.status(400).json({ message: `Invalid password.` })
 
   const access_token = jwt.sign({ 'email': user.email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
-
-  const refresh_token = jwt.sign({ 'email': user.email }, process.env.REFRESH_TOKEN, { expiresIn: '7d' })
+  const refresh_token = jwt.sign({ 'email': user.email }, process.env.REFRESH_TOKEN, { expiresIn: '14d' })
 
   res.cookie('jwt', refresh_token, {
     httpOnly: true, // store refresh token in cookie, accessible only by web server not JS
@@ -82,6 +81,7 @@ const refresh = async (req, res) => {
 const logout = async (req, res) => {
   const cookies = req.cookies
   if (!cookies?.jwt) return res.sendStatus(204) // No cookie, we're good either way
+
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: true,
