@@ -3,16 +3,12 @@ const verifyUser = require('../middleware/auth');
 const authController = require('../controllers/auth');
 const loginLimiter = require('../middleware/loginLimiter');
 
-router.route('/login')
-  .post(loginLimiter, authController.login);
+router.post('/login', loginLimiter, authController.createSessionHandler)
 
-router.route('/register')
-  .post(authController.createUser);
+router.post('/register', authController.createUserHandler)
 
-router.route('/refresh')
-  .get(authController.refresh);
+router.get('/refresh', authController.refreshTokenHandler)
 
-router.route('/logout')
-  .post(verifyUser, authController.logout);
+router.post('/logout', verifyUser, authController.destroySessionHandler)
 
-module.exports = router;
+module.exports = router 
