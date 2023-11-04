@@ -13,7 +13,6 @@ export const signJwt = (
   algorithm: 'RS256'
   })
 
-
   return token
 }
 
