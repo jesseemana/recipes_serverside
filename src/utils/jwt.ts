@@ -17,7 +17,7 @@ export const signJwt = (
   return token
 }
 
-export const verifyToken = (token: string, verifyKey: 'accessTokenPublicKey' | 'accessTokenPrivateKey') => {
+export const verifyToken = (token: string, verifyKey: 'accessTokenPublicKey' | 'refreshTokenPublicKey') => {
   const publicKey = Buffer.from(config.get<string>(verifyKey), 'base64').toString('ascii')
 
   try {
