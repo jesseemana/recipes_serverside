@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
-const config = reuire('config')
+const config = require('config')
 
 const connectDB = async () => {
-  const dbUri = config.get(dbUri)
+  const dbUri = config.get('dbUri')
 
   try {
     await mongoose.connect(dbUri)
@@ -12,4 +12,4 @@ const connectDB = async () => {
   }
 }
 
-module.exports = connectDB  
+module.exports = connectDB
