@@ -35,13 +35,9 @@ userSchema.pre('save', async function(next) {
   return next()
 })
 
-userSchema.methods.verifyPassword = async function (candidate_password: string) {
+userSchema.methods.verifyPassword = async function (candidate_password: string): Promise<boolean> {
   const user = this as UserDocument
-  try {
-    return bcrypt.compareSync(user.password, candidate_password)
-  } catch(e) {
-    console.log('Failed to verify password')
-  }
+  return bcrypt.compare(user.password, candidate_password).catch((e) => false)
 }
 
 const UserModel = mongoose.model<UserDocument>('User', userSchema) 
