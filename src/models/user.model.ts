@@ -2,9 +2,19 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
 
-const { Schema } = mongoose
+export type UserInput = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+}
 
-const userSchema = new Schema({
+export interface UserDocument extends UserInput, mongoose.Document {
+  bookmarks: string[]
+  verifyPassword(candidate_password: string): Promise<Boolean>
+}
+
+const userSchema = new mongoose.Schema({
   first_name: { type: String, min: 3, max: 24, required: true },
   last_name: { type: String, min: 3, max: 24, required: true },
   email: { type: String, required: true, unique: true },
@@ -13,7 +23,7 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', async function(next) {
-  let user = this 
+  let user = this as UserDocument
 
   if (!user.isModified('password')) return next()
 
@@ -26,8 +36,7 @@ userSchema.pre('save', async function(next) {
 })
 
 userSchema.methods.verifyPassword = async function (candidate_password: string) {
-  let user = this
-
+  const user = this as UserDocument
   try {
     return bcrypt.compareSync(user.password, candidate_password)
   } catch(e) {
@@ -35,6 +44,6 @@ userSchema.methods.verifyPassword = async function (candidate_password: string) 
   }
 }
 
-const UserModel = mongoose.model('User', userSchema) 
+const UserModel = mongoose.model<UserDocument>('User', userSchema) 
 
 export default UserModel 
