@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   bookmarks: { type: Array, default: [] },
 })
 
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', function(next) {
   let user = this as UserDocument
 
   if (!user.isModified('password')) return next()
