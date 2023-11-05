@@ -16,11 +16,11 @@ export const signJwt = (
   return token
 }
 
-export const verifyToken = (token: string, verifyKey: 'accessTokenPublicKey' | 'refreshTokenPublicKey') => {
+export const verifyToken = <T>(token: string, verifyKey: 'accessTokenPublicKey' | 'refreshTokenPublicKey'): T | null => {
   const publicKey = Buffer.from(config.get<string>(verifyKey), 'base64').toString('ascii')
 
   try {
-    const decoded = jwt.verify(token, publicKey)
+    const decoded = jwt.verify(token, publicKey) as T
     return decoded
   } catch(e) {
     return null
