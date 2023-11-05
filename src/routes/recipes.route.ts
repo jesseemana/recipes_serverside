@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import upload from '../middleware/multer'
-import verifyJWT from '../middleware/auth'
+import verifyJWT from '../middleware/auth.middleware'
 import recipeController from '../controllers/recipe'
 
 const router = Router()

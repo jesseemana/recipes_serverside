@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import bookmarksController from '../controllers/bookmarks'
-import verifyJWT from '../middleware/auth'
+import verifyJWT from '../middleware/auth.middleware'
 
 const router = Router()
 
