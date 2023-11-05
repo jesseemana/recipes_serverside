@@ -16,7 +16,7 @@ export const createUserSchema = object({
     }),
     email: string({
       required_error: 'Email is required',
-    }).email('Not a valid email'),
+    }).email('Not a valid email').toLowerCase(),
   }).refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match',
     path: ['confirm_password'],
@@ -28,13 +28,12 @@ export const createSessionSchema = object({
   body: object({
     email: string({
       required_error: 'Email is required',
-    }).email('Not a valid email'),
+    }).email('Not a valid email').toLowerCase(),
     password: string({
       required_error: 'Password is required',
     }).min(6, 'Password is too short - should be min 6 chars'),
   })
 })
-
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>['body']
 export type CreateSessionInput = TypeOf<typeof createSessionSchema>['body']
