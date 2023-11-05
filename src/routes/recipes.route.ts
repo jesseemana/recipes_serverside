@@ -1,7 +1,9 @@
-const router = require('express').Router()
-const upload = require('../middleware/multer')
-const verifyJWT = require('../middleware/auth')
-const recipeController = require('../controllers/recipe')
+import { Router } from 'express'
+import upload from '../middleware/multer'
+import verifyJWT from '../middleware/auth'
+import recipeController from '../controllers/recipe'
+
+const router = Router()
 
 router.route('/')
   .get(recipeController.getAllRecipes)
@@ -15,4 +17,4 @@ router.route('/:id')
 router.route('/user/:user')
   .get(recipeController.getUserRecipes)
 
-module.exports = router         
+export default router   
