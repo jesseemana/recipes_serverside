@@ -6,7 +6,7 @@ const allowedOrigins = [
 ]
 
 const corsOptions = {
-  origin: (origin, callback) => {
+  origin: (origin: 'StaticOrigin | CustomOrigin | undefined', callback: any) => {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -17,4 +17,4 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };  
 
-module.exports = corsOptions  
+export default corsOptions  

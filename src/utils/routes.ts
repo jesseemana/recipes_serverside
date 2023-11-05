@@ -1,6 +1,6 @@
 import { Express, Request, Response } from 'express'
 import cloudinary from './cloudinary';
-import verifyToken from '../middleware/auth';
+import verifyToken from '../middleware/auth.middleware';
 
 import authRouter from '../routes/auth.route'
 import recipesRoute from '../routes/recipes.route'
