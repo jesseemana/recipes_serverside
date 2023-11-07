@@ -1,4 +1,4 @@
-import { Express, Request, Response } from 'express'
+import { Express } from 'express'
 import authRouter from '../routes/auth.route'
 import recipesRoute from '../routes/recipes.route'
 import bookmarksRoute from '../routes/bookmarks.route'
