@@ -7,7 +7,7 @@ import requireUser from '../middleware/requireuser'
 
 const router = Router()
 
-router.post('/register', validateInput(createUserSchema),createUserHandler)
+router.post('/register', validateInput(createUserSchema), createUserHandler)
 router.post('/login', validateInput(createSessionSchema), loginLimiter, createSessionHandler)
 router.get('/refresh', refreshTokenHandler)
 router.post('/logout', requireUser, destroySessionHandler)
