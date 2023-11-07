@@ -81,8 +81,8 @@ const createRecipeHandler = async (req: Request<{}, {}, CreateRecipeInput>, res:
   const userId = res.locals.user._id
 
   const response = await cloudinary.uploader.upload(req.file?.path)
-  const picture_path = response.secure_url as string
-  const cloudinary_id = response.public_id as string
+  const picture_path = response?.secure_url as string
+  const cloudinary_id = response?.public_id as string
 
   const recipe = await createRecipe({...body, user: userId, picture_path, cloudinary_id})
 
