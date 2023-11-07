@@ -1,35 +1,41 @@
-import mongoose from 'mongoose'
-import { UserDocument } from './user.model'
+import { User } from './user.model'
+import { prop, getModelForClass, Ref, modelOptions, Severity } from '@typegoose/typegoose'
 
-export interface RecipeDocument extends mongoose.Document {
-  user: UserDocument['_id']
-  time: string
+@modelOptions({
+  schemaOptions: {
+    timestamps: true,
+  },
+  options: {
+    allowMixed: Severity.ALLOW,
+  },
+})
+
+export class Recipe {
+  @prop({ required: true, ref: () => User })
+  user: Ref<User>
+
+  @prop({ required: true })
   name: string
+
+  @prop({ required: true })
+  time: string
+
+  @prop({ required: true })
   category: string
+
+  @prop({ required: true })
   procedure: string
+
+  @prop({ required: true })
   ingridients: string
+
+  @prop({ required: true })
   picture_path: string
+
+  @prop({ required: true })
   cloudinary_id: string
-  createdAt: Date
-  updatedAt: Date
 }
 
-const recipeSchema = new mongoose.Schema(
-  {
-    user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-    time: { type: String,required: true },
-    name: { type: String, required: true },
-    category: { type: String,required: true },
-    procedure: { type: String,required: true },
-    ingridients: { type: String,required: true },
-    picture_path: { type: String,required: true },
-    cloudinary_id: { type: String, },
-  },
-  {
-    timestamps: true
-  }
-)
+const RecipeModel = getModelForClass(Recipe)
 
-const RecipeModel = mongoose.model<RecipeDocument>('Recipe', recipeSchema) 
-
-export default RecipeModel 
+export default RecipeModel
