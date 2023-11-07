@@ -1,4 +1,5 @@
 import { Express, Request, Response } from 'express'
+// @ts-ignore
 import cloudinary from './cloudinary';
 import verifyToken from '../middleware/auth.middleware';
 

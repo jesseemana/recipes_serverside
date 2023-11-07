@@ -16,15 +16,15 @@ import { connectDB } from './utils/connectDB';
 import corsOptions from './utils/corsOptions';
 import errorHandler from './middleware/errorHandler'; 
 
-const PORT = config.get('port');
+const PORT = config.get<number>('port');
 
 const app = express();
 
 app.use(helmet());
 app.use(cookieParser());
-app.use(deserializeuser);
 //@ts-ignore
 app.use(cors(corsOptions));
+app.use(deserializeuser);
 app.use(express.json({ limit: '50MB' }));
 app.use(express.urlencoded({ limit: '50MB', extended: true }));
 
