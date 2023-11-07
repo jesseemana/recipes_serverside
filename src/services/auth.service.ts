@@ -1,15 +1,29 @@
-import { Document } from 'mongoose'
-import Session from '../models/session.model'
-import User from '../models/user.model'
+import SessionModel from '../models/session.model'
+import { User } from '../models/user.model'
+import { DocumentType } from '@typegoose/typegoose'
+import { omit } from 'lodash'
+import { signJwt } from '../utils/jwt'
+import log from '../utils/logger'
 
 export const createSession = async ({ userId }: { userId: string }) => {
-  return Session.create({ userId })
+  return SessionModel.create({ user: userId })
 }
 
-// const signAccessToken = async (user: Document<User>) => {
+export const findSessionById = async (id: string) => {
+  return SessionModel.findById(id)
+}
 
-// }
+export const signAccessToken = async (user: DocumentType<User>) => {
+  const payload = omit(user.toJSON(), ['password', 'bookmarks'])
+  const access_token = signJwt(payload, 'accessTokenPrivateKey', { expiresIn: '1d' })
 
-export const signRefreshToken = async () => {
+  return access_token
+}
 
+export const signRefreshToken = async ({ userId }: { userId: string }) => {
+  const session = await createSession({userId})
+
+  const refresh_token = signJwt({ session: session._id }, 'refreshTokenPrivateKey', { expiresIn: '14d' })
+
+  return refresh_token
 }
