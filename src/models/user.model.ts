@@ -1,45 +1,51 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
+import log from '../utils/logger'
+import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity } from '@typegoose/typegoose'
 
-export type UserInput = {
+@pre<User>('save', function() {
+  if (!this.isModified('password')) return
+
+  const salt = bcrypt.genSaltSync(config.get<number>('saltWorkFactor'))
+  const hash = bcrypt.hashSync(this.password, salt)
+  this.password = hash
+
+  return
+})
+
+@modelOptions({
+  options: {
+    allowMixed: Severity.ALLOW,
+  },
+})
+
+export class User {
+  @prop({ required: true })
   first_name: string
+
+  @prop({ required: true })
   last_name: string
+
+  @prop({ lowercase: true, required:true, unique: true })
   email: string
+
+  @prop({ required: true })
   password: string
+
+  @prop({ default: [] })
+  bookmarks: Array<string>
+
+  verifyPassword(this: DocumentType<User>, candidate_password: string) {
+    try {
+      return bcrypt.compareSync(candidate_password, this.password)
+    } catch(err) {
+      log.error('Failed to validate password')
+      return false
+    }
+  }
 }
 
-export interface UserDocument extends UserInput, mongoose.Document {
-  bookmarks: string[]
-  verifyPassword(candidate_password: string): Promise<Boolean>
-}
+const UserModel = getModelForClass(User)
 
-const userSchema = new mongoose.Schema({
-  first_name: { type: String, min: 3, max: 24, required: true },
-  last_name: { type: String, min: 3, max: 24, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  bookmarks: { type: Array, default: [] },
-})
-
-userSchema.pre('save', function(next) {
-  let user = this as UserDocument
-
-  if (!user.isModified('password')) return next()
-
-  const salt = bcrypt.genSaltSync(config.get('saltWorkFactor'))
-  const hash = bcrypt.hashSync(user.password, salt)
-
-  user.password = hash
-
-  return next()
-})
-
-userSchema.methods.verifyPassword = async function (candidate_password: string): Promise<boolean> {
-  const user = this as UserDocument
-  return bcrypt.compare(user.password, candidate_password).catch((e) => false)
-}
-
-const UserModel = mongoose.model<UserDocument>('User', userSchema) 
-
-export default UserModel 
+export default UserModel
