@@ -1,14 +1,5 @@
 import { User } from './user.model'
-import { prop, getModelForClass, Ref, modelOptions, Severity } from '@typegoose/typegoose'
-
-@modelOptions({
-  schemaOptions: {
-    timestamps: true,
-  },
-  options: {
-    allowMixed: Severity.ALLOW,
-  },
-})
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 
 export class Recipe {
   @prop({ required: true, ref: () => User })
@@ -32,10 +23,14 @@ export class Recipe {
   @prop({ required: true })
   picture_path: string
 
-  @prop({ required: true })
+  @prop()
   cloudinary_id: string
 }
 
-const RecipeModel = getModelForClass(Recipe)
+const RecipeModel = getModelForClass(Recipe, {
+  schemaOptions: {
+    timestamps: true
+  }
+})
 
 export default RecipeModel
