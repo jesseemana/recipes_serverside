@@ -84,7 +84,7 @@ const createRecipeHandler = async (req: Request<{}, {}, CreateRecipeInput>, res:
   const picture_path = response.secure_url as string
   const cloudinary_id = response.public_id as string
 
-  const recipe = await createRecipe({...body, user: userId, picture_path,  cloudinary_id})
+  const recipe = await createRecipe({...body, user: userId, picture_path, cloudinary_id})
 
   if (recipe) {
     return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
