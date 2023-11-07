@@ -1,20 +1,20 @@
 import { Router } from 'express'
 import upload from '../middleware/multer'
-import recipeController from '../controllers/recipe'
+import recipeController from '../controllers/recipe.controller'
 import requireUser from '../middleware/requireuser'
 
 const router = Router()
 
 router.route('/')
-  .get(recipeController.getAllRecipes)
-  .post(requireUser, upload.single('file'), recipeController.createRecipe)
-  .patch(requireUser, recipeController.updateRecipe)
+  .get(recipeController.getAllRecipesHandler)
+  .post(requireUser, upload.single('file'), recipeController.createRecipeHandler)
 
-router.route('/:id')
-  .get(recipeController.getSingleRecipe)
-  .delete(requireUser, recipeController.deleteRecipe)
+router.route('/:recipeId')
+  .get(recipeController.getSingleRecipeHandler)
+  .patch(requireUser, recipeController.updateRecipeHandler)
+  .delete(requireUser, recipeController.deleteRecipeHandler)
 
 router.route('/user/:user')
-  .get(recipeController.getUserRecipes)
+  .get(recipeController.getUserRecipesHandler)
 
 export default router   

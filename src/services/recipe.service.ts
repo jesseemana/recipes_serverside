@@ -1,4 +1,5 @@
-import RecipeModel, { Recipe } from "../models/recipe.model"
+import RecipeModel, { Recipe } from '../models/recipe.model'
+import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 
 export const findAllRecipes = () => {
   return RecipeModel.find()
@@ -20,8 +21,12 @@ export const createRecipe = (data: Partial<Recipe>) => {
   return RecipeModel.create(data)
 }
 
-export const updateRecipe = () => {
-  return RecipeModel.findOneAndUpdate()
+export const updateRecipe = (
+  query: FilterQuery<Recipe>, 
+  update: UpdateQuery<Recipe>, 
+  options: QueryOptions
+) => {
+  return RecipeModel.findOneAndUpdate(query, update, options)
 }
 
 export const deleteRecipe = (id: string) => {
