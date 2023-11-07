@@ -5,8 +5,10 @@ const allowedOrigins = [
   'https://gourmandshub.vercel.app' // HOSTING DOMAIN NAME
 ]
 
+type StaticOrigin = boolean | string | RegExp | (boolean | string | RegExp)[]
+
 const corsOptions = {
-  origin: (origin: 'StaticOrigin | CustomOrigin | undefined', callback: any) => {
+  origin: (origin: string, callback: (err: Error | null, origin?: StaticOrigin) => void) => {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
