@@ -1,20 +1,24 @@
 import { Application } from 'express'
 import log from '../utils/logger'
 import config from 'config'
-import connectDB  from '../utils/connect-db'
-import errorHandler from '../middleware/errorHandler'
+import { ConnectDatabase }  from '../utils/connect-db'
+import errorHandler from '../middleware/error-handler'
 
 const cpus = require('os').cpus()
 import cluster from 'cluster'
 
 function initializeApp(app: Application): void {
   const PORT = config.get<number>('port')
+  const dbUri = config.get<string>('dbUri')
 
-  connectDB.connect()
-
+  const connect_db = new ConnectDatabase(dbUri)
+  
   app.use(errorHandler)
-
-  app.listen(PORT, () => log.info(`Server running on port: ${PORT}...`))
+  
+  app.listen(PORT, () => {
+    connect_db.connect()
+    log.info(`Server running on port: ${PORT}...`)
+  })
 }
 
 export default initializeApp
