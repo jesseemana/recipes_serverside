@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import loginLimiter from '../middleware/loginLimiter'
+import loginLimiter from '../middleware/login-limiter'
 import { createSessionHandler, createUserHandler, destroySessionHandler, refreshTokenHandler } from '../controllers/auth.controller'
 import validateInput from '../middleware/validateInput'
-import { createSessionSchema, createUserSchema } from '../schema/schema'
+import { createSessionSchema, createUserSchema } from '../schema/user.schema'
 import requireUser from '../middleware/requireuser'
 
 const router = Router()

@@ -2,7 +2,7 @@ import express, { Application } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
-import corsOptions from '../utils/corsOptions'
+import corsOptions from '../utils/cors-options'
 import deserializeuser from '../middleware/auth.middleware'
 
 

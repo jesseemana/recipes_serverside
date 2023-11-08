@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import passwordController from '../controllers/resetPassword'
+import { sendLinkHandler, resetPasswordHandler } from '../controllers/reset-auth.controller'
 
 const router = Router()
 
-router.route('/').post(passwordController.sendLink)
-router.route('/:id/:token').patch(passwordController.resetPassword)
+router.route('/').post(sendLinkHandler)
+router.route('/:id/:token').patch(resetPasswordHandler)
 
 export default router 
