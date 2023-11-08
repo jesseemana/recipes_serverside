@@ -22,8 +22,11 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
   const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
   const total = await totalRecipes()
 
-  const recipes = await findAllRecipes().find().lean().sort({ createdAt: -1 }).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) return res.status(400).json({ 'message': 'There are no recipes found' })
+  const recipes = await findAllRecipes().lean().sort({ createdAt: -1 }).limit(LIMIT).skip(startIndex)
+
+  if (!recipes?.length) {
+    return res.status(400).json({ 'message': 'There are no recipes found' })
+  }
 
   // attaching a owner to a recipe
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
@@ -49,9 +52,13 @@ const getUserRecipesHandler = async (req: Request, res: Response) => {
   if (!user) return res.status(400).json({ 'message': 'Provide a user id' })
   
   const recipes = await findRecipeByUser({ user }).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) return res.status(400).json({ 'message': `User doesn't have any recipes` })
+
+  if (!recipes?.length) {
+    return res.status(400).json({ 'message': `User doesn't have any recipes` })
+  }
 
   const owner = await findUserById(user)
+
   if (!owner) return res.send('User not found')
 
   const full_name = `${owner.first_name} ${owner.last_name}`
@@ -60,14 +67,15 @@ const getUserRecipesHandler = async (req: Request, res: Response) => {
 }
 
 
-const getSingleRecipeHandler = async (req: Request, res: Response) => {
-  const { id } = req.params
-  if (!id) return res.status(400).json({ 'message': 'Provide recipe id' })
+const getSingleRecipeHandler = async (req: Request<UpdateRecipeInput['params'], {}, {}>, res: Response) => {
+  const recipeId = req.params.recipeId
 
-  const recipe = await findRecipeById(id).lean().exec()
+  const recipe = await findRecipeById(recipeId).lean().exec()
+
   if (!recipe) return res.sendStatus(404)
 
   const user = await findUserById(String(recipe.user)).lean().exec()
+
   if (!user) return res.sendStatus(404)
 
   const owner = `${user.first_name} ${user.last_name}`
