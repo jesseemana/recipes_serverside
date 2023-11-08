@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
 import log from '../utils/logger'
@@ -9,6 +8,7 @@ import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity } fro
 
   const salt = bcrypt.genSaltSync(config.get<number>('saltWorkFactor'))
   const hash = bcrypt.hashSync(this.password, salt)
+
   this.password = hash
 
   return
