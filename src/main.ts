@@ -1,59 +1,14 @@
-require('dotenv').config();
-require('express-async-errors');
-import cors from 'cors';
-import config from 'config';
-import helmet from 'helmet';
-const cpus = require('os').cpus();
-import cluster from 'cluster';
-import express from 'express';
-import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
+require('dotenv').config()
+require('express-async-errors')
+import express from 'express'
+import configureRoutes from './server/routes'
+import configureServer from './server/configure'
+import initializeServer from './server/initialize-app'
 
-import log from './utils/logger';
-import routes from './utils/routes';
-import deserializeuser from './middleware/auth.middleware';
-import { connectDB } from './utils/connectDB';
-import corsOptions from './utils/corsOptions';
-import errorHandler from './middleware/errorHandler'; 
+const app = express()
 
-const PORT = config.get<number>('port');
+configureServer(app)
 
-const app = express();
+configureRoutes(app)
 
-app.use(helmet());
-app.use(cookieParser());
-//@ts-ignore
-app.use(cors(corsOptions));
-app.use(deserializeuser);
-app.use(express.json({ limit: '50MB' }));
-app.use(express.urlencoded({ limit: '50MB', extended: true }));
-
-connectDB();
-
-routes(app);
-
-app.use(errorHandler);  
-
-mongoose.connection.once('open', () => {
-  log.info(`Database connected...`);
-  app.listen(PORT, () => log.info(`Server #${process.pid} running on port: ${PORT}...`));
-});
-
-mongoose.connection.on('error', (err) => console.log(err));
-
-// if (cluster.isPrimary) {
-//   log.info(`Master process ${process.pid} has started...`);
-//   for (let i = 0; i < cpus.length; i++) {
-//     cluster.fork();
-//   }
-//   cluster.on('exit', (worker, code, signal) => {
-//     log.info(`Worker ${worker.process.pid} has died...`);
-//     cluster.fork();
-//   });
-// } else {
-//   mongoose.connection.once('open', () => {
-//     log.info(`Database connected...`);
-//     app.listen(PORT, () => log.info(`Server #${process.pid} running on port: ${PORT}...`));
-//   });
-//   mongoose.connection.on('error', (err) => console.log(err));
-// }
+initializeServer(app)

@@ -4,6 +4,9 @@ import config from 'config'
 import connectDB  from '../utils/connect-db'
 import errorHandler from '../middleware/errorHandler'
 
+const cpus = require('os').cpus()
+import cluster from 'cluster'
+
 function initializeApp(app: Application): void {
   const PORT = config.get<number>('port')
 
