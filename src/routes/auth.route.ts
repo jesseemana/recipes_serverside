@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import loginLimiter from '../middleware/login-limiter'
 import { createSessionHandler, createUserHandler, destroySessionHandler, refreshTokenHandler } from '../controllers/auth.controller'
-import validateInput from '../middleware/validate-input'
+import validateInput from '../middleware/validateInput'
 import { createSessionSchema, createUserSchema } from '../schema/user.schema'
 import requireUser from '../middleware/require-user'
 
