@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import config from 'config'
 import log from '../utils/logger'
-import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity } from '@typegoose/typegoose'
+import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity, index } from '@typegoose/typegoose'
 
 @pre<User>('save', function() {
   if (!this.isModified('password')) return
@@ -13,6 +13,8 @@ import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity } fro
 
   return
 })
+
+@index({ email: 1})
 
 @modelOptions({
   options: {

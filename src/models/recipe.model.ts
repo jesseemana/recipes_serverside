@@ -2,7 +2,7 @@ import { User } from './user.model'
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
 
 export class Recipe {
-  @prop({ required: true, ref: () => User })
+  @prop({ ref: () => User })
   user: Ref<User>
 
   @prop({ required: true })
