@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } from '../controllers/bookmarks.controller'
-import requireUser from '../middleware/requireuser'
-import validateInput from '../middleware/validateInput'
+import requireUser from '../middleware/require-user'
+import validateInput from '../middleware/validate-input'
 import { bookmarkRecipeSchema } from '../schema/bookmarks.schema'
 
 const router = Router()

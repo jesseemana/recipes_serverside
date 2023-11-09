@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import upload from '../middleware/multer'
 import recipeController from '../controllers/recipe.controller'
-import requireUser from '../middleware/requireuser'
-import validateInput from '../middleware/validateInput'
+import requireUser from '../middleware/require-user'
+import validateInput from '../middleware/validate-input'
 import { createRecipeSchema, updateRecipeSchema } from '../schema/recipe.schema'
 
 const router = Router()
