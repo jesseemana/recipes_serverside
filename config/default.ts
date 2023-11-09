@@ -5,6 +5,11 @@ export default {
   logLevel: 'info',
   accessTokenPrivateKey: '',
   refreshTokenPrivateKey: '',
+  user: '',
+  pass: '',
+  clouName: '',
+  apiKey: '',
+  apiSecret: '',
   smtp: {
     user: 'hqpvqv44mw5427vb@ethereal.email',
     pass: 'nwAGg5tXGGP2eeuKdH',
