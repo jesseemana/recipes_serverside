@@ -2,10 +2,10 @@ import { object, string, TypeOf } from 'zod'
 
 export const bookmarkRecipeSchema = object({
   params: object({
-    recipeId: string({
+    recipe_id: string({
       required_error: 'Recipe id is required'
     }),
-    userId: string({
+    user_id: string({
       required_error: 'User id is required'
     }),
   })

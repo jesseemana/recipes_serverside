@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from 'mongoose'
 import log from './logger'
 
-export class ConnectDatabase{
+export class ConnectDatabase {
   dbUri: string
   options: ConnectOptions
 
