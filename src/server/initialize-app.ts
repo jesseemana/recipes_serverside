@@ -9,14 +9,13 @@ import cluster from 'cluster'
 
 function initializeApp(app: Application): void {
   const PORT = config.get<number>('port')
-  const dbUri = config.get<string>('dbUri')
 
-  const connect_db = new ConnectDatabase(dbUri)
+  const connect_db = new ConnectDatabase()
+  connect_db.connect()
   
   app.use(errorHandler)
   
   app.listen(PORT, () => {
-    connect_db.connect()
     log.info(`Server running on port: ${PORT}...`)
   })
 }

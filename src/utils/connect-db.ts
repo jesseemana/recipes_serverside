@@ -1,11 +1,13 @@
 import mongoose, { ConnectOptions } from 'mongoose'
 import log from './logger'
+import config from 'config'
+
 
 export class ConnectDatabase {
   dbUri: string
   options: ConnectOptions
 
-  constructor(dbUri: string) {
+  constructor() {
     this.options = {
       autoIndex: false,
       maxPoolSize: 10,
@@ -14,7 +16,7 @@ export class ConnectDatabase {
       family: 4
     }
 
-    this.dbUri = dbUri
+    this.dbUri = config.get<string>('dbUri')
   }
 
   connect() { 
