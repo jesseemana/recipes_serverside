@@ -6,6 +6,14 @@ import { DocumentType } from '@typegoose/typegoose'
 import { signJwt } from '../utils/jwt'
 
 
+export const findAllSessions = async () => {
+  return SessionModel.find()
+}
+
+export const deleteAllSessions = async () => {
+  return SessionModel.deleteMany()
+}
+
 export const createSession = async ({ userId }: { userId: string }) => {
   return SessionModel.create({ user: userId })
 }
@@ -18,18 +26,20 @@ export const updateSession = (query: FilterQuery<Session>, update: UpdateQuery<S
   return SessionModel.findOneAndUpdate(query, update)
 }
 
-export const signAccessToken = (user: DocumentType<User>) => {
-  const payload = omit(user.toJSON(), ['password', 'bookmarks'])
+export const signAccessToken = async (user: DocumentType<User>) => {
+  const session = await createSession({ userId: String(user._id) })
 
-  const access_token = signJwt(payload, 'accessTokenPrivateKey', { expiresIn: '1d' })
+  const user_details = omit(user.toJSON(), ['password', 'bookmarks'])
 
-  return access_token
+  const access_token = signJwt({ ...user_details, session }, 'accessTokenPrivateKey', { expiresIn: '4m' })
+
+  return access_token 
 }
 
-export const signRefreshToken = async ({ userId }: { userId: string }) => {
-  const session = await createSession({userId})
+export const signRefreshToken = (user: DocumentType<User>) => {
+  const payload = omit(user.toJSON(), ['password', 'bookmarks'])
 
-  const refresh_token = signJwt({ session: session._id }, 'refreshTokenPrivateKey', { expiresIn: '14d' })
+  const refresh_token = signJwt(payload, 'refreshTokenPrivateKey', { expiresIn: '14d' })
 
   return refresh_token
 }
