@@ -11,6 +11,7 @@ function initializeApp(app: Application): void {
   const PORT = config.get<number>('port')
 
   const connect_db = new ConnectDatabase()
+  
   connect_db.connect()
   
   app.use(errorHandler)

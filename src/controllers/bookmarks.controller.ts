@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { CreateBookmarksInput } from '../schema/bookmarks.schema';
 import { findRecipeById } from '../services/recipe.service';
 import { findUserById } from '../services/user.service';
-import log from '../utils/logger';
 
 
 const userBookmarksHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
@@ -29,6 +28,7 @@ const userBookmarksHandler = async (req: Request<CreateBookmarksInput, {}, {}>, 
 
 const addBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
   const { user_id, recipe_id } = req.params;
+
   const user = await findUserById(user_id);
   const recipe = await findRecipeById(recipe_id);
 
@@ -50,20 +50,19 @@ const addBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, re
 
 const removeBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
   const { user_id, recipe_id } = req.params;
+
   const user = await findUserById(user_id);
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) return res.sendStatus(404);
   
   const bookmarks = user.bookmarks;
-  log.info(`Current bookmarks: ${bookmarks}`);
 
   if (!bookmarks.includes(recipe_id)) {
     return res.status(400).send('Recipe not bookmarked');
   }
 
   user.bookmarks = [ ...(bookmarks.filter((bookmark) => bookmark.toString() !== recipe_id)) ];
-  log.info(`Updated bookmarks: ${user.bookmarks}`);
 
   await user.save();
 
