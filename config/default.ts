@@ -5,6 +5,7 @@ export default {
   logLevel: 'info',
   accessTokenPrivateKey: '',
   refreshTokenPrivateKey: '',
+  passwordSecret: '',
   user: '',
   pass: '',
   clouName: '',
