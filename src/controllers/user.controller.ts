@@ -8,13 +8,13 @@ import { CreateUserInput } from '../schema/user.schema';
 
 
 const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, res: Response) => {
-  const body = req.body
+  const body = req.body;
   try {
-    const new_user = await createUser(body)
-    res.send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`)
+    const new_user = await createUser(body);
+    res.send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
   } catch (error: any) {
     if (error.code === 11000) {
-      return res.send('Account already exists')
+      return res.send('Account already exists');
     }
   }
 }
@@ -23,9 +23,7 @@ const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, res: Res
 const forgortPasswordHandler = async (req: Request<{}, {}, ResetAuthInput['body']>, res: Response) => {
   const user = await findUserByEmail(req.body.email);
 
-  if (!user) {
-    return res.status(401).json(`User doesn't exist.`);
-  }
+  if (!user) return res.status(401).json(`User doesn't exist.`);
 
   // create a one time link valid for 30 minutes 
   const auth_reset_secret = config.get<string>('passwordSecret') + user.password;
@@ -50,9 +48,7 @@ const resetPasswordHandler = async (req: Request<ResetAuthInput['params'], {}, R
 
   const user = await findUserById(id);
 
-  if (!user) {
-    return res.status(401).send(`User doesn't exist.`);
-  }
+  if (!user) return res.status(401).send(`User doesn't exist.`);
 
   const auth_reset_secret = config.get<string>('passwordSecret') + user.password;
 
