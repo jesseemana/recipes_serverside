@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { createUser, findUserByEmail, findUserById } from '../services/user.service';
 import sendEmail from '../utils/node-mailer';
 import config from 'config';
-import { ResetAuthInput } from '../schema/reset.schema';
+import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 import { CreateUserInput } from '../schema/user.schema';
 
 
@@ -26,7 +26,7 @@ const forgortPasswordHandler = async (req: Request<{}, {}, ResetAuthInput['body'
   if (!user) return res.status(401).json(`User doesn't exist.`);
 
   // create a one time link valid for 30 minutes 
-  const auth_reset_secret = config.get<string>('passwordSecret') + user.password;
+  const auth_reset_secret = process.env.JWT_SECRET + user.password;
   const token = jwt.sign({ 'email': user.email }, auth_reset_secret, { expiresIn: '30m' });
   const link = `https://gourmands-portal.vercel.app/reset-password/${user._id}/${token}`; 
   const dev_link = `http://localhost:8080/api/v1/user/reset/${user._id}/${token}`; 
@@ -42,7 +42,7 @@ const forgortPasswordHandler = async (req: Request<{}, {}, ResetAuthInput['body'
 };
 
 
-const resetPasswordHandler = async (req: Request<ResetAuthInput['params'], {}, ResetAuthInput['body']>, res: Response) => {
+const resetPasswordHandler = async (req: Request<ResetAuthInput['params'], {}, UpdateAuthInput['body']>, res: Response) => {
   const { id, token } = req.params;
   const password = req.body.password;
 
@@ -50,7 +50,7 @@ const resetPasswordHandler = async (req: Request<ResetAuthInput['params'], {}, R
 
   if (!user) return res.status(401).send(`User doesn't exist.`);
 
-  const auth_reset_secret = config.get<string>('passwordSecret') + user.password;
+  const auth_reset_secret = process.env.JWT_SECRET + user.password;
 
   jwt.verify(token, auth_reset_secret, 
     async (err: any) => {
