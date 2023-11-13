@@ -7,21 +7,40 @@ import errorHandler from '../middleware/error-handler'
 const cpus = require('os').cpus()
 import cluster from 'cluster'
 
-function initializeApp(app: Application): void {
+function initializeServer(app: Application): void {
   const PORT = config.get<number>('port')
 
-  const connect_db = new ConnectDatabase()
-  
-  connect_db.connect()
+  const database = new ConnectDatabase()
   
   app.use(errorHandler)
   
-  app.listen(PORT, () => {
-    log.info(`Server running on port: ${PORT}...`)
+  const server = app.listen(PORT, async () => {
+    await database.connect()
+    log.info(`Server running on port: ${PORT}...🚀`)
   })
+
+  const signals = ['SIGTERM', 'SIGINT']
+
+  const gracefulShutdown = (signal: string) => {
+    process.on(signal, async() => {
+      log.info(`Shutting down..., received signal`, signal)
+
+      server.close()
+
+      await database.disconnect()
+
+      log.info('Sayonara...😥💤💤')
+      
+      process.exit(0)
+    })
+  }
+
+  for (let i = 0; i < signals.length; i++) {
+    gracefulShutdown(signals[i])
+  }
 }
 
-export default initializeApp
+export default initializeServer 
 
 // if (cluster.isPrimary) {
 //   log.info(`Master process ${process.pid} has started...`);

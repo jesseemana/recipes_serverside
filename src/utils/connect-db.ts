@@ -17,7 +17,7 @@ export class ConnectDatabase {
     this.dbUri = config.get<string>('dbUri')
   }
 
-  connect() { 
+  async connect() { 
     mongoose.connect(this.dbUri)
 
     mongoose.connection.on('connected', () => {
@@ -25,19 +25,16 @@ export class ConnectDatabase {
     })
 
     mongoose.connection.on('error', (error: string) => {
-      log.error(`Error connecting database: ${error}`)
+      log.error(`Error connecting to database: ${error}`)
     })
 
     mongoose.connection.on('disconnected', () => {
       log.warn('Mongoose database connection has been disconnected')
     })
+  }
 
-    process.on('SIGINT', () => {
-      // @ts-ignore
-      mongoose.connection.close(() => {
-        log.warn('Mongoose default connection is closed due to app termination')
-        process.exit(0)
-      })
-    })
+  async disconnect() {
+    mongoose.connection.close()
+    log.warn('Database connection closed due to app termination')  
   }
 }
