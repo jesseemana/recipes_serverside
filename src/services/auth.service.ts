@@ -26,20 +26,16 @@ export const updateSession = (query: FilterQuery<Session>, update: UpdateQuery<S
   return SessionModel.findOneAndUpdate(query, update)
 }
 
-export const signAccessToken = async (user: DocumentType<User>) => {
-  const session = await createSession({ userId: String(user._id) })
-
+export const signAccessToken = (user: DocumentType<User>, session: DocumentType<Session>) => {
   const user_details = omit(user.toJSON(), ['password', 'bookmarks'])
 
-  const access_token = signJwt({ ...user_details, session }, 'accessTokenPrivateKey', { expiresIn: '4m' })
+  const access_token = signJwt({ ...user_details, session }, 'accessTokenPrivateKey', { expiresIn: '1m' })
 
   return access_token 
 }
 
-export const signRefreshToken = (user: DocumentType<User>) => {
-  const payload = omit(user.toJSON(), ['password', 'bookmarks'])
-
-  const refresh_token = signJwt(payload, 'refreshTokenPrivateKey', { expiresIn: '14d' })
+export const signRefreshToken = (session: DocumentType<Session>) => {
+  const refresh_token = signJwt({ session: session._id }, 'refreshTokenPrivateKey', { expiresIn: '30d' })
 
   return refresh_token
 }
