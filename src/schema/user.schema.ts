@@ -10,10 +10,18 @@ export const createUserSchema = object({
     }),
     password: string({
       required_error: 'Password is required',
-    }).min(6, 'Password is too short - should be min 6 chars'),
+    }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*[a-z].*"), "One lowercase character")
+      .regex(new RegExp(".*\\d.*"), "One number")
+      .regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),"One special character")
+      .min(8, "Must not be less than 8 characters.")
+      .max(64, "Cannot be more than 64 characters long."),
     confirm_password: string({
       required_error: 'Password confirmation is required',
-    }),
+    }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*\\d.*"), "One number")
+      .regex(new RegExp(".*[a-z].*"), "One lowercase character")
+      .regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),"One special character")
+      .min(8, "Must not be less than 8 characters.")
+      .max(64, "Cannot be more than 64 characters long."),
     email: string({
       required_error: 'Email is required',
     }).email('Not a valid email').toLowerCase(),
@@ -31,7 +39,11 @@ export const createSessionSchema = object({
     }).email('Not a valid email').toLowerCase(),
     password: string({
       required_error: 'Password is required',
-    }).min(6, 'Password is too short - should be min 6 chars'),
+    }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*\\d.*"), "One number")
+      .regex(new RegExp(".*[a-z].*"), "One lowercase character")
+      .regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),"One special character")
+      .min(8, "Must not be less than 8 characters.")
+      .max(64, "Cannot be more than 64 characters long."),
   })
 })
 
