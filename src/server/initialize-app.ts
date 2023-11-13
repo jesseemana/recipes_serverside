@@ -12,10 +12,11 @@ function initializeServer(app: Application): void {
 
   const database = new ConnectDatabase()
   
+  database.connect()
+
   app.use(errorHandler)
   
   const server = app.listen(PORT, async () => {
-    await database.connect()
     log.info(`Server running on port: ${PORT}...🚀`)
   })
 
@@ -27,7 +28,7 @@ function initializeServer(app: Application): void {
 
       server.close()
 
-      await database.disconnect()
+      database.disconnect()
 
       log.info('Sayonara...😥💤💤')
       

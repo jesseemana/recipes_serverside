@@ -17,7 +17,7 @@ export class ConnectDatabase {
     this.dbUri = config.get<string>('dbUri')
   }
 
-  async connect() { 
+  connect() { 
     mongoose.connect(this.dbUri)
 
     mongoose.connection.on('connected', () => {
@@ -33,7 +33,7 @@ export class ConnectDatabase {
     })
   }
 
-  async disconnect() {
+  disconnect() {
     mongoose.connection.close()
     log.warn('Database connection closed due to app termination')  
   }
