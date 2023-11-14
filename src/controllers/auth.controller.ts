@@ -3,7 +3,6 @@ import { verifyToken } from '../utils/jwt';
 import { findUserByEmail, findUserById } from '../services/user.service';
 import { createSession, findSessionById, signAccessToken, signRefreshToken, updateSession } from '../services/auth.service';
 import { CreateSessionInput } from '../schema/user.schema';
-import log from '../utils/logger';
 
 
 const createSessionHandler = async (req: Request<{}, {}, CreateSessionInput>, res: Response) => {
@@ -35,8 +34,9 @@ const createSessionHandler = async (req: Request<{}, {}, CreateSessionInput>, re
 
 const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  
-  if (!cookies?.refresh_token) return res.status(401).send('Unauthorized');
+  if (!cookies?.refresh_token) {
+    return res.status(401).send('Unauthorized');
+  }
 
   const refresh_token = cookies.refresh_token as string;
 
@@ -53,7 +53,9 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
   }
 
   const user = await findUserById(String(session.user));
-  if (!user) return res.status(401).send('Could not find user');
+  if (!user) {
+    return res.status(401).send('Could not find user');
+  }
 
   const access_token = signAccessToken(user, session);
 
@@ -63,13 +65,13 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 
 const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-
-  if (!cookies?.refresh_token) return res.sendStatus(204); // No cookie, we're good either way
+  if (!cookies?.refresh_token) {
+    return res.sendStatus(204)
+  }; // No cookie, we're good either way
 
   const sessionId = res.locals.user.session._id;
 
   const session = await findSessionById(sessionId);
-
   if (!session || !session.valid) {
     return res.status(401).send('Session is not found or is invalid');
   }

@@ -29,7 +29,7 @@ export const updateSession = (query: FilterQuery<Session>, update: UpdateQuery<S
 export const signAccessToken = (user: DocumentType<User>, session: DocumentType<Session>) => {
   const user_details = omit(user.toJSON(), ['password', 'bookmarks'])
 
-  const access_token = signJwt({ ...user_details, session }, 'accessTokenPrivateKey', { expiresIn: '1m' })
+  const access_token = signJwt({ ...user_details, session }, 'accessTokenPrivateKey', { expiresIn: '15m' })
 
   return access_token 
 }
