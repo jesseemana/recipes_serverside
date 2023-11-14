@@ -25,7 +25,7 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
   const recipes = await findAllRecipes().lean().sort({ createdAt: -1 }).limit(LIMIT).skip(startIndex)
 
   if (!recipes?.length) {
-    return res.status(400).json({ 'message': 'There are no recipes found' })
+    return res.status(400).send('There are no recipes found')
   }
 
   // attaching a owner to a recipe
@@ -49,12 +49,12 @@ const getUserRecipesHandler = async (req: Request, res: Response) => {
   const startIndex = (Number(req.query.page) - 1) * LIMIT // starting index of every page
   // const total = await totalRecipes()
 
-  if (!user) return res.status(400).json({ 'message': 'Provide a user id' })
+  if (!user) return res.status(400).send('Provide a user id')
   
   const recipes = await findRecipeByUser({ user }).limit(LIMIT).skip(startIndex)
 
   if (!recipes?.length) {
-    return res.status(400).json({ 'message': `User doesn't have any recipes` })
+    return res.status(400).send(`User doesn't have any recipes`)
   }
 
   const owner = await findUserById(user)
@@ -71,11 +71,9 @@ const getSingleRecipeHandler = async (req: Request<UpdateRecipeInput['params'], 
   const recipeId = req.params.recipeId
 
   const recipe = await findRecipeById(recipeId).lean().exec()
-
   if (!recipe) return res.sendStatus(404)
 
   const user = await findUserById(String(recipe.user)).lean().exec()
-
   if (!user) return res.sendStatus(404)
 
   const owner = `${user.first_name} ${user.last_name}`
@@ -88,11 +86,7 @@ const createRecipeHandler = async (req: Request<{}, {}, CreateRecipeInput>, res:
   const body = req.body
   const userId = res.locals.user._id
 
-  const response = await cloudinary.uploader.upload(req.file?.path)
-  const picture_path = response?.secure_url as string
-  const cloudinary_id = response?.public_id as string
-
-  const recipe = await createRecipe({...body, user: userId, picture_path, cloudinary_id})
+  const recipe = await createRecipe({...body, user: userId})
 
   if (recipe) {
     return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
