@@ -1,16 +1,18 @@
 import { Application } from 'express'
 import log from '../utils/logger'
 import config from 'config'
-import { ConnectDatabase }  from '../utils/connect-db'
 import errorHandler from '../middleware/error-handler'
 
 const cpus = require('os').cpus()
 import cluster from 'cluster'
 
-function initializeServer(app: Application): void {
-  const PORT = config.get<number>('port')
+interface Database {
+  connect: () => void
+  disconnect: () => void
+}
 
-  const database = new ConnectDatabase()
+function initializeServer(app: Application, database: Database): Application {
+  const PORT = config.get<number>('port')
   
   database.connect()
 
@@ -39,6 +41,8 @@ function initializeServer(app: Application): void {
   for (let i = 0; i < signals.length; i++) {
     gracefulShutdown(signals[i])
   }
+
+  return app
 }
 
 export default initializeServer 
