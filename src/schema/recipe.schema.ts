@@ -1,5 +1,6 @@
 import { object, string, TypeOf } from 'zod'
 
+
 export const createRecipeSchema = object({
   body: object({
     name: string({
@@ -16,9 +17,16 @@ export const createRecipeSchema = object({
     }),
     ingridients: string({
       required_error: 'Ingridients are required',
+    }),
+    picture_path: string({
+      required_error: 'Picture path is required',
+    }),
+    cloudinary_id: string({
+      required_error: 'Provide picture id are required',
     })
   })
 })
+
 
 export const updateRecipeSchema = object({
   params: object({
