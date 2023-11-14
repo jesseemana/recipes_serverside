@@ -18,14 +18,14 @@ function initializeServer(app: Application, database: Database): Application {
 
   app.use(errorHandler)
   
-  const server = app.listen(PORT, async () => {
+  const server = app.listen(PORT, () => {
     log.info(`Server running on port: ${PORT}...🚀`)
   })
 
   const signals = ['SIGTERM', 'SIGINT']
 
   const gracefulShutdown = (signal: string) => {
-    process.on(signal, async() => {
+    process.on(signal, () => {
       log.info(`Shutting down..., received signal`, signal)
 
       server.close()
