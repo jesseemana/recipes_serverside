@@ -2,7 +2,7 @@ import mongoose, { ConnectOptions } from 'mongoose'
 import log from './logger'
 import config from 'config'
 
-export class ConnectDatabase {
+class ConnectDatabase {
   dbUri: string
   options: ConnectOptions
 
@@ -38,3 +38,6 @@ export class ConnectDatabase {
     log.warn('Database connection closed due to app termination')  
   }
 }
+
+const database = new ConnectDatabase()
+export default database
