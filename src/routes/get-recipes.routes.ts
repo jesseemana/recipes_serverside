@@ -5,6 +5,6 @@ const router = Router()
 
 router.get('/', getAllRecipesHandler)
 router.get('/:id', getSingleRecipeHandler)
-router.get('/:user_id', getUserRecipesHandler)
+router.get('/user/:user_id', getUserRecipesHandler)
 
 export default router
