@@ -9,8 +9,8 @@ export const findRecipeById = (id: string) => {
   return RecipeModel.findById(id)
 }
 
-export const findRecipeByUser = ({ user }: { user: string }) => {
-  return RecipeModel.find({ user })
+export const findRecipeByUser = ({ user_id }: { user_id: string }) => {
+  return RecipeModel.find({ user_id })
 }
 
 export const totalRecipes = () => {
