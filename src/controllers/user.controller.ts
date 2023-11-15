@@ -20,7 +20,10 @@ const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, res: Res
 }
 
 
-const forgortPasswordHandler = async (req: Request<{}, {}, ResetAuthInput['body']>, res: Response) => {
+const forgortPasswordHandler = async (
+  req: Request<{}, {}, ResetAuthInput['body']>, 
+  res: Response
+) => {
   const user = await findUserByEmail(req.body.email);
 
   if (!user) return res.status(401).json(`User doesn't exist.`);
@@ -42,7 +45,10 @@ const forgortPasswordHandler = async (req: Request<{}, {}, ResetAuthInput['body'
 };
 
 
-const resetPasswordHandler = async (req: Request<ResetAuthInput['params'], {}, UpdateAuthInput['body']>, res: Response) => {
+const resetPasswordHandler = async (
+  req: Request<ResetAuthInput['params'], {}, UpdateAuthInput['body']>, 
+  res: Response
+) => {
   const { id, token } = req.params;
   const password = req.body.password;
 
