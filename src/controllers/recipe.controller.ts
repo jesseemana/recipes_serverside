@@ -1,9 +1,9 @@
 import cloudinary from '../utils/cloudinary'
 import { Request, Response } from 'express'
-import { createRecipe, deleteRecipe, findRecipeById, updateRecipe } from '../services/recipe.service'
+import { createRecipe, deleteRecipe, findRecipeById, updateRecipe, uploadPicture } from '../services/recipe.service'
 import { CreateRecipeInput, UpdateRecipeInput } from '../schema/recipe.schema'
-import log from '../utils/logger'
 import { AppError } from '../utils/errors'
+import log from '../utils/logger'
 
 
 export const createRecipeHandler = async (
@@ -12,21 +12,20 @@ export const createRecipeHandler = async (
 ) => {
   const body = req.body
   const user_id = res.locals.user._id
-
   log.info(req.file)
-  const picture = req.file
-  log.info(String(picture?.buffer))
-  const response =  await cloudinary.uploader.upload(String(picture?.buffer))
-  const picture_path =  response.url
-  const cloudinary_id = response.public_id
 
-  const recipe = await createRecipe({ ...body, picture_path, cloudinary_id, user: user_id })
-
-  if (recipe) {
-    return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
-  } else {
-    res.status(400).send('Invalid data received.')
-  }
+  // try {
+  //   if (req.file) {
+  //     const response =  await uploadPicture(req.file.path)
+  //     const picture_path = response.picture_path
+  //     const cloudinary_id = response.cloudinary_id
+  
+  //     const recipe = await createRecipe({ ...body, picture_path, cloudinary_id, user: user_id }) 
+  //     return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
+  //   }
+  // } catch (error) {
+  //   throw new AppError('Bad Request', 400, 'Received invalid data', true)
+  // }
 }
 
 
@@ -43,7 +42,9 @@ export const updateRecipeHandler = async (
     throw new AppError('Not Found', 404, 'Recipe was not found', true)
   }
 
-  if (String(recipe.user) !== user_id) return res.sendStatus(403)
+  if (String(recipe.user) !== String(user_id)) {
+    throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
+  }
 
   const updated_recipe = await updateRecipe({ id }, update, { new: true })
 
@@ -63,7 +64,9 @@ export const deleteRecipeHandler = async (
     throw new AppError('Not Found', 404, 'Recipe was not found', true)
   }
 
-  if (String(recipe.user) !== user_id) return res.sendStatus(403)
+  if (String(recipe.user) !== user_id){
+    throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
+  }
 
   await cloudinary.uploader.destroy(recipe.cloudinary_id) // delete from cloudinary
   await deleteRecipe(id) // delete from db
