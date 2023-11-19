@@ -2,14 +2,10 @@ import { Application } from 'express'
 import log from '../utils/logger'
 import config from 'config'
 import errorHandler from '../middleware/error-handler'
+import { Database } from '../../types'
 
 const cpus = require('os').cpus()
 import cluster from 'cluster'
-
-interface Database {
-  connect: () => void
-  disconnect: () => void
-}
 
 function initializeServer(app: Application, database: Database): Application {
   const PORT = config.get<number>('port')
@@ -27,13 +23,11 @@ function initializeServer(app: Application, database: Database): Application {
   const gracefulShutdown = (signal: string) => {
     process.on(signal, () => {
       log.info(`Shutting down..., received signal`, signal)
-
       server.close()
-
       database.disconnect()
 
-      log.info('Sayonara...😥💤💤')
-      
+      log.info('Goodbye...😥💤💤')
+
       process.exit(0)
     })
   }
@@ -57,9 +51,5 @@ export default initializeServer
 //     cluster.fork();
 //   });
 // } else {
-//   mongoose.connection.once('open', () => {
-//     log.info(`Database connected...`);
-//     app.listen(PORT, () => log.info(`Server #${process.pid} running on port: ${PORT}...`));
-//   });
-//   mongoose.connection.on('error', (err) => console.log(err));
+//    Do stuff here
 // }
