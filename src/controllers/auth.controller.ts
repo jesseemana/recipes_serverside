@@ -70,7 +70,7 @@ export const destroySessionHandler = async (req: Request, res: Response) => {
     return res.sendStatus(204); // No cookie, we're good either way
   }; 
 
-  const sessionId = res.locals.user.session._id;
+  const sessionId = res.locals.user.session._id as string;
 
   const session = await findSessionById(sessionId);
   if (!session || !session.valid) {
