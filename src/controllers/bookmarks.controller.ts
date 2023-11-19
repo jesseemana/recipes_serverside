@@ -1,19 +1,21 @@
 import { Request, Response } from 'express';
 import { findRecipeById } from '../services/recipe.service';
-import { HandleBookmarksInput } from '../schema/bookmarks.schema';
+import { HandleBookmarksInput, GetBookmarksInput } from '../schema/bookmarks.schema';
 import { findUserById } from '../services/user.service';
 import { AppError } from '../utils/errors';
+import log from '../utils/logger';
 
 
 export const userBookmarksHandler = async (
-  req: Request<HandleBookmarksInput, {}, {}>, 
+  req: Request<GetBookmarksInput, {}, {}>, 
   res: Response
 ) => {
-  const { user_id } = req.params;
+  const { id } = req.params;
 
-  const user = await findUserById(user_id);
+  const user = await findUserById(id);
   if (!user) {
-    throw new AppError('Not Found', 404, 'User not found', true);
+    return res.status(404).send('User not found')
+    // throw new AppError('Not Found', 404, 'User not found', true);
   }
 
   const bookmarks = [];
@@ -39,11 +41,13 @@ export const addBookmarkHandler = async (
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) {
-    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
+    return res.status(400).send('User or recipe not found')
+    // throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
   }
 
   if (user.bookmarks.includes(recipe_id)) {
-    throw new AppError('Bad Request', 400, 'Recipe is already bookmarked', true);
+    return res.status(400).send('Recipe already bookmarked')
+    // throw new AppError('Bad Request', 400, 'Recipe is already bookmarked', true);
   }
 
   user.bookmarks.push(recipe_id);
@@ -64,11 +68,15 @@ export const removeBookmarkHandler = async (
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) {
-    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true)
+    return res.status(400).send('User or recipe not found')
+
+    // throw new AppError('Not Found', 404, 'User or Recipe does not exist', true)
   }
 
   if (!user.bookmarks.includes(recipe_id)) {
-    throw new AppError('Bad Request', 400, `Can't perform operation, recipe is not bookmarked`, true);
+    return res.status(400).send('Recipe already bookmarked')
+
+    // throw new AppError('Bad Request', 400, `Can't perform operation, recipe is not bookmarked`, true);
   }
 
   user.bookmarks = [...(user.bookmarks.filter((bookmark) => bookmark !== recipe_id))];

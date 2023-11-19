@@ -1,5 +1,11 @@
 import { object, string, TypeOf } from 'zod'
 
+export const getBookmarksSchema = object({
+  id: string({
+    required_error: 'User id is required'    
+  })
+})
+
 export const bookmarkRecipeSchema = object({
   params: object({
     recipe_id: string({
@@ -11,4 +17,5 @@ export const bookmarkRecipeSchema = object({
   })
 })
 
+export type GetBookmarksInput = TypeOf<typeof getBookmarksSchema>
 export type HandleBookmarksInput = TypeOf<typeof bookmarkRecipeSchema>['params']
