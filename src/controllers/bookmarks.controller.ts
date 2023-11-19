@@ -16,11 +16,9 @@ export const userBookmarksHandler = async (
     throw new AppError('Not Found', 404, 'User not found', true);
   }
 
-  const user_bookmarks = user.bookmarks;
-
   const bookmarks = [];
 
-  for (const bookmark of user_bookmarks) {
+  for (const bookmark of user.bookmarks) {
     const recipe = await findRecipeById(bookmark);
     if (recipe) {
       bookmarks.push(recipe);
@@ -44,13 +42,11 @@ export const addBookmarkHandler = async (
     throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
   }
 
-  const bookmarks = user.bookmarks;
-
-  if (bookmarks.includes(recipe_id)) {
+  if (user.bookmarks.includes(recipe_id)) {
     throw new AppError('Bad Request', 400, 'Recipe is already boomarked', true);
   }
 
-  bookmarks.push(recipe_id);
+  user.bookmarks.push(recipe_id);
 
   await user.save();
 
@@ -70,14 +66,12 @@ export const removeBookmarkHandler = async (
   if (!recipe || !user) {
     throw new AppError('Not Found', 404, 'User or User does not exist', true)
   }
-  
-  const bookmarks = user.bookmarks;
 
-  if (!bookmarks.includes(recipe_id)) {
+  if (!user.bookmarks.includes(recipe_id)) {
     throw new AppError('Bad Request', 400, 'Recipe is not boomarked', true);
   }
 
-  user.bookmarks = [ ...(bookmarks.filter((bookmark) => bookmark.toString() !== recipe_id)) ];
+  user.bookmarks = [ ...(user.bookmarks.filter((bookmark) => bookmark.toString() !== recipe_id)) ];
 
   await user.save();
 
