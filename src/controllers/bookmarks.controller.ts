@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { HandleBookmarksInput } from '../schema/bookmarks.schema';
 import { findRecipeById } from '../services/recipe.service';
+import { HandleBookmarksInput } from '../schema/bookmarks.schema';
 import { findUserById } from '../services/user.service';
 import { AppError } from '../utils/errors';
 
@@ -43,7 +43,7 @@ export const addBookmarkHandler = async (
   }
 
   if (user.bookmarks.includes(recipe_id)) {
-    throw new AppError('Bad Request', 400, 'Recipe is already boomarked', true);
+    throw new AppError('Bad Request', 400, 'Recipe is already bookmarked', true);
   }
 
   user.bookmarks.push(recipe_id);
@@ -64,16 +64,16 @@ export const removeBookmarkHandler = async (
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) {
-    throw new AppError('Not Found', 404, 'User or User does not exist', true)
+    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true)
   }
 
   if (!user.bookmarks.includes(recipe_id)) {
-    throw new AppError('Bad Request', 400, 'Recipe is not boomarked', true);
+    throw new AppError('Bad Request', 400, `Can't perform operation, recipe is not bookmarked`, true);
   }
 
-  user.bookmarks = [ ...(user.bookmarks.filter((bookmark) => bookmark.toString() !== recipe_id)) ];
+  user.bookmarks = [...(user.bookmarks.filter((bookmark) => bookmark !== recipe_id))];
 
   await user.save();
 
-  res.status(200).send(`Recipe for ${recipe.name} removed from bookmarks`);
+  res.status(200).send(`${recipe.name} recipe removed from bookmarks`);
 };
