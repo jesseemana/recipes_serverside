@@ -1,5 +1,6 @@
 import RecipeModel, { Recipe } from '../models/recipe.model'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
+import cloudinary from '../utils/cloudinary'
 
 export const findAllRecipes = () => {
   return RecipeModel.find()
@@ -17,8 +18,16 @@ export const totalRecipes = () => {
   return RecipeModel.countDocuments({})
 }
 
-export const createRecipe = (data: Partial<Recipe>) => {
+export const createRecipe = (data: Recipe) => {
   return RecipeModel.create(data)
+}
+
+export const uploadPicture = async (picture: string) => {
+  const result = await cloudinary.uploader.upload(picture)
+  return { 
+    picture_path: result.url, 
+    cloudinary_id: result.public_id 
+  }
 }
 
 export const updateRecipe = (
