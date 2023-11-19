@@ -1,6 +1,6 @@
 import UserModel, { User } from '../models/user.model';
 
-export const createUser = (data: User) => {
+export const createUser = (data: Partial<User>) => {
   return UserModel.create(data);
 };
 
