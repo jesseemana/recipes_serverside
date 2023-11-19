@@ -2,12 +2,17 @@ import nodemailer, { SendMailOptions } from 'nodemailer'
 import log from './logger'
 import config from 'config'
 
+const smtp = config.get<{
+  user: string
+  pass: string
+  host: string
+  port: number
+  secure: boolean
+}>('smtp')
+
 const transporter = nodemailer.createTransport({
-  host: 'gmail',
-  auth: {
-    user: config.get<string>('user'),
-    pass: config.get<string>('pass')
-  }
+  ...smtp,
+  auth: { user: smtp.user, pass: smtp.pass }
 })
 
 const sendEmail = async (payload: SendMailOptions) => {
@@ -16,6 +21,8 @@ const sendEmail = async (payload: SendMailOptions) => {
       log.error(err, 'Error sending email')
       return
     }
+    
+    // log.info(`Preview email ${nodemailer.getTestMessageUrl(info)}`)
   })
 }
 
