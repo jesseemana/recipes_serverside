@@ -5,7 +5,10 @@ import { createSession, findSessionById, signAccessToken, signRefreshToken, upda
 import { CreateSessionInput } from '../schema/user.schema';
 
 
-export const createSessionHandler = async (req: Request<{}, {}, CreateSessionInput>, res: Response) => {
+export const createSessionHandler = async (
+  req: Request<{}, {}, CreateSessionInput>, 
+  res: Response
+) => {
   const { email, password } = req.body;
   
   const user = await findUserByEmail(email);
@@ -63,9 +66,8 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 
 export const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  // No cookie, we're good either way
   if (!cookies?.refresh_token) {
-    return res.sendStatus(204);
+    return res.sendStatus(204); // No cookie, we're good either way
   }; 
 
   const sessionId = res.locals.user.session._id;
@@ -83,5 +85,5 @@ export const destroySessionHandler = async (req: Request, res: Response) => {
     sameSite: 'none',
   });
 
-  res.send('User logged out successfully.');
+  res.send('User loged out successfully.');
 };
