@@ -11,4 +11,4 @@ export const bookmarkRecipeSchema = object({
   })
 })
 
-export type CreateBookmarksInput = TypeOf<typeof bookmarkRecipeSchema>['params']
+export type HandleBookmarksInput = TypeOf<typeof bookmarkRecipeSchema>['params']

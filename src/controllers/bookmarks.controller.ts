@@ -1,15 +1,20 @@
 import { Request, Response } from 'express';
-import { CreateBookmarksInput } from '../schema/bookmarks.schema';
+import { HandleBookmarksInput } from '../schema/bookmarks.schema';
 import { findRecipeById } from '../services/recipe.service';
 import { findUserById } from '../services/user.service';
+import { AppError } from '../utils/errors';
 
 
-const userBookmarksHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
+export const userBookmarksHandler = async (
+  req: Request<HandleBookmarksInput, {}, {}>, 
+  res: Response
+) => {
   const { user_id } = req.params;
 
   const user = await findUserById(user_id);
-
-  if (!user) return res.status(401).send('User not found');
+  if (!user) {
+    throw new AppError('Not Found', 404, 'User not found', true);
+  }
 
   const user_bookmarks = user.bookmarks;
 
@@ -26,18 +31,23 @@ const userBookmarksHandler = async (req: Request<CreateBookmarksInput, {}, {}>, 
 };
 
 
-const addBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
+export const addBookmarkHandler = async (
+  req: Request<HandleBookmarksInput, {}, {}>, 
+  res: Response
+) => {
   const { user_id, recipe_id } = req.params;
 
   const user = await findUserById(user_id);
   const recipe = await findRecipeById(recipe_id);
 
-  if (!recipe || !user) return res.sendStatus(404);
+  if (!recipe || !user) {
+    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
+  }
 
   const bookmarks = user.bookmarks;
 
   if (bookmarks.includes(recipe_id)) {
-    return res.status(400).send('Recipe already bookmarked');
+    throw new AppError('Bad Request', 400, 'Recipe is already boomarked', true);
   }
 
   bookmarks.push(recipe_id);
@@ -48,18 +58,23 @@ const addBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, re
 };
 
 
-const removeBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>, res: Response) => {
+export const removeBookmarkHandler = async (
+  req: Request<HandleBookmarksInput, {}, {}>, 
+  res: Response
+) => {
   const { user_id, recipe_id } = req.params;
 
   const user = await findUserById(user_id);
   const recipe = await findRecipeById(recipe_id);
 
-  if (!recipe || !user) return res.sendStatus(404);
+  if (!recipe || !user) {
+    throw new AppError('Not Found', 404, 'User or User does not exist', true)
+  }
   
   const bookmarks = user.bookmarks;
 
   if (!bookmarks.includes(recipe_id)) {
-    return res.status(400).send('Recipe not bookmarked');
+    throw new AppError('Bad Request', 400, 'Recipe is not boomarked', true);
   }
 
   user.bookmarks = [ ...(bookmarks.filter((bookmark) => bookmark.toString() !== recipe_id)) ];
@@ -67,11 +82,4 @@ const removeBookmarkHandler = async (req: Request<CreateBookmarksInput, {}, {}>,
   await user.save();
 
   res.status(200).send(`Recipe for ${recipe.name} removed from bookmarks`);
-};
-
-
-export {
-  userBookmarksHandler,
-  addBookmarkHandler,
-  removeBookmarkHandler,
 };
