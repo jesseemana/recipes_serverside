@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import { createRecipe, deleteRecipe, findRecipeById, updateRecipe, uploadPicture } from '../services/recipe.service'
 import { CreateRecipeInput, UpdateRecipeInput } from '../schema/recipe.schema'
 import { AppError } from '../utils/errors'
-import log from '../utils/logger'
 
 
 export const createRecipeHandler = async (
@@ -12,20 +11,19 @@ export const createRecipeHandler = async (
 ) => {
   const body = req.body
   const user_id = res.locals.user._id
-  log.info(req.file)
 
-  // try {
-  //   if (req.file) {
-  //     const response =  await uploadPicture(req.file.path)
-  //     const picture_path = response.picture_path
-  //     const cloudinary_id = response.cloudinary_id
+  try {
+    if (req.file) {
+      const response =  await uploadPicture(req.file.path)
+      const picture_path = response.picture_path
+      const cloudinary_id = response.cloudinary_id
   
-  //     const recipe = await createRecipe({ ...body, picture_path, cloudinary_id, user: user_id }) 
-  //     return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
-  //   }
-  // } catch (error) {
-  //   throw new AppError('Bad Request', 400, 'Received invalid data', true)
-  // }
+      const recipe = await createRecipe({ ...body, picture_path, cloudinary_id, user: user_id }) 
+      return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
+    }
+  } catch (error) {
+    throw new AppError('Bad Request', 400, 'Received invalid data', true)
+  }
 }
 
 
