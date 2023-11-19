@@ -22,7 +22,7 @@ function initializeServer(app: Application, database: Database): Application {
 
   const gracefulShutdown = (signal: string) => {
     process.on(signal, () => {
-      log.info(`Shutting down..., received signal`, signal)
+      log.info(`Received signal: ${signal}, shuting down...`)
       server.close()
       database.disconnect()
 
