@@ -15,10 +15,8 @@ export const createRecipeHandler = async (
   try {
     if (req.file) {
       const response =  await uploadPicture(req.file.path)
-      const picture_path = response.picture_path
-      const cloudinary_id = response.cloudinary_id
   
-      const recipe = await createRecipe({ ...body, picture_path, cloudinary_id, user: user_id }) 
+      const recipe = await createRecipe({ ...body, ...response, user: user_id }) 
       return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
     }
   } catch (error) {
