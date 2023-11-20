@@ -1,6 +1,7 @@
 import RecipeModel, { Recipe } from '../models/recipe.model'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 import cloudinary from '../utils/cloudinary'
+import { CloudinaryResponse } from '../../types'
 
 export const findAllRecipes = () => {
   return RecipeModel.find()
@@ -22,8 +23,8 @@ export const createRecipe = (data: Recipe) => {
   return RecipeModel.create(data)
 }
 
-export const uploadPicture = async (picture: string) => {
-  const result = await cloudinary.uploader.upload(picture)
+export const uploadPicture = async (file_path: string): Promise<CloudinaryResponse> => {
+  const result = await cloudinary.uploader.upload(file_path)
   return { 
     picture_path: result.url, 
     cloudinary_id: result.public_id 
@@ -38,6 +39,8 @@ export const updateRecipe = (
   return RecipeModel.findOneAndUpdate(query, update, options)
 }
 
-export const deleteRecipe = (id: string) => {
-  return RecipeModel.findByIdAndDelete(id)
+export const deleteRecipe = async (id: string, public_id: string): Promise<string> => {
+  await cloudinary.uploader.destroy(public_id)
+  RecipeModel.findByIdAndDelete(id)
+  return 'Recipe has been deleted successfully!'
 }
