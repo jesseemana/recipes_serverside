@@ -1,4 +1,3 @@
-import cloudinary from '../utils/cloudinary'
 import { Request, Response } from 'express'
 import { createRecipe, deleteRecipe, findRecipeById, updateRecipe, uploadPicture } from '../services/recipe.service'
 import { CreateRecipeInput, UpdateRecipeInput, createRecipeSchema } from '../schema/recipe.schema'
@@ -41,13 +40,13 @@ export const updateRecipeHandler = async (
   }
 
   if (String(recipe.user) !== String(user_id)) {
-    return res.status(403).send('User can not update recipe')
+    return res.status(403).send('User is not allowed to update recipe')
     // throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
   }
 
   const updated_recipe = await updateRecipe({ _id: id }, update, { new: true })
 
-  res.send(updated_recipe)
+  res.status(200).send(updated_recipe)
 }
 
 
@@ -65,13 +64,11 @@ export const deleteRecipeHandler = async (
   }
 
   if (String(recipe.user) !== user_id){
-    return res.status(404).send('User can not update recipe')
+    return res.status(403).send('User is not allowed to update recipe')
     // throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
   }
 
-  await cloudinary.uploader.destroy(recipe.cloudinary_id) // delete from cloudinary
-  await deleteRecipe(id) // delete from db
-  const message = `Recipe has been deleted`
+  const message = await deleteRecipe(id, recipe.cloudinary_id)
 
-  res.send(message)
+  res.status(200).send(message)
 }
