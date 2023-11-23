@@ -2,9 +2,9 @@ import rateLimit from 'express-rate-limit'
 import { Request, Response, NextFunction } from 'express'
 
 const loginLimiter = rateLimit({
-  windowMs: 60 * 1000, // one minute, increase to five minutes in production
+  windowMs: 120 * 1000, // delay in milliseconds
   max: 5,  // set the login limit to 5
-  message: { message: 'Too many login attempts, please try again after a 60 second pause' },
+  message: { message: 'Too many login attempts, please try again after a 2 minute pause' },
   handler: (req: Request, res: Response, next: NextFunction, options) => {
     res.status(options.statusCode).send(options.message)
   },
