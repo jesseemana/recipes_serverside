@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { createUser, findUserByEmail, findUserById } from '../services/user.service';
 import sendEmail from '../utils/node-mailer';
+import { Request, Response } from 'express';
+import { createUser, findUserByEmail, findUserById } from '../services/user.service';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 import { CreateUserInput } from '../schema/user.schema';
 import { AppError } from '../utils/errors';
+import { omit }from 'lodash';
+import { private_fields } from '../models/user.model';
 
 
 export const createUserHandler = async (
@@ -28,15 +30,18 @@ export const forgortPasswordHandler = async (
   res: Response
 ) => {
   const { email } = req.body
-
   const  user = await findUserByEmail(email);
+
   if (!user) {
-    throw new AppError('Not Found', 404, `User doesn't exist`, true);
+    return res.status(404).send('User does not exist.')
+    // throw new AppError('Not Found', 404, `User doesn't exist`, true);
   }
 
-  // create a one time link valid for 30 minutes 
   const reset_secret = process.env.JWT_SECRET + user.password;
-  const token = jwt.sign({ 'email': user.email }, reset_secret, { expiresIn: '30m' });
+
+  const user_payload = omit(user.toJSON(), private_fields);
+  
+  const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); // One time link valid for 30 minutes
   const link = `https://gourmands-portal.vercel.app/reset-password/${user._id}/${token}`; 
   const dev_link = `http://localhost:8080/api/v1/user/reset/${user._id}/${token}`; 
 
@@ -44,7 +49,7 @@ export const forgortPasswordHandler = async (
     to: email,
     from: 'test@example.com',
     subject: 'Reset Your Password',
-    text: `Please follow the link to reset your password: ${dev_link}. Link expires in 30 minutes.`
+    html: `<b>Please follow the link to reset your password: <a>${dev_link}</a>. Link expires in 30 minutes.</b>`
   });
 
   res.status(200).send(`Password reset link sent to users' email.`);
@@ -61,7 +66,8 @@ export const resetPasswordHandler = async (
   const user = await findUserById(id);
 
   if (!user) {
-    throw new AppError('Not Found', 404, `User doesn't exist`, true);
+    return res.status(404).send('User does not exist');
+    // throw new AppError('Not Found', 404, `User doesn't exist`, true);
   }
 
   const reset_secret = process.env.JWT_SECRET + user.password;
@@ -69,6 +75,7 @@ export const resetPasswordHandler = async (
   jwt.verify(token, reset_secret, 
     async (err: any) => {
       if (err) return res.status(403).send('Forbidden.');
+      // if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
       user.password = password;
       await user.save();
       res.send('User password has been updated.');
