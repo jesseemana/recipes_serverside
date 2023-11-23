@@ -3,6 +3,8 @@ import config from 'config'
 import log from '../utils/logger'
 import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity, index } from '@typegoose/typegoose'
 
+export const private_fields = ['password', 'bookmarks']
+
 @pre<User>('save', function() {
   if (!this.isModified('password')) return
 
