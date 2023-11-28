@@ -4,10 +4,13 @@ export const createUserSchema = object({
   body: object({
     first_name: string({
       required_error: 'First name is required',
-    }),
+    }).trim(),
     last_name: string({
       required_error: 'Last name is required',
-    }),
+    }).trim(),
+    email: string({
+      required_error: 'Email is required',
+    }).email('Not a valid email').toLowerCase().trim(),
     password: string({
       required_error: 'Password is required',
     }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*[a-z].*"), "One lowercase character")
@@ -22,9 +25,6 @@ export const createUserSchema = object({
       .regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),"One special character")
       .min(8, "Must not be less than 8 characters.")
       .max(64, "Cannot be more than 64 characters long."),
-    email: string({
-      required_error: 'Email is required',
-    }).email('Not a valid email').toLowerCase(),
   }).refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match',
     path: ['confirm_password'],
@@ -36,7 +36,7 @@ export const createSessionSchema = object({
   body: object({
     email: string({
       required_error: 'Email is required',
-    }).email('Not a valid email').toLowerCase(),
+    }).email('Not a valid email').toLowerCase().trim(),
     password: string({
       required_error: 'Password is required',
     }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*\\d.*"), "One number")

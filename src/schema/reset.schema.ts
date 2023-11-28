@@ -3,17 +3,17 @@ import { object, string, TypeOf } from 'zod'
 export const resetAuthSchema = object({
   email: string({
     required_error: 'Please provide an email'
-  }).email('Enter a valid email'),
+  }).email('Enter a valid email').trim().toLowerCase(),
 })
 
 export const updateAuthSchema = object({
   params: object({
     id: string({
       required_error: 'id is required'
-    }),
+    }).trim(),
     token: string({
       required_error: 'Provide the token'
-    })
+    }).trim()
   }),
   body: object({
     password: string({
