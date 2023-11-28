@@ -45,7 +45,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 
   const decoded = verifyToken<{ session: string }>(refresh_token, 'refreshTokenPublicKey');
   if (!decoded) {
-    return res.status(401).send(`Couldn't find refresh token`);
+    return res.status(403).send(`Couldn't find refresh token`);
   }
 
   const session = await findSessionById(decoded.session);

@@ -14,7 +14,7 @@ export const getAllRecipesHandler = async (req: Request, res: Response) => {
 
   const recipes = await findAllRecipes().lean().sort({ createdAt: -1 }).limit(LIMIT).skip(startIndex)
   if (!recipes?.length) {
-    return res.status(400).send('There are no recipes found')
+    return res.status(404).send('There are no recipes found')
   }
 
   // attaching a owner to a recipe
@@ -42,7 +42,7 @@ export const getUserRecipesHandler = async (req: Request, res: Response) => {
   
   const recipes = await findRecipeByUser({ user_id }).limit(LIMIT).skip(startIndex)
   if (!recipes?.length) {
-    return res.status(400).send(`User doesn't have any recipes`)
+    return res.status(404).send(`User doesn't have any recipes`)
   }
 
   const owner = await findUserById(user_id)
@@ -62,15 +62,10 @@ export const getSingleRecipeHandler = async (
 ) => {
   const { id } = req.params
 
-  const recipe = await findRecipeById(id).lean().exec()
-  if (!recipe) {
-    return res.sendStatus(404)
-  }
-
-  const user = await findUserById(String(recipe.user)).lean().exec()
-  if (!user) {
-    return res.sendStatus(404)
-  }
+  const recipe = await findRecipeById(id)
+  if (!recipe) { return res.sendStatus(404) }
+  const user = await findUserById(String(recipe.user))
+  if (!user) { return res.sendStatus(404) }
 
   const owner = `${user.first_name} ${user.last_name}`
 

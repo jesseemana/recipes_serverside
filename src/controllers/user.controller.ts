@@ -16,7 +16,7 @@ export const createUserHandler = async (
   const body = req.body;
   try {
     const new_user = await createUser(body);
-    res.send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
+    res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
   } catch (error: any) {
     if (error.code === 11000) {
       return res.send('Account already exists');
@@ -29,16 +29,15 @@ export const forgortPasswordHandler = async (
   req: Request<{}, {}, ResetAuthInput>, 
   res: Response
 ) => {
-  const { email } = req.body
-  const  user = await findUserByEmail(email);
+  const { email } = req.body;
 
+  const  user = await findUserByEmail(email);
   if (!user) {
-    return res.status(404).send('User does not exist.')
+    return res.status(404).send('User does not exist.');
     // throw new AppError('Not Found', 404, `User doesn't exist`, true);
   }
 
   const reset_secret = process.env.JWT_SECRET + user.password;
-
   const user_payload = omit(user.toJSON(), private_fields);
   
   const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); // One time link valid for 30 minutes

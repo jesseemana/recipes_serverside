@@ -18,8 +18,8 @@ export const createRecipeHandler = async (
       return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
     }
   } catch (error) {
-    return res.status(400).send('Received invalid data')
-    // throw new AppError('Bad Request', 400, 'Received invalid data', true)
+    return res.status(500).send('Internal server error')
+    // throw new AppError('Bad Request', 500, 'Internal server error', true)
   }
 }
 
@@ -39,8 +39,8 @@ export const updateRecipeHandler = async (
   }
 
   if (String(recipe.user) !== String(user_id)) {
-    return res.status(403).send('User is not allowed to update recipe')
-    // throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
+    return res.status(401).send('User is not allowed to update recipe')
+    // throw new AppError('Bad Request', 401, 'User is not allowed to make this operation', true)
   }
 
   const updated_recipe = await updateRecipe({ _id: id }, update, { new: true })
@@ -63,8 +63,8 @@ export const deleteRecipeHandler = async (
   }
 
   if (String(recipe.user) !== user_id){
-    return res.status(403).send('User is not allowed to update recipe')
-    // throw new AppError('Bad Request', 403, 'User is not allowed to make this operation', true)
+    return res.status(401).send('User is not allowed to update recipe')
+    // throw new AppError('Bad Request', 401, 'User is not allowed to make this operation', true)
   }
 
   const message = await deleteRecipe(id, recipe.cloudinary_id)
