@@ -18,9 +18,9 @@ export const createUserHandler = async (
     const new_user = await createUser(body);
     res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
   } catch (error: any) {
-    if (error.code === 11000) {
+    if (error.code === 11000) 
       return res.send('Account already exists');
-    }
+    return res.status(500).send('Internal server error!');
   }
 }
 

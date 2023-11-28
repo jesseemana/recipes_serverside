@@ -12,15 +12,12 @@ export const createSessionHandler = async (
   const { email, password } = req.body;
   
   const user = await findUserByEmail(email);
-
   if (!user || !user.verifyPassword(password)) {
-    return res.send('Invalid user credentials given');
+    return res.status(401).send('Invalid user credentials given');
   }
 
   const session = await createSession({ userId: String(user._id) });
-
   const access_token = signAccessToken(user, session);
-
   const refresh_token = signRefreshToken(session);
 
   res.cookie('refresh_token', refresh_token, {
