@@ -1,20 +1,18 @@
 import { Application } from 'express'
-import log from '../utils/logger'
-import config from 'config'
-import errorHandler from '../middleware/error-handler'
 import { Database } from '../../types'
-
+import errorHandler from '../middleware/error-handler'
+import config from 'config'
+import log from '../utils/logger'
 const cpus = require('os').cpus()
 import cluster from 'cluster'
 
-function initializeServer(app: Application, database: Database): Application {
+const initializeServer = (app: Application, database: Database): Application => {
   const PORT = config.get<number>('port')
   
-  database.connect()
-
   app.use(errorHandler)
   
   const server = app.listen(PORT, () => {
+    database.connect()
     log.info(`Server running on port: ${PORT}...🚀`)
   })
 
@@ -25,7 +23,6 @@ function initializeServer(app: Application, database: Database): Application {
       log.info(`Received signal: ${signal}, shuting down...`)
       server.close()
       database.disconnect()
-
       log.info('Goodbye...😥💤💤')
 
       process.exit(0)
