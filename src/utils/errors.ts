@@ -1,9 +1,14 @@
 export class AppError extends Error {
   public readonly name: string
-  public readonly httpCode: number // should be of type HttpCode, install HttpCodes package
+  public readonly httpCode: HtppCode 
   public readonly isOperational: boolean
 
-  constructor(name: string, httpCode: number, description: string, isOperational: boolean) {
+  constructor(
+    name: string, 
+    httpCode: HtppCode, 
+    description: string, 
+    isOperational: boolean
+  ) {
     super(description)
 
     Object.setPrototypeOf(this, new.target.prototype)
