@@ -2,6 +2,7 @@ require('colors');
 require('dotenv').config();
 require('express-async-errors');
 const cors = require('cors');
+const config = require('config');
 const helmet = require('helmet');
 const cpus = require('os').cpus();
 const cluster = require('cluster');
@@ -9,13 +10,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
-const routes = require('./src/utils/routes');
-const connectDB = require('./src/config/connectDB');
-const { logger } = require('./src/middleware/logger');
-const corsOptions = require('./src/config/corsOptions');
-const errorHandler = require('./src/middleware/errorHandler');
+const routes = require('./utils/routes');
+const connectDB = require('./utils/connectDB');
+const { logger } = require('./middleware/logger');
+const corsOptions = require('./utils/corsOptions');
+const errorHandler = require('./middleware/errorHandler');
 
-const PORT = process.env.PORT;
+const PORT = config.get('port');
 
 const app = express();
 
@@ -47,4 +48,4 @@ if (cluster.isMaster) {
     app.listen(PORT, () => console.log(`Server #${process.pid} running on port: ${PORT}...`.cyan.underline));
   });
   mongoose.connection.on('error', (err) => console.log(err));
-}   
+}
