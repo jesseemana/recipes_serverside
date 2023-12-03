@@ -6,14 +6,12 @@ import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity, inde
 export const private_fields = ['password', 'bookmarks']
 
 @pre<User>('save', function() {
-  if (!this.isModified('password')) return
-
-  const salt = bcrypt.genSaltSync(config.get<number>('saltWorkFactor'))
-  const hash = bcrypt.hashSync(this.password, salt)
-
-  this.password = hash
-
-  return
+  if (this.isModified('password')) {
+    const salt = bcrypt.genSaltSync(config.get<number>('saltWorkFactor'))
+    const hash = bcrypt.hashSync(this.password, salt)
+    this.password = hash
+    return
+  }
 })
 
 @index({ email: 1})
