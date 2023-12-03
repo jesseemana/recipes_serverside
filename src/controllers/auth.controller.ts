@@ -3,6 +3,7 @@ import { verifyToken } from '../utils/jwt';
 import { findUserByEmail, findUserById } from '../services/user.service';
 import { createSession, findSessionById, signAccessToken, signRefreshToken, updateSession } from '../services/auth.service';
 import { CreateSessionInput } from '../schema/user.schema';
+import { AppError } from '../utils/errors';
 
 
 export const createSessionHandler = async (
@@ -13,7 +14,7 @@ export const createSessionHandler = async (
   
   const user = await findUserByEmail(email);
   if (!user || !user.verifyPassword(password)) {
-    return res.status(401).send('Invalid user credentials given');
+    throw new AppError('Unauthorized', 401, 'User provided invalid login email or password', true)
   }
 
   const session = await createSession({ userId: String(user._id) });
@@ -35,24 +36,24 @@ export const createSessionHandler = async (
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    return res.status(401).send('Unauthorized');
+    throw new AppError('Unauthorized', 401, 'No refresh token found', true)
   }
 
   const refresh_token = cookies.refresh_token as string;
 
   const decoded = verifyToken<{ session: string }>(refresh_token, 'refreshTokenPublicKey');
   if (!decoded) {
-    return res.status(403).send(`Couldn't find refresh token`);
+    throw new AppError('Forbidden', 403, 'Could not find refresh token', true)
   }
 
   const session = await findSessionById(decoded.session);
   if (!session || !session.valid) {
-    return res.status(401).send('Session is not found or is invalid');
+    throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true)
   }
 
   const user = await findUserById(String(session.user));
   if (!user) {
-    return res.status(401).send('Could not find user');
+    throw new AppError('Not Found', 404, 'could not find the given user', true)
   }
 
   const access_token = signAccessToken(user, session);
@@ -64,14 +65,14 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 export const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    return res.sendStatus(204); // No cookie, we're good either way
-  }; 
+    throw new AppError('Unauthorized', 401, 'No refresh token found', true)
+  } 
 
   const sessionId = res.locals.user.session._id as string;
 
   const session = await findSessionById(sessionId);
   if (!session || !session.valid) {
-    return res.status(401).send('Session is not found or is invalid');
+    throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true)
   }
 
   await updateSession({ _id: session._id }, { valid: false });
@@ -82,5 +83,5 @@ export const destroySessionHandler = async (req: Request, res: Response) => {
     sameSite: 'none',
   });
 
-  res.send('User loged out successfully.');
-};
+  res.send('User loged out successfully.')
+}

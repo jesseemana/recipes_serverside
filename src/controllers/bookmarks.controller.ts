@@ -12,10 +12,7 @@ export const userBookmarksHandler = async (
   const { id } = req.params;
 
   const user = await findUserById(id);
-  if (!user) {
-    return res.status(404).send('User not found')
-    // throw new AppError('Not Found', 404, 'User not found', true);
-  }
+  if (!user) throw new AppError('Not Found', 404, 'User not found', true);
 
   const bookmarks = [];
   for (const bookmark of user.bookmarks) {
@@ -39,13 +36,11 @@ export const addBookmarkHandler = async (
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) {
-    return res.status(404).send('User or recipe not found')
-    // throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
+    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true);
   }
 
   if (user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send('Recipe already bookmarked')
-    // throw new AppError('Bad Request', 400, 'Recipe is already bookmarked', true);
+    throw new AppError('Bad Request', 400, 'Recipe is already bookmarked', true);
   }
 
   user.bookmarks.push(recipe_id);
@@ -65,13 +60,11 @@ export const removeBookmarkHandler = async (
   const recipe = await findRecipeById(recipe_id);
 
   if (!recipe || !user) {
-    return res.status(404).send('User or recipe not found')
-    // throw new AppError('Not Found', 404, 'User or Recipe does not exist', true)
+    throw new AppError('Not Found', 404, 'User or Recipe does not exist', true)
   }
 
   if (!user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send(`Can't remove recipe that is not bookmarked`)
-    // throw new AppError('Bad Request', 400, `Can't perform operation, recipe is not bookmarked`, true);
+    throw new AppError('Bad Request', 400, `Can't perform operation, recipe is not bookmarked`, true);
   }
 
   user.bookmarks = [...(user.bookmarks.filter((bookmark) => bookmark !== recipe_id))];

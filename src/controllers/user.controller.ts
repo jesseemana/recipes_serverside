@@ -19,8 +19,8 @@ export const createUserHandler = async (
     res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
   } catch (error: any) {
     if (error.code === 11000) 
-      return res.send('Account already exists');
-    return res.status(500).send('Internal server error!');
+      throw new AppError('Conflict', 409, `Email already in use.`, true) 
+    throw new AppError('Internal Server Error', 500, `Something went wr0ng.`, true) 
   }
 }
 
@@ -32,10 +32,7 @@ export const forgortPasswordHandler = async (
   const { email } = req.body;
 
   const  user = await findUserByEmail(email);
-  if (!user) {
-    return res.status(404).send('User does not exist.');
-    // throw new AppError('Not Found', 404, `User doesn't exist`, true);
-  }
+  if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
   const user_payload = omit(user.toJSON(), private_fields);
@@ -64,17 +61,13 @@ export const resetPasswordHandler = async (
 
   const user = await findUserById(id);
 
-  if (!user) {
-    return res.status(404).send('User does not exist');
-    // throw new AppError('Not Found', 404, `User doesn't exist`, true);
-  }
+  if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
 
   jwt.verify(token, reset_secret, 
     async (err: any) => {
-      if (err) return res.status(403).send('Forbidden.');
-      // if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
+      if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
       user.password = password;
       await user.save();
       res.send('User password has been updated.');
