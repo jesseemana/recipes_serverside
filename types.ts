@@ -1,10 +1,4 @@
-export type SMTP = {
-  user: string
-  pass: string
-  port: string
-  host: string
-  secure: boolean
-}
+export type HttpCode = 400 | 401 | 403 | 404 | 409 | 500
 
 export type Database = {
   connect: () => void
