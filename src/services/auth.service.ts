@@ -7,7 +7,7 @@ import { signJwt } from '../utils/jwt'
 
 
 export const findAllSessions = async () => {
-  return SessionModel.find()
+  return SessionModel.find({})
 }
 
 export const deleteAllSessions = async () => {

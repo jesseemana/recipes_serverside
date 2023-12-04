@@ -4,7 +4,7 @@ import cloudinary from '../utils/cloudinary'
 import { CloudinaryResponse } from '../../types'
 
 export const findAllRecipes = () => {
-  return RecipeModel.find()
+  return RecipeModel.find({})
 }
 
 export const findRecipeById = (id: string) => {
@@ -23,7 +23,7 @@ export const createRecipe = (data: Recipe) => {
   return RecipeModel.create(data)
 }
 
-export const uploadPicture = async (file_path: string): Promise<CloudinaryResponse> => {
+export const uploadPicture = async (file_path: string) => {
   const result = await cloudinary.uploader.upload(file_path)
   return { 
     picture_path: result.url, 
