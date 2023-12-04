@@ -12,6 +12,8 @@ export const private_fields = ['password', 'bookmarks']
     this.password = hash
     return
   }
+  
+  return
 })
 
 @index({ email: 1})

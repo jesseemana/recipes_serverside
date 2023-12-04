@@ -19,8 +19,8 @@ export const createUserHandler = async (
     res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
   } catch (error: any) {
     if (error.code === 11000) 
-      throw new AppError('Conflict', 409, `Email already in use.`, true) 
-    throw new AppError('Internal Server Error', 500, `Something went wr0ng.`, true) 
+      throw new AppError('Conflict', 409, `Email already in use.`, true);
+    throw new AppError('Internal Server Error', 500, `Something went wr0ng.`, true);
   }
 }
 
@@ -32,6 +32,7 @@ export const forgortPasswordHandler = async (
   const { email } = req.body;
 
   const  user = await findUserByEmail(email);
+
   if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
@@ -70,7 +71,7 @@ export const resetPasswordHandler = async (
       if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
       user.password = password;
       await user.save();
-      res.send('User password has been updated.');
+      res.send(`Users' password has been updated.`);
     }
   );
 };
