@@ -14,8 +14,8 @@ import { AppError } from '../utils/errors';
 
 
 export async function findSessionsHandler(_: Request, res: Response) {
-  const allsessions = await findAllSessions();
-  res.status(200).send(allsessions);
+  const all_sessions = await findAllSessions();
+  res.status(200).send(all_sessions);
 }
 
 
