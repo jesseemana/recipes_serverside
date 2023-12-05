@@ -30,9 +30,7 @@ export const forgortPasswordHandler = async (
   res: Response
 ) => {
   const { email } = req.body;
-
   const  user = await findUserByEmail(email);
-
   if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
