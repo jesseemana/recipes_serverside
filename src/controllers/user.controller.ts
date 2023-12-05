@@ -16,11 +16,11 @@ export const createUserHandler = async (
   const body = req.body;
   try {
     const new_user = await createUser(body);
-    res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully!`);
+    res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully.`);
   } catch (error: any) {
     if (error.code === 11000) 
       throw new AppError('Conflict', 409, `Email already in use.`, true);
-    throw new AppError('Internal Server Error', 500, `Something went wr0ng.`, true);
+    throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
   }
 }
 
