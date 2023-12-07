@@ -1,9 +1,8 @@
 import RecipeModel, { Recipe } from '../models/recipe.model'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 import cloudinary from '../utils/cloudinary'
-import { CloudinaryResponse } from '../../types'
 
-export const findAllRecipes = () => {
+export const getAllRecipes = () => {
   return RecipeModel.find({})
 }
 
@@ -11,12 +10,12 @@ export const findRecipeById = (id: string) => {
   return RecipeModel.findById(id)
 }
 
-export const findRecipeByUser = ({ user_id }: { user_id: string }) => {
+export const getUserRecipes = ({ user_id }: { user_id: string }) => {
   return RecipeModel.find({ user_id })
 }
 
 export const totalRecipes = () => {
-  return RecipeModel.countDocuments({})
+  return RecipeModel.estimatedDocumentCount({})
 }
 
 export const createRecipe = (data: Recipe) => {
