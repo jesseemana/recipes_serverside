@@ -1,21 +1,22 @@
 import { Request, Response } from 'express'
-import { findAllRecipes, findRecipeById, findRecipeByUser, totalRecipes } from '../services/recipe.service'
+import { getAllRecipes, findRecipeById, getUserRecipes, totalRecipes } from '../services/recipe.service'
 import { findUserById } from '../services/user.service'
 import { UpdateRecipeInput } from '../schema/recipe.schema'
 import { AppError } from '../utils/errors'
 
+const ITEMS_PER_PAGE = 20
+
 export const getAllRecipesHandler = async (req: Request, res: Response) => {
-  const { page } = req.query
+  const page = req.query.page || 1
+  const start_index = (Number(page) - 1) * ITEMS_PER_PAGE // starting index of every page
+  const count = totalRecipes()
 
-  // pagination setup
-  const LIMIT = 20
-  const startIndex = (Number(page) - 1) * LIMIT // starting index of every page
-  const total = await totalRecipes()
+  const all_recipes = getAllRecipes().sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
+  const [total, recipes] = await Promise.all([count, all_recipes])
 
-  const recipes = await findAllRecipes().lean().sort({ createdAt: -1 }).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) throw new AppError('Not Found', 404, 'There are no recipes found here.', true)
+  if (!recipes?.length) 
+    throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
 
-  // attaching a owner to a recipe
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
     const user = await findUserById(String(recipe.user)).lean().exec()
     if (!user) throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true) 
@@ -24,29 +25,42 @@ export const getAllRecipesHandler = async (req: Request, res: Response) => {
 
   res.status(200).json({
     recipes: recipes_with_user,
-    current_page: Number(page),
-    total_pages: Math.ceil(total / LIMIT)
+    pagination: {
+      page: Number(page),
+      total_pages: Math.ceil(total / ITEMS_PER_PAGE)
+    }
   })
 }
 
 
 export const getUserRecipesHandler = async (req: Request, res: Response) => {
   const { user_id } = req.params
-  const LIMIT = 20
-  const startIndex = (Number(req.query.page) - 1) * LIMIT // starting index of every page
-  // const total = await totalRecipes()
+
+  const page = req.query.page || 1
+  const start_index = (Number(page) - 1) * ITEMS_PER_PAGE // starting index of every page
+  const count = totalRecipes()
 
   if (!user_id) throw new AppError('Bad Request', 400, `Please provide a user id.`, true) 
   
-  const recipes = await findRecipeByUser({ user_id }).limit(LIMIT).skip(startIndex)
-  if (!recipes?.length) throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
+  const user_recipes = getUserRecipes({ user_id }).sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
+  const [total, recipes] = await Promise.all([count, user_recipes])
+
+  if (!recipes?.length) 
+    throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
 
   const owner = await findUserById(user_id)
   if (!owner) throw new AppError('Not Found', 404, `User doesn't not exist.`, true) 
 
   const full_name = `${owner.first_name} ${owner.last_name}`
 
-  res.status(200).json({ recipes, full_name })
+  res.status(200).json({ 
+    recipes: recipes, 
+    full_name: full_name, 
+    pagination: {
+      page: Number(page),
+      tota_pages: Math.ceil(total / ITEMS_PER_PAGE)
+    }
+  })
 }
 
 
