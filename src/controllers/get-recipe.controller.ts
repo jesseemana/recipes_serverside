@@ -14,7 +14,7 @@ export const getAllRecipesHandler = async (req: Request, res: Response) => {
   const all_recipes = getAllRecipes().sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
   const [total, recipes] = await Promise.all([count, all_recipes])
 
-  if (!recipes?.length) 
+  if (!recipes.length) 
     throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
 
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
@@ -45,7 +45,7 @@ export const getUserRecipesHandler = async (req: Request, res: Response) => {
   const user_recipes = getUserRecipes({ user_id }).sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
   const [total, recipes] = await Promise.all([count, user_recipes])
 
-  if (!recipes?.length) 
+  if (!recipes.length) 
     throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
 
   const owner = await findUserById(user_id)
