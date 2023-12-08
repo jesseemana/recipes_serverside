@@ -27,8 +27,8 @@ export const updateRecipeHandler = async (
   req: Request<UpdateRecipeInput['params'], {}, UpdateRecipeInput['body']>, 
   res: Response
 ) => {
-  const update = req.body
   const { id } = req.params
+  const update_data = req.body
   const user_id = res.locals.user._id
   
   const recipe = await findRecipeById(id)
@@ -39,7 +39,7 @@ export const updateRecipeHandler = async (
     throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
   }
 
-  const updated_recipe = await updateRecipe({ _id: id }, update, { new: true })
+  const updated_recipe = await updateRecipe({ _id: id }, update_data, { new: true })
 
   res.status(200).send(updated_recipe)
 }
