@@ -6,7 +6,7 @@ import {
   findSessionsHandler, 
   refreshTokenHandler 
 } from '../controllers/auth.controller'
-import validateInput from '../middleware/validateInput'
+import validateInput from '../middleware/validate-input'
 import { createSessionSchema } from '../schema/user.schema'
 import requireUser from '../middleware/require-user'
 
