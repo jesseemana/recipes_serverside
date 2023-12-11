@@ -1,10 +1,12 @@
 import { Application } from 'express'
 import { Database } from '../../types'
 import errorHandler from '../middleware/error-handler'
-import config from 'config'
+import { startMetricsServer } from '../utils/metrics'
 import log from '../utils/logger'
-const cpus = require('os').cpus()
+import config from 'config'
+import { cpus } from 'os'
 import cluster from 'cluster'
+import { once } from 'events'
 
 const initializeServer = (app: Application, database: Database): Application => {
   const PORT = config.get<number>('port')
@@ -15,6 +17,8 @@ const initializeServer = (app: Application, database: Database): Application => 
     database.connect()
     log.info(`Server running on port: ${PORT}...🚀`)
   })
+
+  startMetricsServer()
 
   const signals = ['SIGTERM', 'SIGINT']
 
@@ -36,17 +40,31 @@ const initializeServer = (app: Application, database: Database): Application => 
   return app
 }
 
-export default initializeServer 
+export default initializeServer
 
 // if (cluster.isPrimary) {
 //   log.info(`Master process ${process.pid} has started...`);
-//   for (let i = 0; i < cpus.length; i++) {
-//     cluster.fork();
-//   }
-//   cluster.on('exit', (worker, code, signal) => {
-//     log.info(`Worker ${worker.process.pid} has died...`);
-//     cluster.fork();
+//   const available_cpus = cpus()
+//   available_cpus.forEach(() => cluster.fork())
+
+//   cluster.on('exit', (worker, code) => {
+//     if (code !== 0 && !worker.exitedAfterDisconnect) {
+//       log.info(`Worker ${worker.process.pid} has died. Forking new worker...`);
+//       cluster.fork();
+//     }
 //   });
+
+//   process.on('SIGUSR2', async () => {
+//     const workers = Object.values(cluster.workers)
+//     for (const worker of workers) {
+//       log.info(`Stopping worker: ${worker?.process.pid}`)
+//       worker?.disconnect()
+//       await once(worker, 'exit')
+//       if (!worker?.exitedAfterDisconnect) continue
+//       const newWorker = cluster.fork() // (4)
+//       await once(newWorker, 'listening')
+//     }
+//   })
 // } else {
-//    Do stuff here
+//   // Do stuff here i.e. start server
 // }
