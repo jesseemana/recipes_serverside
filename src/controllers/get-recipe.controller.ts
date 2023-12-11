@@ -9,13 +9,13 @@ const ITEMS_PER_PAGE = 20
 export const getAllRecipesHandler = async (req: Request, res: Response) => {
   const page = req.query.page || 1
   const start_index = (Number(page) - 1) * ITEMS_PER_PAGE // starting index of every page
-  const count = totalRecipes()
+  const count = await totalRecipes()
 
-  const all_recipes = getAllRecipes().sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
-  const [total, recipes] = await Promise.all([count, all_recipes])
+  const recipes = await getAllRecipes().sort({ createdAt: - 1 }).limit(ITEMS_PER_PAGE).skip(start_index).lean()
 
   if (!recipes.length) 
-    throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
+    // throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
+    return res.status(404).send('There are no recipes found. Create some')
 
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
     const user = await findUserById(String(recipe.user)).lean().exec()
@@ -27,7 +27,7 @@ export const getAllRecipesHandler = async (req: Request, res: Response) => {
     recipes: recipes_with_user,
     pagination: {
       page: Number(page),
-      total_pages: Math.ceil(total / ITEMS_PER_PAGE)
+      total_pages: Math.ceil(count / ITEMS_PER_PAGE)
     }
   })
 }
@@ -38,20 +38,20 @@ export const getUserRecipesHandler = async (req: Request, res: Response) => {
 
   const page = req.query.page || 1
   const start_index = (Number(page) - 1) * ITEMS_PER_PAGE // starting index of every page
-  const count = totalRecipes()
+  const total = await totalRecipes()
 
-  if (!user_id) throw new AppError('Bad Request', 400, `Please provide a user id.`, true) 
-  
-  const user_recipes = getUserRecipes({ user_id }).sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(start_index)
-  const [total, recipes] = await Promise.all([count, user_recipes])
+  const user = await findUserById(user_id)
+  if (!user) 
+    // throw new AppError('Not Found', 404, `User doesn't not exist.`, true) 
+    return res.status(404).send('User does not exist')
+    
+  const recipes = await getUserRecipes({ user_id }).sort({ createdAt: - 1 }).limit(ITEMS_PER_PAGE).skip(start_index).lean()
 
   if (!recipes.length) 
-    throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
+    // throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
+    return res.status(404).send('User does not have any recipes')
 
-  const owner = await findUserById(user_id)
-  if (!owner) throw new AppError('Not Found', 404, `User doesn't not exist.`, true) 
-
-  const full_name = `${owner.first_name} ${owner.last_name}`
+  const full_name = `${user.first_name} ${user.last_name}`
 
   res.status(200).json({ 
     recipes: recipes, 
