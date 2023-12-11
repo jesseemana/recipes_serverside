@@ -9,6 +9,6 @@ const configureRoutes = (app: Express) => {
   app.use('/api/v1/user', userRoute)
   app.use('/api/v1/recipes', recipesRoute)
   app.use('/api/v1/bookmarks', bookmarksRoute)
-};
+}
 
 export default configureRoutes
