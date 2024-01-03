@@ -5,7 +5,7 @@ export type Database = {
   disconnect: () => void
 }
 
-export type CloudinaryResponse = {
+export type UploadResponse = {
   picture_path: string
   cloudinary_id: string
 }
