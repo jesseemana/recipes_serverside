@@ -1,45 +1,127 @@
 import RecipeModel, { Recipe } from '../models/recipe.model'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 import cloudinary from '../utils/cloudinary'
+import { databaseResponseTimeHistogram } from '../utils/metrics'
+import { AppError } from '../utils/errors'
 
-export const getAllRecipes = () => {
-  return RecipeModel.find({})
-}
+const getUserRecipes = ({ user_id }: {user_id: string}) => {
+  const metricsLabels = { operation: 'findUserRecipes' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.find({ user_id })
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
 
-export const findRecipeById = (id: string) => {
-  return RecipeModel.findById(id)
-}
-
-export const getUserRecipes = ({ user_id }: { user_id: string }) => {
   return RecipeModel.find({ user_id })
 }
 
-export const totalRecipes = () => {
-  return RecipeModel.estimatedDocumentCount({})
+const getAllRecipes = () => {
+  const metricsLabels = { operation: 'getAllRecipes' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.find({})
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  return RecipeModel.find({})
 }
 
-export const createRecipe = (data: Recipe) => {
-  return RecipeModel.create(data)
+ const findRecipeById = async (id: string) => {
+  const metricsLabels = { operation: 'findRecipe' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.findById(id)
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  return await RecipeModel.findById(id)
 }
 
-export const uploadPicture = async (file_path: string) => {
-  const result = await cloudinary.uploader.upload(file_path)
-  return { 
-    picture_path: result.url, 
-    cloudinary_id: result.public_id 
-  }
+ const totalRecipes = async () => {
+  const metricsLabels = { operation: 'countDocuments' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.estimatedDocumentCount({})
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  return await RecipeModel.estimatedDocumentCount({})
 }
 
-export const updateRecipe = (
+ const createRecipe = async (data: Recipe) => {
+  const metricsLabels = { operation: 'createRecipe' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.create(data)
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  return await RecipeModel.create(data)
+}
+
+ const updateRecipe = async (
   query: FilterQuery<Recipe>, 
   update: UpdateQuery<Recipe>, 
   options: QueryOptions
 ) => {
-  return RecipeModel.findOneAndUpdate(query, update, options)
+  const metricsLabels = { operation: 'updateRecipe' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const result = await RecipeModel.findOneAndUpdate(query, update, options)
+  //   timer({...metricsLabels, success: 'true'})
+  //   return result
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  return await RecipeModel.findOneAndUpdate(query, update, options)
 }
 
-export const deleteRecipe = async (id: string, public_id: string): Promise<string> => {
-  await cloudinary.uploader.destroy(public_id)
-  RecipeModel.findByIdAndDelete(id)
+ const deleteRecipe = async (id: string, public_id: string): Promise<string> => {
+  const metricsLabels = { operation: 'deleteRecipe' }
+  const timer = databaseResponseTimeHistogram.startTimer()
+  // try {
+  //   const delete_from_cloud = cloudinary.uploader.destroy(public_id)
+  //   const delete_from_db = RecipeModel.findByIdAndDelete(id)
+  //   await Promise.all([cloudinary.uploader.destroy(public_id), RecipeModel.findByIdAndDelete(id)])
+  //   timer({...metricsLabels, success: 'true'})
+  //   return 'Recipe has been deleted successfully!'
+  // } catch (error) {
+  //   timer({...metricsLabels, success: 'false'})
+  //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+  // }
+
+  await Promise.all([cloudinary.uploader.destroy(public_id), RecipeModel.findByIdAndDelete(id)])
   return 'Recipe has been deleted successfully!'
+}
+
+export default {
+  getUserRecipes, 
+  getAllRecipes, 
+  deleteRecipe,
+  updateRecipe, 
+  createRecipe, 
+  totalRecipes, 
+  findRecipeById
 }

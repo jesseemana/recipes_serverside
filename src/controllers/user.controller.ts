@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import sendEmail from '../utils/node-mailer';
-import { Request, Response } from 'express';
-import { createUser, findUserByEmail, findUserById } from '../services/user.service';
-import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
-import { CreateUserInput } from '../schema/user.schema';
-import { AppError } from '../utils/errors';
+import UserService from '../services/user.service';
 import { omit }from 'lodash';
+import { AppError } from '../utils/errors';
+import { Request, Response } from 'express';
 import { private_fields } from '../models/user.model';
+import { CreateUserInput } from '../schema/user.schema';
+import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 
 
 export const createUserHandler = async (
@@ -15,7 +15,7 @@ export const createUserHandler = async (
 ) => {
   const body = req.body;
   try {
-    const new_user = await createUser(body);
+    const new_user = await UserService.createUser(body);
     res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully.`);
   } catch (error: any) {
     if (error.code === 11000) 
@@ -30,7 +30,7 @@ export const forgortPasswordHandler = async (
   res: Response
 ) => {
   const { email } = req.body;
-  const  user = await findUserByEmail(email);
+  const  user = await UserService.findUserByEmail(email);
   if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
@@ -58,7 +58,7 @@ export const resetPasswordHandler = async (
   const { password } = req.body;
   const { id, token } = req.params;
 
-  const user = await findUserById(id);
+  const user = await UserService.findUserById(id);
 
   if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 

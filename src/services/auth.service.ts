@@ -6,30 +6,30 @@ import { DocumentType } from '@typegoose/typegoose'
 import { signJwt } from '../utils/jwt'
 
 
-export const findAllSessions = async () => {
+const findAllSessions = async () => {
   return SessionModel.find({})
 }
 
-export const deleteAllSessions = async () => {
+const deleteAllSessions = async () => {
   return SessionModel.deleteMany()
 }
 
-export const createSession = async ({ userId }: { userId: string }) => {
+const createSession = async ({ userId }: { userId: string }) => {
   return SessionModel.create({ user: userId })
 }
 
-export const findSessionById = async (id: string) => {
+const findSessionById = async (id: string) => {
   return SessionModel.findById(id)
 }
 
-export const updateSession = (
+const updateSession = (
   query: FilterQuery<Session>, 
   update: UpdateQuery<Session>
 ) => {
   return SessionModel.findOneAndUpdate(query, update)
 }
 
-export const signAccessToken = (
+const signAccessToken = (
   user: DocumentType<User>, 
   session: DocumentType<Session>
 ) => {
@@ -44,7 +44,7 @@ export const signAccessToken = (
   return access_token 
 }
 
-export const signRefreshToken = (session: DocumentType<Session>) => {
+const signRefreshToken = (session: DocumentType<Session>) => {
   const refresh_token = signJwt(
     { session: session._id }, 
     'refreshTokenPrivateKey', 
@@ -52,4 +52,14 @@ export const signRefreshToken = (session: DocumentType<Session>) => {
   )
 
   return refresh_token
+}
+
+export default {
+  findAllSessions,
+  deleteAllSessions,
+  createSession,
+  findSessionById,
+  updateSession,
+  signAccessToken,
+  signRefreshToken,
 }

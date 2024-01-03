@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { findRecipeById } from '../services/recipe.service';
+import RecipeService from '../services/recipe.service';
 import { HandleBookmarksInput, GetBookmarksInput } from '../schema/bookmarks.schema';
-import { findUserById } from '../services/user.service';
+import UserService from '../services/user.service';
 import { AppError } from '../utils/errors';
 
 
@@ -11,13 +11,13 @@ export const userBookmarksHandler = async (
 ) => {
   const { id } = req.params;
 
-  const user = await findUserById(id);
+  const user = await UserService.findUserById(id);
   if (!user) throw new AppError('Not Found', 404, 'User not found', true);
 
   const bookmarks = [];
 
   for (const bookmark of user.bookmarks) {
-    const recipe = await findRecipeById(bookmark);
+    const recipe = await RecipeService.findRecipeById(bookmark);
     if (recipe) {
       bookmarks.push(recipe);
     }
@@ -33,8 +33,8 @@ export const addBookmarkHandler = async (
 ) => {
   const { user_id, recipe_id } = req.params;
 
-  const found_user = findUserById(user_id);
-  const found_recipe = findRecipeById(recipe_id);
+  const found_user = UserService.findUserById(user_id);
+  const found_recipe = RecipeService.findRecipeById(recipe_id);
   const [user, recipe] = await Promise.all([found_user, found_recipe]);
 
   if (!recipe || !user) 
@@ -56,8 +56,8 @@ export const removeBookmarkHandler = async (
 ) => {
   const { user_id, recipe_id } = req.params;
 
-  const found_user = findUserById(user_id);
-  const found_recipe = findRecipeById(recipe_id);
+  const found_user = UserService.findUserById(user_id);
+  const found_recipe = RecipeService.findRecipeById(recipe_id);
   const [user, recipe] = await Promise.all([found_user, found_recipe]);
 
   if (!recipe || !user) 
