@@ -1,4 +1,4 @@
-import { Application } from 'express'
+import { Application, Express } from 'express'
 import { Database } from '../../types'
 import errorHandler from '../middleware/error-handler'
 import { startMetricsServer } from '../utils/metrics'
@@ -9,16 +9,15 @@ import cluster from 'cluster'
 import { once } from 'events'
 
 const initializeServer = (app: Application, database: Database): Application => {
-  const PORT = config.get<number>('port')
+  const PORT = Number(process.env.PORT)
   
   app.use(errorHandler)
   
   const server = app.listen(PORT, () => {
     database.connect()
     log.info(`Server running on port: ${PORT}...🚀`)
+    startMetricsServer()
   })
-
-  startMetricsServer()
 
   const signals = ['SIGTERM', 'SIGINT']
 
@@ -28,7 +27,6 @@ const initializeServer = (app: Application, database: Database): Application => 
       server.close()
       database.disconnect()
       log.info('Goodbye...😥💤💤')
-
       process.exit(0)
     })
   }

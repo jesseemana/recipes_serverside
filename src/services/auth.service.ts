@@ -37,8 +37,8 @@ const signAccessToken = (
   
   const access_token = signJwt(
     { ...user_payload, session }, 
-    'accessTokenPrivateKey', 
-    { expiresIn: '15m' }
+    String(process.env.ACCESS_TOKEN_PRIVATE_KEY), 
+    { expiresIn: String(process.env.ACCESS_TOKEN_TIME_TO_LIVE)}
   )
 
   return access_token 
@@ -47,8 +47,8 @@ const signAccessToken = (
 const signRefreshToken = (session: DocumentType<Session>) => {
   const refresh_token = signJwt(
     { session: session._id }, 
-    'refreshTokenPrivateKey', 
-    { expiresIn: '30d' }
+    String(process.env.REFRESH_TOKEN_PRIVATE_KEY), 
+    { expiresIn: String(process.env.REFRESH_TOKEN_TIME_TO_LIVE) }
   )
 
   return refresh_token

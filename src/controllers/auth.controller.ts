@@ -19,8 +19,9 @@ export const createSessionHandler = async (
   const { email, password } = req.body;
   
   const user = await UserService.findUserByEmail(email);
-  if (!user || !user.verifyPassword(password)) 
-    throw new AppError('Unauthorized', 401, 'User provided invalid login email or password', true);
+  if (!user) return res.status(404).send('User does not exist.');
+  if (!user.verifyPassword(password)) 
+    return res.status(401).send('Please provide a correct password.');
 
   const session = await AuthService.createSession({ userId: String(user._id) });
   const access_token = AuthService.signAccessToken(user, session);
@@ -46,7 +47,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 
   const refresh_token = cookies.refresh_token as string;
 
-  const decoded = verifyToken<{ session: string }>(refresh_token, 'refreshTokenPublicKey');
+  const decoded = verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_PUBLIC_KEY));
   if (!decoded) 
     throw new AppError('Forbidden', 403, 'Could not find refresh token', true);
 

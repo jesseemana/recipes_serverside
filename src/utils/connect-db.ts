@@ -1,10 +1,9 @@
 import mongoose, { ConnectOptions } from 'mongoose'
 import log from './logger'
-import config from 'config'
 
 class ConnectDatabase {
-  dbUri: string
-  options: ConnectOptions
+  protected dbUri: string
+  protected options: ConnectOptions
 
   constructor() {
     this.options = {
@@ -14,20 +13,18 @@ class ConnectDatabase {
       socketTimeoutMS: 4500,
     }
 
-    this.dbUri = config.get<string>('dbUri')
+    this.dbUri = String(process.env.MONGO_URI)
   }
 
   connect() { 
     mongoose.connect(this.dbUri)
-
+    
     mongoose.connection.on('connected', () => {
       log.info('Database connected...')
     })
-
     mongoose.connection.on('error', (error: string) => {
       log.error(`Error connecting to database: ${error}`)
     })
-
     mongoose.connection.on('disconnected', () => {
       log.warn('Mongoose database connection has been disconnected')
     })

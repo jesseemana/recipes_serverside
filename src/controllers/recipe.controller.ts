@@ -35,12 +35,9 @@ export const updateRecipeHandler = async (
   const user_id = res.locals.user._id
   
   const recipe = await RecipeService.findRecipeById(id)
-
   if (!recipe) throw new AppError('Not Found', 404, 'Recipe was not found', true)
-
-  if (String(recipe.user) !== String(user_id)) {
+  if (String(recipe.user) !== String(user_id)) 
     throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
-  }
 
   const updated_recipe = await RecipeService.updateRecipe({ _id: id }, update_data, { new: true })
 
@@ -56,9 +53,7 @@ export const deleteRecipeHandler = async (
   const user_id = res.locals.user._id
   
   const recipe = await RecipeService.findRecipeById(id)
-
   if (!recipe) throw new AppError('Not Found', 404, 'Recipe was not found', true)
-
   if (String(recipe.user) !== user_id) 
     throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
 
