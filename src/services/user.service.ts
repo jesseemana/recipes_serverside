@@ -1,4 +1,5 @@
-import UserModel, { User } from '../models/user.model';
+import { UserModel } from '../models';
+import { User } from '../models/user.model';
 
 const createUser = (data: Partial<User>) => {
   return UserModel.create(data);

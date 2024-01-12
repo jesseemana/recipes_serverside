@@ -4,7 +4,7 @@ import { UserService, RecipeService } from '../services';
 import { HandleBookmarksInput, GetBookmarksInput } from '../schema/bookmarks.schema';
 
 
-export const userBookmarksHandler = async (
+const userBookmarksHandler = async (
   req: Request<GetBookmarksInput, {}, {}>, 
   res: Response
 ) => {
@@ -26,7 +26,7 @@ export const userBookmarksHandler = async (
 };
 
 
-export const addBookmarkHandler = async (
+const addBookmarkHandler = async (
   req: Request<HandleBookmarksInput, {}, {}>, 
   res: Response
 ) => {
@@ -49,7 +49,7 @@ export const addBookmarkHandler = async (
 };
 
 
-export const removeBookmarkHandler = async (
+const removeBookmarkHandler = async (
   req: Request<HandleBookmarksInput, {}, {}>, 
   res: Response
 ) => {
@@ -70,3 +70,10 @@ export const removeBookmarkHandler = async (
 
   res.status(200).send(`${recipe.name} recipe removed from bookmarks`);
 };
+
+
+export default {
+  removeBookmarkHandler, 
+  addBookmarkHandler, 
+  userBookmarksHandler,
+}

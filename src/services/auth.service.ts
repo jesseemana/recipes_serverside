@@ -1,8 +1,9 @@
-import SessionModel, { Session } from '../models/session.model'
-import { FilterQuery, UpdateQuery } from 'mongoose'
+import { SessionModel } from '../models'
+import { Session } from '../models/session.model'
 import { User, private_fields } from '../models/user.model'
-import { omit } from 'lodash'
 import { DocumentType } from '@typegoose/typegoose'
+import { FilterQuery, UpdateQuery } from 'mongoose'
+import { omit } from 'lodash'
 import { Jwt } from '../utils'
 import dotenv from 'dotenv'
 dotenv.config()

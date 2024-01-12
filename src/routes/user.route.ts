@@ -1,13 +1,13 @@
 import { Router } from 'express'
-import { createUserHandler, forgortPasswordHandler, resetPasswordHandler } from '../controllers/user.controller'
-import validateInput from '../middleware/validate-input'
-import { resetAuthSchema, updateAuthSchema } from '../schema/reset.schema'
+import { UserController } from '../controllers'
+import { validateInput }from '../middleware'
 import { createUserSchema } from '../schema/user.schema'
+import { resetAuthSchema, updateAuthSchema } from '../schema/reset.schema'
 
 const router = Router()
 
-router.post('/register', validateInput(createUserSchema), createUserHandler)
-router.post('/forgot_password', forgortPasswordHandler)
-router.patch('/reset/:id/:token', validateInput(updateAuthSchema), resetPasswordHandler)
+router.post('/register', validateInput(createUserSchema), UserController.createUserHandler)
+router.post('/forgot_password', UserController.forgortPasswordHandler)
+router.patch('/reset/:id/:token', validateInput(updateAuthSchema), UserController.resetPasswordHandler)
 
 export default router 

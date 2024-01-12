@@ -1,15 +1,14 @@
 import { Router } from 'express'
-import { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } from '../controllers/bookmarks.controller'
-import requireUser from '../middleware/require-user'
-import validateInput from '../middleware/validate-input'
+import { BookmarksController } from '../controllers'
+import { requireUser, validateInput } from '../middleware'
 import { bookmarkRecipeSchema } from '../schema/bookmarks.schema'
 
 const router = Router()
 
-router.get('/:id', requireUser, userBookmarksHandler)
+router.get('/:id', requireUser, BookmarksController.userBookmarksHandler)
 
 router.route('/:user_id/:recipe_id')
-  .post([requireUser, validateInput(bookmarkRecipeSchema)], addBookmarkHandler)
-  .delete([requireUser, validateInput(bookmarkRecipeSchema)], removeBookmarkHandler)
+  .post([requireUser, validateInput(bookmarkRecipeSchema)], BookmarksController.addBookmarkHandler)
+  .delete([requireUser, validateInput(bookmarkRecipeSchema)], BookmarksController.removeBookmarkHandler)
 
 export default router  

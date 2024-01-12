@@ -5,7 +5,7 @@ import { UpdateRecipeInput } from '../schema/recipe.schema'
 
 const ITEMS_PER_PAGE = 20
 
-export const getAllRecipesHandler = async (req: Request, res: Response) => {
+const getAllRecipesHandler = async (req: Request, res: Response) => {
   const page = req.query.page || 1
   const start_index = (Number(page) - 1) * ITEMS_PER_PAGE // starting index of every page
   const count = await RecipeService.totalRecipes()
@@ -32,7 +32,7 @@ export const getAllRecipesHandler = async (req: Request, res: Response) => {
 }
 
 
-export const getUserRecipesHandler = async (req: Request, res: Response) => {
+const getUserRecipesHandler = async (req: Request, res: Response) => {
   const { user_id } = req.params
 
   const page = req.query.page || 1
@@ -63,7 +63,7 @@ export const getUserRecipesHandler = async (req: Request, res: Response) => {
 }
 
 
-export const getSingleRecipeHandler = async (
+const getSingleRecipeHandler = async (
   req: Request<UpdateRecipeInput['params'], {}, {}>, 
   res: Response
 ) => {
@@ -77,4 +77,10 @@ export const getSingleRecipeHandler = async (
   const owner = `${user.first_name} ${user.last_name}`
 
   res.status(200).json({ recipe, owner, })
+}
+
+export default {
+  getAllRecipesHandler,
+  getSingleRecipeHandler,
+  getUserRecipesHandler,
 }

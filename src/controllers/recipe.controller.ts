@@ -4,7 +4,7 @@ import { AppError, uploadPicture } from '../utils'
 import { CreateRecipeInput, UpdateRecipeInput, createRecipeSchema } from '../schema/recipe.schema'
 
 
-export const createRecipeHandler = async (
+const createRecipeHandler = async (
   req: Request<{}, {}, CreateRecipeInput>, 
   res: Response
 ) => {
@@ -25,7 +25,7 @@ export const createRecipeHandler = async (
 }
 
 
-export const updateRecipeHandler = async (
+const updateRecipeHandler = async (
   req: Request<UpdateRecipeInput['params'], {}, UpdateRecipeInput['body']>, 
   res: Response
 ) => {
@@ -44,7 +44,7 @@ export const updateRecipeHandler = async (
 }
 
 
-export const deleteRecipeHandler = async (
+const deleteRecipeHandler = async (
   req: Request<UpdateRecipeInput['params'], {}, {}>, 
   res: Response
 ) => {
@@ -59,4 +59,10 @@ export const deleteRecipeHandler = async (
   const message = await RecipeService.deleteRecipe(id, recipe.cloudinary_id)
 
   res.status(200).send(message)
+}
+
+export default {
+  createRecipeHandler,
+  updateRecipeHandler,
+  deleteRecipeHandler,
 }

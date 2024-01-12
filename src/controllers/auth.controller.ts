@@ -1,17 +1,16 @@
 import { Request, Response } from 'express';
-import { Jwt } from '../utils';
-import { AppError } from '../utils/errors';
+import { Jwt, AppError } from '../utils';
 import { AuthService, UserService } from '../services';
 import { CreateSessionInput } from '../schema/user.schema';
 
 
-export async function findSessionsHandler(_: Request, res: Response) {
+async function findSessionsHandler(_: Request, res: Response) {
   const all_sessions = await AuthService.findAllSessions();
   res.status(200).send(all_sessions);
 }
 
 
-export const createSessionHandler = async (
+const createSessionHandler = async (
   req: Request<{}, {}, CreateSessionInput>, 
   res: Response
 ) => {
@@ -38,7 +37,7 @@ export const createSessionHandler = async (
 };
 
 
-export const refreshTokenHandler = async (req: Request, res: Response) => {
+const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) 
     throw new AppError('Unauthorized', 401, 'No refresh token found', true);
@@ -62,7 +61,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 };
 
 
-export const destroySessionHandler = async (req: Request, res: Response) => {
+const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) 
     throw new AppError('Unauthorized', 401, 'No refresh token found', true);
@@ -82,4 +81,11 @@ export const destroySessionHandler = async (req: Request, res: Response) => {
   });
 
   res.send('User loged out successfully.');
+}
+
+export default {
+  findSessionsHandler,
+  createSessionHandler,
+  refreshTokenHandler,
+  destroySessionHandler,
 }

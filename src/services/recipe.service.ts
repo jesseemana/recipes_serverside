@@ -1,4 +1,5 @@
-import RecipeModel, { Recipe } from '../models/recipe.model'
+import { RecipeModel } from '../models'
+import { Recipe } from '../models/recipe.model'
 import { AppError , cloudinary } from '../utils'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 import { databaseResponseTimeHistogram } from '../utils/metrics'

@@ -1,6 +1,6 @@
 import { Application, Express } from 'express'
 import { Database } from '../../types'
-import errorHandler from '../middleware/error-handler'
+import { errorHandler } from '../middleware'
 import { startMetricsServer } from '../utils/metrics'
 import log from '../utils/logger'
 import config from 'config'
@@ -8,6 +8,7 @@ import { cpus } from 'os'
 import cluster from 'cluster'
 import { once } from 'events'
 import dotenv from 'dotenv'
+
 dotenv.config()
 
 const initializeServer = (app: Application, database: Database): Application => {

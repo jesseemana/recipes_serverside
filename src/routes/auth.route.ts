@@ -1,20 +1,13 @@
 import { Router } from 'express'
-import loginLimiter from '../middleware/login-limiter'
-import { 
-  createSessionHandler, 
-  destroySessionHandler, 
-  findSessionsHandler, 
-  refreshTokenHandler 
-} from '../controllers/auth.controller'
-import validateInput from '../middleware/validate-input'
+import { AuthController } from '../controllers'
 import { createSessionSchema } from '../schema/user.schema'
-import requireUser from '../middleware/require-user'
+import { loginLimiter, validateInput, requireUser }from '../middleware'
 
 const router = Router()
 
-router.get('/sessions', requireUser, findSessionsHandler)
-router.post('/login', [validateInput(createSessionSchema), loginLimiter], createSessionHandler)
-router.get('/refresh', refreshTokenHandler)
-router.post('/logout', requireUser, destroySessionHandler)
+router.get('/sessions', requireUser, AuthController.findSessionsHandler)
+router.post('/login', [validateInput(createSessionSchema), loginLimiter], AuthController.createSessionHandler)
+router.get('/refresh', AuthController.refreshTokenHandler)
+router.post('/logout', requireUser, AuthController.destroySessionHandler)
 
 export default router
