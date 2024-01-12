@@ -7,6 +7,8 @@ import config from 'config'
 import { cpus } from 'os'
 import cluster from 'cluster'
 import { once } from 'events'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const initializeServer = (app: Application, database: Database): Application => {
   const PORT = Number(process.env.PORT)

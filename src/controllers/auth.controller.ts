@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { verifyToken } from '../utils/jwt';
+import { Jwt } from '../utils';
 import { AppError } from '../utils/errors';
-import UserService from '../services/user.service';
-import AuthService from '../services/auth.service';
+import { AuthService, UserService } from '../services';
 import { CreateSessionInput } from '../schema/user.schema';
 
 
@@ -41,13 +40,12 @@ export const createSessionHandler = async (
 
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  if (!cookies?.refresh_token) {
+  if (!cookies?.refresh_token) 
     throw new AppError('Unauthorized', 401, 'No refresh token found', true);
-  }
 
   const refresh_token = cookies.refresh_token as string;
 
-  const decoded = verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_PUBLIC_KEY));
+  const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_PUBLIC_KEY));
   if (!decoded) 
     throw new AppError('Forbidden', 403, 'Could not find refresh token', true);
 

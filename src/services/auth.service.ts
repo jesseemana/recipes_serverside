@@ -3,8 +3,9 @@ import { FilterQuery, UpdateQuery } from 'mongoose'
 import { User, private_fields } from '../models/user.model'
 import { omit } from 'lodash'
 import { DocumentType } from '@typegoose/typegoose'
-import { signJwt } from '../utils/jwt'
-
+import { Jwt } from '../utils'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const findAllSessions = async () => {
   return SessionModel.find({})
@@ -35,7 +36,7 @@ const signAccessToken = (
 ) => {
   const user_payload = omit(user.toJSON(), private_fields)
   
-  const access_token = signJwt(
+  const access_token = Jwt.signJwt(
     { ...user_payload, session }, 
     String(process.env.ACCESS_TOKEN_PRIVATE_KEY), 
     { expiresIn: String(process.env.ACCESS_TOKEN_TIME_TO_LIVE)}
@@ -45,7 +46,7 @@ const signAccessToken = (
 }
 
 const signRefreshToken = (session: DocumentType<Session>) => {
-  const refresh_token = signJwt(
+  const refresh_token = Jwt.signJwt(
     { session: session._id }, 
     String(process.env.REFRESH_TOKEN_PRIVATE_KEY), 
     { expiresIn: String(process.env.REFRESH_TOKEN_TIME_TO_LIVE) }

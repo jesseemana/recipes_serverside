@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import RecipeService from '../services/recipe.service';
+import { AppError } from '../utils';
+import { UserService, RecipeService } from '../services';
 import { HandleBookmarksInput, GetBookmarksInput } from '../schema/bookmarks.schema';
-import UserService from '../services/user.service';
-import { AppError } from '../utils/errors';
 
 
 export const userBookmarksHandler = async (

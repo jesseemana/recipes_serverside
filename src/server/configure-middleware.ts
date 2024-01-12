@@ -2,10 +2,10 @@ import express, { Application } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
-import corsOptions from '../utils/cors-options'
+import { corsOptions } from '../utils'
 import deserializeuser from '../middleware/auth.middleware'
 
-const configureServer = (app: Application): void => {
+const configure_middleware = (app: Application): void => {
   //@ts-ignore
   app.use(cors(corsOptions));
   app.use(helmet());
@@ -15,4 +15,4 @@ const configureServer = (app: Application): void => {
   app.use(express.urlencoded({ limit: '5MB', extended: true }));
 }
 
-export default configureServer 
+export default configure_middleware 

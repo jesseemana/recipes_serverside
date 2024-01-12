@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/node-mailer';
-import UserService from '../services/user.service';
-import { omit }from 'lodash';
-import { AppError } from '../utils/errors';
 import { Request, Response } from 'express';
+import { omit }from 'lodash';
+import { UserService }from '../services';
+import { AppError, sendEmail } from '../utils';
 import { private_fields } from '../models/user.model';
 import { CreateUserInput } from '../schema/user.schema';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';

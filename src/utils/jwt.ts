@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-export const signJwt = (
+const signJwt = (
   object: Object, 
   keyName: string, 
   options?: jwt.SignOptions | undefined
@@ -15,7 +15,7 @@ export const signJwt = (
   return token
 }
 
-export const verifyToken = <T>(token: string, verifyKey: string): T | null => {
+const verifyToken = <T>(token: string, verifyKey: string): T | null => {
   const publicKey = Buffer.from(verifyKey, 'base64').toString('ascii')
 
   try {
@@ -24,4 +24,9 @@ export const verifyToken = <T>(token: string, verifyKey: string): T | null => {
   } catch(e) {
     return null
   }
+}
+
+export default {
+  signJwt,
+  verifyToken
 }

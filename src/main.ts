@@ -2,16 +2,16 @@ require('express-async-errors')
 import dotenv from 'dotenv'
 import express, { Request, Response } from 'express'
 import responseTime from 'response-time'
-import configureRoutes from './server/routes'
-import configureServer from './server/configure'
-import initializeServer from './server/initialize-app'
-import database from './utils/connect-db'
+import { database } from './utils'
 import { restResponseTimeHistogram } from './utils/metrics'
+import { initializeServer, configure_middleware} from './server'
+import { authRoute, recipesRoute, bookmarksRoute, userRoute } from './routes'
 
 dotenv.config()
 
 const app = express()
-configureServer(app)
+
+configure_middleware(app)
 
 /**
  * @openapi
@@ -25,7 +25,11 @@ configureServer(app)
  *         description: App is up and running
  */
 app.get('/healthcheck', (req: Request, res: Response) => res.sendStatus(200))
-
+//routes
+app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/user', userRoute)
+app.use('/api/v1/recipes', recipesRoute)
+app.use('/api/v1/bookmarks', bookmarksRoute)
 // recording promethius metrics 
 app.use(responseTime((req: Request, res: Response, time: number) => {
   if (req.route.path) {
@@ -39,7 +43,5 @@ app.use(responseTime((req: Request, res: Response, time: number) => {
     )
   }
 }))
-
-configureRoutes(app)
 
 initializeServer(app, database)

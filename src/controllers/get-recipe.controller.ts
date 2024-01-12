@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
-import { AppError } from '../utils/errors'
-import UserService from '../services/user.service'
-import RecipeService from '../services/recipe.service'
+import { AppError } from '../utils'
+import { UserService, RecipeService } from '../services'
 import { UpdateRecipeInput } from '../schema/recipe.schema'
 
 const ITEMS_PER_PAGE = 20
