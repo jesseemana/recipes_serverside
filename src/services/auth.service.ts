@@ -1,11 +1,11 @@
-import { SessionModel } from '../models'
-import { Session } from '../models/session.model'
-import { User, private_fields } from '../models/user.model'
-import { DocumentType } from '@typegoose/typegoose'
-import { FilterQuery, UpdateQuery } from 'mongoose'
+import dotenv from 'dotenv'
 import { omit } from 'lodash'
 import { Jwt } from '../utils'
-import dotenv from 'dotenv'
+import { SessionModel } from '../models'
+import { Session } from '../models/session.model'
+import { DocumentType } from '@typegoose/typegoose'
+import { FilterQuery, UpdateQuery } from 'mongoose'
+import { User, private_fields } from '../models/user.model'
 dotenv.config()
 
 const findAllSessions = async () => {

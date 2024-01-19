@@ -47,7 +47,7 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 
   const refresh_token = cookies.refresh_token as string;
 
-  const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_PUBLIC_KEY));
+  const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_TOKEN_PUBLIC_KEY));
   if (!decoded) {
     return res.status(403).send('No refresh token found.');
     // throw new AppError('Forbidden', 403, 'Could not find refresh token', true);

@@ -1,16 +1,9 @@
 export default {
-  port: 8080,
-  dbUri: '',
   saltWorkFactor: 10,
   logLevel: 'info',
+  passwordSecret: '',
   accessTokenPrivateKey: '',
   refreshTokenPrivateKey: '',
-  passwordSecret: '',
-  user: '',
-  pass: '',
-  clouName: '',
-  apiKey: '',
-  apiSecret: '',
   smtp: {
     user: 'hqpvqv44mw5427vb@ethereal.email',
     pass: 'nwAGg5tXGGP2eeuKdH',
