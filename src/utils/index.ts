@@ -1,19 +1,21 @@
-import database from "./connect-db";
 import Jwt from "./jwt";
 import log from "./logger";
-import uploadPicture from "./upload-picture";
-import corsOptions from "./cors-options";
+import database from "./connect-db";
+import swaggerDocs from "./swagger";
 import { AppError } from "./errors";
-import sendEmail from "./node-mailer";
 import cloudinary from "./cloudinary";
+import sendEmail from "./node-mailer";
+import corsOptions from "./cors-options";
+import uploadPicture from "./upload-picture";
 
 export {
-  database,
-  cloudinary,
   Jwt,
   log,
-  uploadPicture,
-  corsOptions,
+  database,
   AppError,
-  sendEmail
+  cloudinary,
+  corsOptions,
+  uploadPicture,
+  swaggerDocs,
+  sendEmail,
 }
