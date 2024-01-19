@@ -1,24 +1,25 @@
-import { Application, Express } from 'express'
+import dotenv from 'dotenv'
+import log from '../utils/logger'
+import { Express } from 'express'
 import { Database } from '../../types'
+import { swaggerDocs } from '../utils'
 import { errorHandler } from '../middleware'
 import { startMetricsServer } from '../utils/metrics'
-import log from '../utils/logger'
-import config from 'config'
 import { cpus } from 'os'
 import cluster from 'cluster'
 import { once } from 'events'
-import dotenv from 'dotenv'
 
 dotenv.config()
 
-const initializeServer = (app: Application, database: Database): Application => {
+const initialize_server = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT)
   
   app.use(errorHandler)
   
   const server = app.listen(PORT, () => {
     database.connect()
-    log.info(`Server running on port: ${PORT}...🚀`)
+    log.info(`Server running on: http://localhost:${PORT}...🚀`)
+    swaggerDocs(app, PORT)
     startMetricsServer()
   })
 
@@ -26,7 +27,7 @@ const initializeServer = (app: Application, database: Database): Application => 
 
   const gracefulShutdown = (signal: string) => {
     process.on(signal, () => {
-      log.info(`Received signal: ${signal}, shuting down...`)
+      log.info(`Received signal: ${signal}, shutting down...`)
       server.close()
       database.disconnect()
       log.info('Goodbye...😥💤💤')
@@ -41,7 +42,7 @@ const initializeServer = (app: Application, database: Database): Application => 
   return app
 }
 
-export default initializeServer
+export default initialize_server
 
 // if (cluster.isPrimary) {
 //   log.info(`Master process ${process.pid} has started...`);
