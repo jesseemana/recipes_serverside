@@ -41,23 +41,26 @@ const createSessionHandler = async (
 const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    throw new AppError('Unauthorized', 401, 'No refresh token found', true);
+    return res.status(401).send('No refresh token found.');
+    // throw new AppError('Unauthorized', 401, 'No refresh token found', true);
   }
 
   const refresh_token = cookies.refresh_token as string;
 
   const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_PUBLIC_KEY));
   if (!decoded) {
-    throw new AppError('Forbidden', 403, 'Could not find refresh token', true);
+    return res.status(403).send('No refresh token found.');
+    // throw new AppError('Forbidden', 403, 'Could not find refresh token', true);
   }
 
   const session = await AuthService.findSessionById(decoded.session);
   if (!session || !session.valid) {
-    throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
+    return res.status(401).send('Session is not found or is expired.');
+    // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
   }
 
   const user = await UserService.findUserById(String(session.user));
-  if (!user) throw new AppError('Not Found', 404, 'could not find the given user', true);
+  if (!user) return res.status(404).send('Could not find the user.')
 
   const access_token = AuthService.signAccessToken(user, session);
 
@@ -68,14 +71,16 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    throw new AppError('Unauthorized', 401, 'No refresh token found', true);
+    return res.status(401).send('No refresh token found.');
+    // throw new AppError('Unauthorized', 401, 'No refresh token found', true);
   }
 
   const sessionId = res.locals.user.session._id as string;
 
   const session = await AuthService.findSessionById(sessionId);
   if (!session || !session.valid) {
-    throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
+    return res.status(401).send('Session is not found or is expired.');
+    // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
   }
 
   await AuthService.updateSession({ _id: session._id }, { valid: false });
@@ -86,7 +91,7 @@ const destroySessionHandler = async (req: Request, res: Response) => {
     sameSite: 'none',
   });
 
-  res.send('User loged out successfully.');
+  res.status(200).send('User loged out successfully.');
 }
 
 export default {

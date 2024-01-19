@@ -12,14 +12,19 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
 
   const recipes = await RecipeService.getAllRecipes().sort({ createdAt: - 1 }).limit(ITEMS_PER_PAGE).skip(start_index).lean()
 
-  if (!recipes.length) 
-    // throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
+  if (!recipes.length) {
     return res.status(404).send('There are no recipes found. Create some')
+    // throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true)
+  }
 
   const recipes_with_user = await Promise.all(recipes.map(async (recipe) => {
     const user = await UserService.findUserById(String(recipe.user)).lean().exec()
-    if (!user) throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true) 
-    return { ...recipe, username: `${user?.first_name} ${user?.last_name}` }
+    if (!user) return res.status(404).send(`User doesn't have any recipes.`)
+    // if (!user) throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
+    return { 
+      ...recipe, 
+      username: `${user?.first_name} ${user?.last_name}` 
+    }
   }))
 
   res.status(200).json({
@@ -40,15 +45,13 @@ const getUserRecipesHandler = async (req: Request, res: Response) => {
   const total = await RecipeService.totalRecipes()
 
   const user = await UserService.findUserById(user_id)
-  if (!user) 
+  if (!user) return res.status(404).send('User does not exist')
     // throw new AppError('Not Found', 404, `User doesn't not exist.`, true) 
-    return res.status(404).send('User does not exist')
     
   const recipes = await RecipeService.getUserRecipes({ user_id }).sort({ createdAt: - 1 }).limit(ITEMS_PER_PAGE).skip(start_index).lean()
 
-  if (!recipes.length) 
+  if (!recipes.length) return res.status(404).send('User does not have any recipes')
     // throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true)
-    return res.status(404).send('User does not have any recipes')
 
   const full_name = `${user.first_name} ${user.last_name}`
 
@@ -70,9 +73,13 @@ const getSingleRecipeHandler = async (
   const { id } = req.params
 
   const recipe = await RecipeService.findRecipeById(id)
-  if (!recipe) throw new AppError('Not Found', 404, `Recipe doesn't exist.`, true) 
+  if (!recipe) 
+    return res.status(404).send('Recipe not found.')
+    // throw new AppError('Not Found', 404, `Recipe doesn't exist.`, true) 
   const user = await UserService.findUserById(String(recipe.user))
-  if (!user) throw new AppError('Not Found', 404, `User doesn't exist.`, true) 
+  if (!user) 
+    return res.status(404).send('User not found.')
+    // throw new AppError('Not Found', 404, `User doesn't exist.`, true) 
 
   const owner = `${user.first_name} ${user.last_name}`
 

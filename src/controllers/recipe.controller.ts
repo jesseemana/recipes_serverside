@@ -20,7 +20,8 @@ const createRecipeHandler = async (
 
     throw new Error('Please provide a picture')
   } catch (error) {
-    throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
+    return res.status(500).send('Internal server error.')
+    // throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
   }
 }
 
@@ -34,9 +35,12 @@ const updateRecipeHandler = async (
   const user_id = res.locals.user._id
   
   const recipe = await RecipeService.findRecipeById(id)
-  if (!recipe) throw new AppError('Not Found', 404, 'Recipe was not found', true)
-  if (String(recipe.user) !== String(user_id)) 
-    throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
+  if (!recipe) return res.status(404).send('Recipe was not found.')
+    // throw new AppError('Not Found', 404, 'Recipe was not found', true)
+  if (String(recipe.user) !== String(user_id)) {
+    return res.status(401).send('User is not allowed to make this operation.')
+    // throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
+  }
 
   const updated_recipe = await RecipeService.updateRecipe({ _id: id }, update_data, { new: true })
 
@@ -52,9 +56,11 @@ const deleteRecipeHandler = async (
   const user_id = res.locals.user._id
   
   const recipe = await RecipeService.findRecipeById(id)
-  if (!recipe) throw new AppError('Not Found', 404, 'Recipe was not found', true)
+  if (!recipe) return res.status(404).send('Recipe was not found.')
+    // throw new AppError('Not Found', 404, 'Recipe was not found', true)
   if (String(recipe.user) !== user_id) 
-    throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
+    return res.status(401).send('User is not allowed to make this operation.')
+    // throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
 
   const message = await RecipeService.deleteRecipe(id, recipe.cloudinary_id)
 

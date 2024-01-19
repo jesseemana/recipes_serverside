@@ -7,7 +7,7 @@ import { private_fields } from '../models/user.model';
 import { CreateUserInput } from '../schema/user.schema';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 
-const DEV_URL = 'http://localhost:8080/api/v1/user/reset'
+const DEV_URL = 'http://localhost:8080/api/v2/users/reset'
 const LIVE_URL = 'https://gourmands-portal.vercel.app/reset-password'
 
 
@@ -18,11 +18,13 @@ const createUserHandler = async (
   const body = req.body;
   try {
     const new_user = await UserService.createUser(body);
-    res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully.`);
+    return res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully.`);
   } catch (error: any) {
     if (error.code === 11000) 
-      throw new AppError('Conflict', 409, `Email already in use.`, true);
-    throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
+      return res.status(409).send('Email already in use.')
+      // throw new AppError('Conflict', 409, `Email already in use.`, true);
+    return res.status(500).send('Internal server error.')
+    // throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
   }
 }
 
@@ -33,12 +35,13 @@ const forgortPasswordHandler = async (
 ) => {
   const { email } = req.body;
   const  user = await UserService.findUserByEmail(email);
-  if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
+  if (!user) return res.status(404).send('User does not exist')
+  // if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
   const user_payload = omit(user.toJSON(), private_fields);
-  
-  const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); // One time link valid for 30 minutes
+  // create a one time link valid for 30mitues
+  const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); 
   const link = `${LIVE_URL}/${user._id}/${token}`; 
   const dev_link = `${DEV_URL}/${user._id}/${token}`; 
 
@@ -61,16 +64,18 @@ const resetPasswordHandler = async (
   const { id, token } = req.params;
 
   const user = await UserService.findUserById(id);
-  if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
+  if (!user) return res.status(404).send('User does not exist')
+  // if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
 
   const reset_secret = process.env.JWT_SECRET + user.password;
 
   jwt.verify(token, reset_secret, 
     async (err: any) => {
-      if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
+      if (err) res.status(403).send('Invalid or expired token.')
+      // if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
       user.password = password;
       await user.save();
-      res.send(`Users' password has been updated.`);
+      res.status(200).send(`Users' password has been updated.`);
     }
   );
 };
