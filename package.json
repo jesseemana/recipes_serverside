@@ -1,12 +1,12 @@
 {
   "name": "server",
-  "version": "1.0.0",
-  "description": "backend rest api for the recipes app",
-  "main": "main.ts",
+  "version": "2.0.0",
+  "description": "Backend REST API for the recipes app",
+  "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
-    "start": "node build/main.js"
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "start": "node build/src/app.js"
   },
   "author": "Jesse Emana",
   "license": "MIT",
