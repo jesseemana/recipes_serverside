@@ -1,7 +1,15 @@
 import bcrypt from 'bcrypt'
 import config from 'config'
-import log from '../utils/logger'
-import { prop, getModelForClass, DocumentType, pre, modelOptions, Severity, index } from '@typegoose/typegoose'
+import { log }from '../utils'
+import { 
+  pre, 
+  prop, 
+  index, 
+  Severity, 
+  modelOptions, 
+  DocumentType, 
+  getModelForClass, 
+} from '@typegoose/typegoose'
 
 export const private_fields = ['password', 'bookmarks']
 
