@@ -19,7 +19,7 @@ const router = Router()
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schema/SessionsResponse'
+ *              $ref: '#/components/schema/SessionResponse'
  *      401:
  *        description: Unauthorized
  *      403:
@@ -47,7 +47,7 @@ router.get('/sessions', require_user, AuthController.findSessionsHandler)
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schema/loginUserResponse'
+ *                $ref: '#/components/schema/loginResponse'
  *        404:
  *          description: Invalid email/user not found
  *        401:
@@ -69,7 +69,7 @@ router.post('/login', [validate_input(createSessionSchema), login_limiter], Auth
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schema/RefreshTokenResponse'
+ *              $ref: '#/components/schema/RefreshResponse'
  *      401:
  *        description: Refersh token/Session not found or is invalid
  *      403:

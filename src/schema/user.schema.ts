@@ -16,19 +16,19 @@ import { object, string, TypeOf } from 'zod'
  *       properties:
  *         first_name:
  *           type: string
- *           defaultL: John
+ *           default: John
  *         last_name:
  *           type: string
- *           defaultL: Doe
+ *           default: Doe
  *         email:
  *           type: string
- *           defaultL: johndoe@example.com
+ *           default: johndoe@example.com
  *         password:
  *           type: string
- *           defaultL: Password_1234
+ *           default: Password_1234
  *         confirm_password
  *           type: string
- *           defaultL: Password_1234
+ *           default: Password_1234
  *     UserResponse:
  *       type: object
  *       required:
@@ -80,7 +80,7 @@ export const createUserSchema = object({
 
 /**
  * @openapi
- * componts:
+ * components:
  *   schema:
  *     LoginUserInput:
  *       type: object
@@ -94,7 +94,7 @@ export const createUserSchema = object({
  *         password:
  *           type: string
  *           default: Password_1234
- *    LoginResponse:
+ *    loginResponse:
  *      type: object
  *      required:
  *        - user
@@ -118,7 +118,7 @@ export const createUserSchema = object({
  *              type: array
  *        accessToken:
  *          type: string
- *    RefreshTokenResponse:
+ *    RefreshResponse:
  *      type: object
  *      required:
  *        - accessToken
