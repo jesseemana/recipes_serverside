@@ -19,7 +19,7 @@ const router = Router()
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schema/BookmarksResponse'
+ *              $ref: '#/components/schema/GetBookmarks'
  *      403:
  *        description: Forbidden
  */
