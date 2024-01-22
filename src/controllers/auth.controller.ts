@@ -16,18 +16,19 @@ const createSessionHandler = async (
 ) => {
   const { email, password } = req.body;
   
-  const user = await UserService.findUserByEmail(email);
+  const user = await UserService.findUserByEmail(email).select('-password');
   if (!user) return res.status(404).send('User does not exist.');
   if (!user.verifyPassword(password)) {
     return res.status(401).send('Please provide a correct password.');
   }
 
   const session = await AuthService.createSession({ userId: String(user._id) });
+  // Access token payload can also be stuff like user agent, ip and other unique things like that
   const access_token = AuthService.signAccessToken(user, session);
   const refresh_token = AuthService.signRefreshToken(session);
 
   res.cookie('refresh_token', refresh_token, {
-    maxAge: 30*24*60*60*1000, // 30 days
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     httpOnly: true,
     secure: false,
     sameSite: 'strict', // cross-site access
@@ -42,7 +43,7 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
     return res.status(401).send('No refresh token found.');
-    // throw new AppError('Unauthorized', 401, 'No refresh token found', true);
+    // throw new AppError('Unauthorized', 404, 'No refresh token found', true);
   }
 
   const refresh_token = cookies.refresh_token as string;
@@ -55,12 +56,12 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 
   const session = await AuthService.findSessionById(decoded.session);
   if (!session || !session.valid) {
-    return res.status(401).send('Session is not found or is expired.');
-    // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
+    return res.status(401).send('Session not found or is invalid.');
+    // throw new AppError('Unauthorized', 401, 'Session not found or is invalid.', true);
   }
 
   const user = await UserService.findUserById(String(session.user));
-  if (!user) return res.status(404).send('Could not find the user.')
+  if (!user) return res.status(404).send('User not found.')
 
   const access_token = AuthService.signAccessToken(user, session);
 

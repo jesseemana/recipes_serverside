@@ -1,8 +1,10 @@
+import { omit } from 'lodash';
 import { UserModel } from '../models';
 import { User } from '../models/user.model';
 
-const createUser = (data: Partial<User>) => {
-  return UserModel.create(data);
+const createUser = async (data: Partial<User>) => {
+  const user = await UserModel.create(data);
+  return omit(user.toJSON(), 'password', 'confirm_password')
 };
 
 const findUserById = (id: string) => {
