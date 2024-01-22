@@ -3,7 +3,7 @@ import log from '../utils/logger'
 import { Express } from 'express'
 import { Database } from '../../types'
 import { swaggerDocs } from '../utils'
-import { errorHandler } from '../middleware'
+import { error_handler } from '../middleware'
 import { startMetricsServer } from '../utils/metrics'
 import { cpus } from 'os'
 import cluster from 'cluster'
@@ -14,7 +14,7 @@ dotenv.config()
 const initialize_server = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT)
   
-  app.use(errorHandler)
+  app.use(error_handler)
   
   const server = app.listen(PORT, () => {
     database.connect()
