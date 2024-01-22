@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 
 const createUser = async (data: Partial<User>) => {
   const user = await UserModel.create(data);
-  return omit(user.toJSON(), 'password', 'confirm_password')
+  return omit(user.toJSON(), 'password', 'confirm_password', 'verifyPassword')
 };
 
 const findUserById = (id: string) => {

@@ -7,6 +7,7 @@ import { private_fields } from '../models/user.model';
 import { CreateUserInput } from '../schema/user.schema';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 
+
 const DEV_URL = 'http://localhost:8080/api/v2/users/reset'
 const LIVE_URL = 'https://gourmands-portal.vercel.app/reset-password'
 
@@ -42,7 +43,7 @@ const forgortPasswordHandler = async (
   const user_payload = omit(user.toJSON(), private_fields);
   // create a one time link valid for 30mitues
   const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); 
-  const link = `${LIVE_URL}/${user._id}/${token}`; 
+  const live_link = `${LIVE_URL}/${user._id}/${token}`; 
   const dev_link = `${DEV_URL}/${user._id}/${token}`; 
 
   sendEmail({
