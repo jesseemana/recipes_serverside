@@ -10,14 +10,12 @@ const createRecipeHandler = async (
 ) => {
   const body = createRecipeSchema.parse(req.body)
   const user_id = res.locals.user._id
-
   try {
     if (req.file) {
       const response = await uploadPicture(req.file.path)
       const recipe = await RecipeService.createRecipe({ ...body, ...response, user: user_id }) 
-      return res.status(201).send(`Recipe for ${recipe.name} created succesfully.`)
+      return res.status(201).send(`Recipe for ${recipe.name} has been created.`)
     }
-
     throw new Error('Please provide a picture')
   } catch (error) {
     return res.status(500).send('Internal server error.')
@@ -32,12 +30,12 @@ const updateRecipeHandler = async (
 ) => {
   const { id } = req.params
   const update_data = req.body
-  const user_id = res.locals.user._id
+  const user = String(res.locals.user._id)
   
   const recipe = await RecipeService.findRecipeById(id)
-  if (!recipe) return res.status(404).send('Recipe was not found.')
-    // throw new AppError('Not Found', 404, 'Recipe was not found', true)
-  if (String(recipe.user) !== String(user_id)) {
+  if (!recipe) return res.status(404).send('Recipe Not Found.')
+    // throw new AppError('Not Found', 404, 'Recipe Not Found', true)
+  if (String(recipe.user) !== user) {
     return res.status(401).send('User is not allowed to make this operation.')
     // throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
   }
@@ -53,12 +51,12 @@ const deleteRecipeHandler = async (
   res: Response
 ) => {
   const { id } = req.params
-  const user_id = res.locals.user._id
+  const user = String(res.locals.user._id)
   
   const recipe = await RecipeService.findRecipeById(id)
-  if (!recipe) return res.status(404).send('Recipe was not found.')
-    // throw new AppError('Not Found', 404, 'Recipe was not found', true)
-  if (String(recipe.user) !== user_id) 
+  if (!recipe) return res.status(404).send('Recipe Not Found.')
+    // throw new AppError('Not Found', 404, 'Recipe Not Found', true)
+  if (String(recipe.user) !== user) 
     return res.status(401).send('User is not allowed to make this operation.')
     // throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
 

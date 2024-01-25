@@ -36,8 +36,8 @@ const forgortPasswordHandler = async (
 ) => {
   const { email } = req.body;
   const user = await UserService.findUserByEmail(email);
-  if (!user) return res.status(404).send('User does not exist')
-  // if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
+  if (!user) return res.status(404).send('User Not Found.')
+  // if (!user) throw new AppError('Not Found', 404, `User Not Found.`, true);
 
   const reset_secret = process.env.SECRET_KEY + user.password;
   const user_payload = omit(user.toJSON(), private_fields);
@@ -65,14 +65,14 @@ const resetPasswordHandler = async (
   const { new_password } = req.body;
 
   const user = await UserService.findUserById(id);
-  if (!user) return res.status(404).send('User does not exist')
-  // if (!user) throw new AppError('Not Found', 404, `User doesn't exist`, true);
+  if (!user) return res.status(404).send('User Not Found.')
+  // if (!user) throw new AppError('Not Found', 404, `User Not Found.`, true);
 
   jwt.verify(
     token, 
     process.env.SECRET_KEY + user.password, 
     async (err: any) => {
-      if (err) return res.status(403).send('Invalid or expired token.')
+      if (err) return res.sendStatus(403)
       // if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
       user.password = new_password;
       await user.save();
