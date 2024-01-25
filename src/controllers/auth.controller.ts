@@ -17,17 +17,15 @@ const createSessionHandler = async (
   const { email, password } = req.body;
   
   const user = await UserService.findUserByEmail(email).select('-password');
-  if (!user) return res.status(404).send('User does not exist.');
-  if (!user.verifyPassword(password)) {
-    return res.status(401).send('Please provide a correct password.');
-  }
+  if (!user) return res.status(404).send('User Not Found.');
+  if (!user.verifyPassword(password)) return res.status(401).send('Incorrect Password.');
 
   const session = await AuthService.createSession({ userId: String(user._id) });
   // Access token payload can also be stuff like user agent, ip and other unique things like that
   const access_token = AuthService.signAccessToken(user, session);
   const refresh_token = AuthService.signRefreshToken(session);
 
-  res.cookie('refresh_token', refresh_token, {
+  res.cookie('refreshToken', refresh_token, {
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     httpOnly: true,
     secure: false,
@@ -42,26 +40,26 @@ const createSessionHandler = async (
 const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    return res.status(401).send('No refresh token found.');
-    // throw new AppError('Unauthorized', 404, 'No refresh token found', true);
+    return res.status(401).send('Refresh Token Not Found.');
+    // throw new AppError('Unauthorized', 404, 'Refresh Token Not Found', true);
   }
 
   const refresh_token = cookies.refresh_token as string;
 
   const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_TOKEN_PUBLIC_KEY));
   if (!decoded) {
-    return res.status(403).send('No refresh token found.');
-    // throw new AppError('Forbidden', 403, 'Could not find refresh token', true);
+    return res.status(403).send('Refresh Token Not Found.');
+    // throw new AppError('Forbidden', 403, 'Refresh Token Not Found.', true);
   }
 
   const session = await AuthService.findSessionById(decoded.session);
   if (!session || !session.valid) {
-    return res.status(401).send('Session not found or is invalid.');
+    return res.status(401).send('Session Not Found/Invalid.');
     // throw new AppError('Unauthorized', 401, 'Session not found or is invalid.', true);
   }
 
   const user = await UserService.findUserById(String(session.user));
-  if (!user) return res.status(404).send('User not found.')
+  if (!user) return res.status(404).send('User Not Found.');
 
   const access_token = AuthService.signAccessToken(user, session);
 
@@ -72,21 +70,21 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
   if (!cookies?.refresh_token) {
-    return res.status(401).send('No refresh token found.');
-    // throw new AppError('Unauthorized', 401, 'No refresh token found', true);
+    return res.status(401).send('Refresh Token Not Found.');
+    // throw new AppError('Unauthorized', 401, 'Refresh Token Not Found', true);
   }
 
   const sessionId = res.locals.user.session._id as string;
 
   const session = await AuthService.findSessionById(sessionId);
   if (!session || !session.valid) {
-    return res.status(401).send('Session is not found or is expired.');
+    return res.status(401).send('Session Not Found/Invalid.');
     // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
   }
 
   await AuthService.updateSession({ _id: session._id }, { valid: false });
 
-  res.clearCookie('refresh_token', {
+  res.clearCookie('refreshToken', {
     httpOnly: true,
     secure: false,
     sameSite: 'none',
