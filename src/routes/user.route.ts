@@ -1,6 +1,6 @@
 import { Router } from 'express'
+import { validate_input }from '../middleware'
 import { UserController } from '../controllers'
-import { validateInput }from '../middleware'
 import { createUserSchema } from '../schema/user.schema'
 import { updateAuthSchema } from '../schema/reset.schema'
 
@@ -8,13 +8,13 @@ const router = Router()
 
 router.post(
   '/register', 
-  validateInput(createUserSchema), 
+  validate_input(createUserSchema), 
   UserController.createUserHandler
 )
 
 router.patch(
   '/reset/:id/:token', 
-  validateInput(updateAuthSchema), 
+  validate_input(updateAuthSchema), 
   UserController.resetPasswordHandler
 )
 
