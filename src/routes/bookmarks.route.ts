@@ -5,7 +5,6 @@ import { bookmarkRecipeSchema } from '../schema/bookmarks.schema'
 
 const router = Router()
 
-
 /**
  * @openapi
  * '/api/v2/bookmarks/:user_id':
@@ -22,9 +21,10 @@ const router = Router()
  *              $ref: '#/components/schema/GetBookmarks'
  *      403:
  *        description: Forbidden
+ *      404:
+ *        description: No bookmarks found
  */
 router.get('/:user_id', require_user, BookmarksController.userBookmarksHandler)
-
 
 /**
  * @openapi

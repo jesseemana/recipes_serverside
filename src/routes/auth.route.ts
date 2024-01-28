@@ -5,7 +5,6 @@ import { login_limiter, validate_input, require_user }from '../middleware'
 
 const router = Router()
 
-
 /**
  * @openapi
  * '/api/v2/auth/sessions':
@@ -26,7 +25,6 @@ const router = Router()
  *        description: Forbidden
  */
 router.get('/sessions', require_user, AuthController.findSessionsHandler)
-
 
 /**
  * @openapi
@@ -55,7 +53,6 @@ router.get('/sessions', require_user, AuthController.findSessionsHandler)
  */
 router.post('/login', [validate_input(createSessionSchema), login_limiter], AuthController.createSessionHandler)
 
-
 /**
  * @openapi
  * '/api/v2/auth/refresh':
@@ -79,7 +76,6 @@ router.post('/login', [validate_input(createSessionSchema), login_limiter], Auth
  */
 router.get('/refresh', AuthController.refreshTokenHandler)
 
-
 /**
  * @openapi
  * '/api/v2/auth/logout':
@@ -94,6 +90,5 @@ router.get('/refresh', AuthController.refreshTokenHandler)
  *              description: Forbidden
  */
 router.delete('/logout', require_user, AuthController.destroySessionHandler)
-
 
 export default router
