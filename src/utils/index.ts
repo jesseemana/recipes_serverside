@@ -1,6 +1,6 @@
 import Jwt from "./jwt";
 import log from "./logger";
-import database from "./connect-db";
+import { Database } from "./connect-db";
 import swaggerDocs from "./swagger";
 import { AppError } from "./errors";
 import cloudinary from "./cloudinary";
@@ -11,7 +11,7 @@ import uploadPicture from "./upload-picture";
 export {
   Jwt,
   log,
-  database,
+  Database,
   AppError,
   cloudinary,
   corsOptions,
