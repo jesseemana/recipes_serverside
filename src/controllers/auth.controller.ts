@@ -39,7 +39,7 @@ const createSessionHandler = async (
 
 const refreshTokenHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  if (!cookies?.refresh_token) {
+  if (!cookies.refresh_token) {
     return res.status(401).send('Refresh Token Not Found.');
     // throw new AppError('Unauthorized', 404, 'Refresh Token Not Found', true);
   }
@@ -69,7 +69,7 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
 
 const destroySessionHandler = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  if (!cookies?.refresh_token) {
+  if (!cookies.refresh_token) {
     return res.status(401).send('Refresh Token Not Found.');
     // throw new AppError('Unauthorized', 401, 'Refresh Token Not Found', true);
   }

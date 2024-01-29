@@ -98,7 +98,7 @@ const getAllRecipes = () => {
   return await RecipeModel.findOneAndUpdate(query, update, options)
 }
 
- const deleteRecipe = async (id: string, public_id: string): Promise<string> => {
+ const deleteRecipe = async (id: string, public_id: string) => {
   const metricsLabels = { operation: 'deleteRecipe' }
   const timer = databaseResponseTimeHistogram.startTimer()
   // try {
@@ -113,7 +113,6 @@ const getAllRecipes = () => {
   // }
 
   await Promise.all([cloudinary.uploader.destroy(public_id), RecipeModel.findByIdAndDelete(id)])
-  return 'Recipe has been deleted successfully!'
 }
 
 export default {

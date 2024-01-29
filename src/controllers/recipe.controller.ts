@@ -1,7 +1,11 @@
 import { Request, Response } from 'express'
 import { RecipeService } from '../services'
 import { AppError, uploadPicture } from '../utils'
-import { CreateRecipeInput, UpdateRecipeInput, createRecipeSchema } from '../schema/recipe.schema'
+import { 
+  CreateRecipeInput, 
+  UpdateRecipeInput, 
+  createRecipeSchema 
+} from '../schema/recipe.schema'
 
 
 const createRecipeHandler = async (
@@ -60,9 +64,9 @@ const deleteRecipeHandler = async (
     return res.status(401).send('User is not allowed to make this operation.')
     // throw new AppError('Unauthorized', 401, 'User is not allowed to make this operation', true)
 
-  const message = await RecipeService.deleteRecipe(id, recipe.cloudinary_id)
+  await RecipeService.deleteRecipe(id, recipe.cloudinary_id)
 
-  res.status(200).send(message)
+  res.status(200).send('Recipe has been deleted successfully!')
 }
 
 export default {
