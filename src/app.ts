@@ -2,7 +2,7 @@ require('express-async-errors')
 import dotenv from 'dotenv'
 import express, { Request, Response } from 'express'
 import responseTime from 'response-time'
-import { Database } from './utils'
+import { database } from './utils'
 import { restResponseTimeHistogram } from './utils/metrics'
 import { initialize_server, configure_middleware} from './server'
 import { authRoute, recipesRoute, bookmarksRoute, userRoute } from './routes'
@@ -10,7 +10,7 @@ import { authRoute, recipesRoute, bookmarksRoute, userRoute } from './routes'
 dotenv.config()
 
 const app = express()
-const database = Database.getInstance()
+// const database = Database.getInstance()
 
 configure_middleware(app)
 

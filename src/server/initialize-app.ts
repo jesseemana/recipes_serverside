@@ -1,13 +1,18 @@
 import dotenv from 'dotenv'
 import { Express } from 'express'
 import { error_handler } from '../middleware'
-import { swaggerDocs, Database, log } from '../utils'
+import { swaggerDocs, log } from '../utils'
 import { startMetricsServer } from '../utils/metrics'
 import { cpus } from 'os'
 import cluster from 'cluster'
 import { once } from 'events'
 
 dotenv.config()
+
+interface Database {
+  connect: () => void
+  disconnect: () => void
+}
 
 const initialize_server = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT)
@@ -16,9 +21,9 @@ const initialize_server = (app: Express, database: Database) => {
   
   const server = app.listen(PORT, () => {
     database.connect()
-    log.info(`Server running on: http://localhost:${PORT}...🚀`)
     swaggerDocs(app, PORT)
     startMetricsServer()
+    log.info(`Server running at: http://localhost:${PORT}...🚀`)
   })
 
   const signals = ['SIGTERM', 'SIGINT']

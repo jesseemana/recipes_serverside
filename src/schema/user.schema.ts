@@ -1,51 +1,51 @@
 import { object, string, TypeOf } from 'zod'
 
 
-/**
- * @openapi
- * components:
- *   schema:
- *     CreateUserInput:
- *       type: object
- *       required:
- *         - first_name
- *         - last_name
- *         - email       
- *         - password
- *         - confirm_password
- *       properties:
- *         first_name:
- *           type: string
- *           default: John
- *         last_name:
- *           type: string
- *           default: Doe
- *         email:
- *           type: string
- *           default: johndoe@example.com
- *         password:
- *           type: string
- *           default: Password_1234
- *         confirm_password
- *           type: string
- *           default: Password_1234
- *     UserResponse:
- *       type: object
- *       required:
- *         - first_name
- *         - last_name
- *         - email
- *         - bookmarks
- *       properties:
- *         first_name
- *           type: string
- *         last_name
- *           type: string
- *         email
- *           type: string
- *         bookmarks
- *           type: array
- */
+// /**
+//  * @openapi
+//  * components:
+//  *   schema:
+//  *     CreateUserInput:
+//  *       type: object
+//  *       required:
+//  *         - first_name
+//  *         - last_name
+//  *         - email       
+//  *         - password
+//  *         - confirm_password
+//  *       properties:
+//  *         first_name:
+//  *           type: string
+//  *           default: John
+//  *         last_name:
+//  *           type: string
+//  *           default: Doe
+//  *         email:
+//  *           type: string
+//  *           default: johndoe@example.com
+//  *         password:
+//  *           type: string
+//  *           default: Password_1234
+//  *         confirm_password
+//  *           type: string
+//  *           default: Password_1234
+//  *     UserResponse:
+//  *       type: object
+//  *       required:
+//  *         - first_name
+//  *         - last_name
+//  *         - email
+//  *         - bookmarks
+//  *       properties:
+//  *         first_name
+//  *           type: string
+//  *         last_name
+//  *           type: string
+//  *         email
+//  *           type: string
+//  *         bookmarks
+//  *           type: array
+//  */
 export const createUserSchema = object({
   body: object({
     first_name: string({
@@ -78,54 +78,54 @@ export const createUserSchema = object({
 })
 
 
-/**
- * @openapi
- * components:
- *   schema:
- *     LoginUserInput:
- *       type: object
- *       required:
- *         - email
- *         - password
- *       properties:
- *         email:
- *           type: string
- *           default: johndoe@example.com
- *         password:
- *           type: string
- *           default: Password_1234
- *    loginResponse:
- *      type: object
- *      required:
- *        - user
- *        - accessToken
- *      properties:
- *        user:
- *          type: object
- *          required:
- *            - first_name
- *            - last_name
- *            - email
- *            - bookmarks
- *          properties:
- *            first_name:
- *              type: string
- *            last_name:
- *              type: string
- *            email:
- *              type: string
- *            bookmarks:
- *              type: array
- *        accessToken:
- *          type: string
- *    RefreshResponse:
- *      type: object
- *      required:
- *        - accessToken
- *      properties:
- *        accessToken:
- *          type: string
- */
+// /**
+//  * @openapi
+//  * components:
+//  *   schema:
+//  *     LoginUserInput:
+//  *       type: object
+//  *       required:
+//  *         - email
+//  *         - password
+//  *       properties:
+//  *         email:
+//  *           type: string
+//  *           default: johndoe@example.com
+//  *         password:
+//  *           type: string
+//  *           default: Password_1234
+//  *    loginResponse:
+//  *      type: object
+//  *      required:
+//  *        - user
+//  *        - accessToken
+//  *      properties:
+//  *        user:
+//  *          type: object
+//  *          required:
+//  *            - first_name
+//  *            - last_name
+//  *            - email
+//  *            - bookmarks
+//  *          properties:
+//  *            first_name:
+//  *              type: string
+//  *            last_name:
+//  *              type: string
+//  *            email:
+//  *              type: string
+//  *            bookmarks:
+//  *              type: array
+//  *        accessToken:
+//  *          type: string
+//  *    RefreshResponse:
+//  *      type: object
+//  *      required:
+//  *        - accessToken
+//  *      properties:
+//  *        accessToken:
+//  *          type: string
+//  */
 export const createSessionSchema = object({
   body: object({
     email: string({

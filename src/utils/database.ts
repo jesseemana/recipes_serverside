@@ -4,12 +4,13 @@ import log from './logger'
 
 dotenv.config()
 
-export class Database {
+class Database {
   protected readonly dbUri: string
-  private static unique_instance: Database
   protected readonly options: ConnectOptions
 
-  private constructor() {
+  // private static unique_instance: Database
+
+  constructor() {
     this.options = {
       autoIndex: false,
       maxPoolSize: 10,
@@ -19,12 +20,12 @@ export class Database {
     this.dbUri = String(process.env.MONGO_URI)
   }
 
-  public static getInstance(): Database {
-    if (this.unique_instance === null ) {
-      this.unique_instance = new Database()
-    }
-    return this.unique_instance
-  }
+  // static getInstance(): Database {
+  //   if (this.unique_instance === null ) {
+  //     this.unique_instance = new Database()
+  //   }
+  //   return this.unique_instance
+  // }
 
   connect() { 
     mongoose.connect(this.dbUri)
@@ -44,3 +45,6 @@ export class Database {
     log.warn('Database connection closed due to app termination')  
   }
 }
+
+const database = new Database()
+export default database
