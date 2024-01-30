@@ -1,11 +1,7 @@
 import dotenv from 'dotenv'
 import { Express } from 'express'
 import { error_handler } from '../middleware'
-import { swaggerDocs, log, Database } from '../utils'
-import { startMetricsServer } from '../utils/metrics'
-import { cpus } from 'os'
-import cluster from 'cluster'
-import { once } from 'events'
+import { log, Database, swaggerDocs, startMetricsServer } from '../utils'
 
 dotenv.config()
 
@@ -41,6 +37,10 @@ const initialize_server = (app: Express, database: Database) => {
 }
 
 export default initialize_server
+
+// import { cpus } from 'os'
+// import cluster from 'cluster'
+// import { once } from 'events'
 
 // if (cluster.isPrimary) {
 //   log.info(`Master process ${process.pid} has started...`);

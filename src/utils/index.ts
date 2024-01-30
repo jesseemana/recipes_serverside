@@ -8,6 +8,7 @@ import cloudinary from "./cloudinary";
 import sendEmail from "./node-mailer";
 import corsOptions from "./cors-options";
 import uploadPicture from "./upload-picture";
+import { startMetricsServer } from "./metrics";
 
 export {
   Jwt,
@@ -20,4 +21,5 @@ export {
   sendEmail,
   swaggerDocs,
   uploadPicture,
+  startMetricsServer,
 }
