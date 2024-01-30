@@ -1,11 +1,11 @@
-import authRoute from './auth.route'
-import userRoute from './user.route'
-import recipesRoute from './recipes.route'
-import bookmarksRoute from './bookmarks.route'
+import auth_route from './auth.route'
+import user_route from './user.route'
+import recipes_route from './recipes.route'
+import bookmarks_route from './bookmarks.route'
 
 export {
-  authRoute,
-  userRoute,
-  recipesRoute,
-  bookmarksRoute,
+  auth_route,
+  user_route,
+  recipes_route,
+  bookmarks_route,
 }
