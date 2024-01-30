@@ -1,18 +1,13 @@
 import dotenv from 'dotenv'
 import { Express } from 'express'
 import { error_handler } from '../middleware'
-import { swaggerDocs, log } from '../utils'
+import { swaggerDocs, log, Database } from '../utils'
 import { startMetricsServer } from '../utils/metrics'
 import { cpus } from 'os'
 import cluster from 'cluster'
 import { once } from 'events'
 
 dotenv.config()
-
-interface Database {
-  connect: () => void
-  disconnect: () => void
-}
 
 const initialize_server = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT)
