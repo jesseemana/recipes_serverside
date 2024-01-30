@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { Express } from 'express'
 import { error_handler } from '../middleware'
-import { log, Database, swaggerDocs, startMetricsServer } from '../utils'
+import { log, Database, startMetricsServer } from '../utils'
 
 dotenv.config()
 
@@ -12,7 +12,6 @@ const initialize_server = (app: Express, database: Database) => {
   
   const server = app.listen(PORT, () => {
     database.connect()
-    swaggerDocs(app, PORT)
     startMetricsServer()
     log.info(`Server running at: http://localhost:${PORT}...🚀`)
   })
