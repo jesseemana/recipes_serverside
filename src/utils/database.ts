@@ -1,16 +1,15 @@
 import mongoose, { ConnectOptions } from 'mongoose'
-import dotenv from 'dotenv'
 import log from './logger'
+import dotenv from 'dotenv'
 
 dotenv.config()
 
-class Database {
+export class Database {
   protected readonly dbUri: string
   protected readonly options: ConnectOptions
-
-  // private static unique_instance: Database
-
-  constructor() {
+  private static unique_instance: Database = new Database()
+  
+  private constructor() {
     this.options = {
       autoIndex: false,
       maxPoolSize: 10,
@@ -20,12 +19,9 @@ class Database {
     this.dbUri = String(process.env.MONGO_URI)
   }
 
-  // static getInstance(): Database {
-  //   if (this.unique_instance === null ) {
-  //     this.unique_instance = new Database()
-  //   }
-  //   return this.unique_instance
-  // }
+  public static getInstance(): Database {
+    return this.unique_instance
+  }
 
   connect() { 
     mongoose.connect(this.dbUri)
@@ -33,18 +29,15 @@ class Database {
       log.info('Database connected...')
     })
     mongoose.connection.on('error', (error: string) => {
-      log.error(`Error connecting to database: ${error}`)
+      log.error(`Error connecting to database: ${error}.`)
     })
     mongoose.connection.on('disconnected', () => {
-      log.warn('Mongoose database connection has been disconnected')
+      log.warn('Database connection has been disconnected.')
     })
   }
 
   disconnect() {
-    mongoose.connection.close()
-    log.warn('Database connection closed due to app termination')  
+    mongoose.connection.close(false)
+    log.warn('Database connection closed due to app termination.')  
   }
 }
-
-const database = new Database()
-export default database
