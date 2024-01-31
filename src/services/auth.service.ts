@@ -6,14 +6,11 @@ import { Session } from '../models/session.model'
 import { DocumentType } from '@typegoose/typegoose'
 import { FilterQuery, UpdateQuery } from 'mongoose'
 import { User, private_fields } from '../models/user.model'
+
 dotenv.config()
 
 const findAllSessions = async () => {
   return SessionModel.find({})
-}
-
-const deleteAllSessions = async () => {
-  return SessionModel.deleteMany()
 }
 
 const createSession = async ({ userId }: { userId: string }) => {
@@ -40,7 +37,7 @@ const signAccessToken = (
   const access_token = Jwt.signJwt(
     { ...user_payload, session }, 
     String(process.env.ACCESS_TOKEN_PRIVATE_KEY), 
-    { expiresIn: String(process.env.ACCESS_TOKEN_TIME_TO_LIVE)}
+    { expiresIn: String(process.env.ACCESS_TOKEN_TIME_TO_LIVE) }
   )
 
   return access_token 
@@ -57,11 +54,10 @@ const signRefreshToken = (session: DocumentType<Session>) => {
 }
 
 export default {
-  findAllSessions,
-  deleteAllSessions,
   createSession,
-  findSessionById,
   updateSession,
+  findAllSessions,
+  findSessionById,
   signAccessToken,
   signRefreshToken,
 }
