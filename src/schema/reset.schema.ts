@@ -16,7 +16,7 @@ export const updateAuthSchema = object({
     }).trim()
   }),
   body: object({
-    new_password: string({
+    password: string({
       required_error: 'Please provide a password'
     }).regex(new RegExp(".*[A-Z].*"), "One uppercase character").regex(new RegExp(".*\\d.*"), "One number")
       .regex(new RegExp(".*[a-z].*"), "One lowercase character")
@@ -30,7 +30,7 @@ export const updateAuthSchema = object({
       .regex(new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),"One special character")
       .min(8, "Must not be less than 8 characters.")
       .max(64, "Cannot be more than 64 characters long."),
-  }).refine((data) => data.new_password === data.confirm_password, {
+  }).refine((data) => data.password === data.confirm_password, {
     message: 'Passwords do not match',
     path: ['confirm_password'],
   }),
