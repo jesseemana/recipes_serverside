@@ -1,9 +1,6 @@
-import dotenv from 'dotenv'
 import { Express } from 'express'
 import { error_handler } from '../middleware'
 import { log, Database, startMetricsServer } from '../utils'
-
-dotenv.config()
 
 const initialize_server = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT)

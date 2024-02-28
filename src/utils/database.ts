@@ -1,8 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose'
 import log from './logger'
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 export class Database {
   protected readonly dbUri: string
@@ -11,6 +8,7 @@ export class Database {
   
   private constructor() {
     this.options = {
+      dbName: 'Recipes',
       autoIndex: false,
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
@@ -25,19 +23,13 @@ export class Database {
 
   connect() { 
     mongoose.connect(this.dbUri)
-    mongoose.connection.on('connected', () => {
-      log.info('Database connected...')
-    })
-    mongoose.connection.on('error', (error: string) => {
-      log.error(`Error connecting to database: ${error}.`)
-    })
-    mongoose.connection.on('disconnected', () => {
-      log.warn('Database connection has been disconnected.')
-    })
+    mongoose.connection.on('connected', () =>  log.info('Database connected...'))
+    mongoose.connection.on('disconnected', () => log.warn('Database connection has been disconnected.'))
+    mongoose.connection.on('error', (error: string) => log.error(`Error connecting to database: ${error}.`))
   }
 
   disconnect() {
     mongoose.connection.close(false)
-    log.warn('Database connection closed due to app termination.')  
+    log.fatal('Database connection closed due to app termination.')  
   }
 }

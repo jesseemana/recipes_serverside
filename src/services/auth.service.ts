@@ -1,4 +1,3 @@
-import dotenv from 'dotenv'
 import { omit } from 'lodash'
 import { Jwt } from '../utils'
 import { SessionModel } from '../models'
@@ -7,7 +6,6 @@ import { DocumentType } from '@typegoose/typegoose'
 import { FilterQuery, UpdateQuery } from 'mongoose'
 import { User, private_fields } from '../models/user.model'
 
-dotenv.config()
 
 const findAllSessions = async () => {
   return SessionModel.find({})
@@ -21,17 +19,11 @@ const findSessionById = async (id: string) => {
   return SessionModel.findById(id)
 }
 
-const updateSession = (
-  query: FilterQuery<Session>, 
-  update: UpdateQuery<Session>
-) => {
+const destroySession = (query: FilterQuery<Session>, update: UpdateQuery<Session>) => {
   return SessionModel.findOneAndUpdate(query, update)
 }
 
-const signAccessToken = (
-  user: DocumentType<User>, 
-  session: DocumentType<Session>
-) => {
+const signAccessToken = (user: DocumentType<User>, session: DocumentType<Session>) => {
   const user_payload = omit(user.toJSON(), private_fields)
   
   const access_token = Jwt.signJwt(
@@ -55,7 +47,7 @@ const signRefreshToken = (session: DocumentType<Session>) => {
 
 export default {
   createSession,
-  updateSession,
+  destroySession,
   findAllSessions,
   findSessionById,
   signAccessToken,
