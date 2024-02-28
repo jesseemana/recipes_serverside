@@ -1,5 +1,5 @@
 require('express-async-errors')
-import dotenv from 'dotenv'
+import'dotenv/config'
 import express, { Request, Response } from 'express'
 import responseTime from 'response-time'
 import { Database, swaggerDocs } from './utils'
@@ -11,8 +11,6 @@ import {
   recipes_route, 
   bookmarks_route, 
 } from './routes'
-
-dotenv.config()
 
 const app = express()
 const database = Database.getInstance()
@@ -32,7 +30,7 @@ swaggerDocs(app, Number(process.env.PORT))
  *       200:
  *         description: Server is responding and is up and running
  */
-app.get('/health-check', (_: Request, res: Response) => res.sendStatus(200))
+app.get('/health-check', (_req: Request, res: Response) => res.sendStatus(200))
 //routes
 app.use('/api/v2/auth', auth_route)
 app.use('/api/v2/users', user_route)
