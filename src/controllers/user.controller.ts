@@ -16,15 +16,15 @@ const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>, 
   res: Response
 ) => {
-  const body = req.body;
   try {
-    const new_user = await UserService.createUser(body);
-    return res.status(201).send(`New user ${new_user.first_name} ${new_user.last_name} created succesfully.`);
+    const body = req.body;
+    const user = await UserService.createUser(body);
+    return res.status(201).send(`New user ${user.first_name} ${user.last_name} has been created.`);
   } catch (error: any) {
     if (error.code === 11000) 
-      return res.status(409).send('Email already in use.')
+      return res.status(409).send('Email already in use.');
       // throw new AppError('Conflict', 409, `Email already in use.`, true);
-    return res.status(500).send('Internal server error.')
+    return res.status(500).send('Internal server error.');
     // throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
   }
 }
@@ -36,15 +36,14 @@ const forgortPasswordHandler = async (
 ) => {
   const { email } = req.body;
   const user = await UserService.findUserByEmail(email);
-  if (!user) return res.status(404).send('User Not Found.')
+  if (!user) return res.status(404).send('User Not Found.');
   // if (!user) throw new AppError('Not Found', 404, `User Not Found.`, true);
 
-  const reset_secret = process.env.SECRET_KEY + user.password;
   const user_payload = omit(user.toJSON(), private_fields);
   // create a one time link valid for 30mitues
-  const token = jwt.sign(user_payload, reset_secret, { expiresIn: '30m' }); 
-  const live_link = `${LIVE_URL}/${user._id}/${token}`; 
+  const token = jwt.sign(user_payload, process.env.SECRET_KEY + user.password, { expiresIn: '30m' }); 
   const dev_link = `${DEV_URL}/${user._id}/${token}`; 
+  const live_link = `${LIVE_URL}/${user._id}/${token}`; 
 
   sendEmail({
     to: email,
@@ -62,7 +61,7 @@ const resetPasswordHandler = async (
   res: Response
 ) => {
   const { id, token } = req.params;
-  const { new_password } = req.body;
+  const { password } = req.body;
 
   const user = await UserService.findUserById(id);
   if (!user) return res.status(404).send('User Not Found.')
@@ -74,7 +73,7 @@ const resetPasswordHandler = async (
     async (err: any) => {
       if (err) return res.sendStatus(403)
       // if (err) throw new AppError('Forbidden', 403, 'Expired or invalid token detected', true);
-      user.password = new_password;
+      user.password = password;
       await user.save();
       return res.status(200).send(`Users' password has been updated.`);
     }

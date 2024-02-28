@@ -17,7 +17,7 @@ const createSessionHandler = async (
   const { email, password } = req.body;
   
   const user = await UserService.findUserByEmail(email).select('-password');
-  if (!user) return res.status(404).send('User Not Found.');
+  if (!user) return res.status(401).send('User Not Found.');
   if (!user.verifyPassword(password)) return res.status(401).send('Incorrect Password.');
 
   const session = await AuthService.createSession({ userId: String(user._id) });
@@ -26,11 +26,11 @@ const createSessionHandler = async (
   const refresh_token = AuthService.signRefreshToken(session);
 
   res.cookie('refreshToken', refresh_token, {
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    httpOnly: true,
-    secure: false,
-    sameSite: 'strict', // cross-site access
     path: '/',
+    secure: false, // set to true in prod
+    httpOnly: true,
+    sameSite: 'strict', // forbids cross-site access
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 
   res.status(200).send({ user, access_token });
@@ -44,7 +44,7 @@ const refreshTokenHandler = async (req: Request, res: Response) => {
     // throw new AppError('Unauthorized', 404, 'Refresh Token Not Found', true);
   }
 
-  const refresh_token = cookies.refresh_token as string;
+  const refresh_token = String(cookies.refresh_token);
 
   const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, String(process.env.REFRESH_TOKEN_PUBLIC_KEY));
   if (!decoded) {
@@ -74,7 +74,7 @@ const destroySessionHandler = async (req: Request, res: Response) => {
     // throw new AppError('Unauthorized', 401, 'Refresh Token Not Found', true);
   }
 
-  const sessionId = res.locals.user.session._id as string;
+  const sessionId = String(res.locals.user.session._id);
 
   const session = await AuthService.findSessionById(sessionId);
   if (!session || !session.valid) {
@@ -82,7 +82,7 @@ const destroySessionHandler = async (req: Request, res: Response) => {
     // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
   }
 
-  await AuthService.updateSession({ _id: session._id }, { valid: false });
+  await AuthService.destroySession({ _id: session._id }, { valid: false });
 
   res.clearCookie('refreshToken', {
     httpOnly: true,
@@ -90,7 +90,7 @@ const destroySessionHandler = async (req: Request, res: Response) => {
     sameSite: 'none',
   });
 
-  res.status(200).send('User loged out successfully.');
+  return res.status(200).send('User loged out successfully.');
 }
 
 export default {
