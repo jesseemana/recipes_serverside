@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import config from 'config'
 import { log }from '../utils'
 import { 
   pre, 
@@ -15,12 +14,11 @@ export const private_fields = ['password', 'bookmarks']
 
 @pre<User>('save', function() {
   if (this.isModified('password')) {
-    const salt = bcrypt.genSaltSync(config.get<number>('saltWorkFactor'))
+    const salt = bcrypt.genSaltSync(Number(process.env.SALT_ROUNDS))
     const hash = bcrypt.hashSync(this.password, salt)
     this.password = hash
     return
   }
-  
   return
 })
 
@@ -59,5 +57,4 @@ export class User {
 }
 
 const UserModel = getModelForClass(User)
-
 export default UserModel

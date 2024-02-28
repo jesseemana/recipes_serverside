@@ -1,4 +1,4 @@
-import { UploadResponse } from '../../types'
+import { UploadResponse } from '../types'
 import cloudinary from './cloudinary'
 
 const uploadPicture = async (picture: string): Promise<UploadResponse> => {

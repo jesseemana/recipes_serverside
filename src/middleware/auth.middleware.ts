@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
 import { Jwt } from '../utils'
-import dotenv from 'dotenv'
-dotenv.config()
 
 const deserialize_user = (
   req: Request, 

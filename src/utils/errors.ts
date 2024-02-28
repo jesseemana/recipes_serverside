@@ -1,4 +1,4 @@
-import { HttpCode } from '../../types';
+import { HttpCode } from '../types';
 
 export class AppError extends Error {
   public readonly name: string;
