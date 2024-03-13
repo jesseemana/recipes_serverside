@@ -1,38 +1,38 @@
-import { Express } from 'express'
-import { error_handler } from '../middleware'
-import { log, Database, startMetricsServer } from '../utils'
+import { Express } from 'express';
+import { errorHandler } from '../middleware';
+import { log, Database, startMetricsServer } from '../utils';
 
-const initialize_server = (app: Express, database: Database) => {
-  const PORT = Number(process.env.PORT)
+const InitializeServer = (app: Express, database: Database) => {
+  const PORT = Number(process.env.PORT) || 8080;
   
-  app.use(error_handler)
+  app.use(errorHandler);
   
   const server = app.listen(PORT, () => {
-    database.connect()
-    startMetricsServer()
-    log.info(`Server running at: http://localhost:${PORT}...🚀`)
+    database.connect();
+    startMetricsServer();
+    log.info(`Server running at: http://localhost:${PORT}...🚀`);
   })
 
-  const signals = ['SIGTERM', 'SIGINT']
+  const signals = ['SIGTERM', 'SIGINT'];
 
   const gracefulShutdown = (signal: string) => {
     process.on(signal, () => {
-      log.info(`Received signal: ${signal}, shutting down...`)
-      server.close()
-      database.disconnect()
-      log.info('Goodbye...😥💤💤')
-      process.exit(0)
+      log.info(`Received signal: ${signal}, shutting down...`);
+      server.close();
+      database.disconnect();
+      log.info('Goodbye...😥💤💤');
+      process.exit(0);
     })
   }
 
   for (let i = 0; i < signals.length; i++) {
-    gracefulShutdown(signals[i])
+    gracefulShutdown(signals[i]);
   }
 
-  return app
+  return app;
 }
 
-export default initialize_server
+export default InitializeServer;
 
 // import { cpus } from 'os'
 // import cluster from 'cluster'

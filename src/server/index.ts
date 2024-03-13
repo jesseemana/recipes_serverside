@@ -1,7 +1,7 @@
-import initialize_server from './initialize-app';
+import InitializeServer from './initialize-app';
 import configure_middleware from './configure-middleware';
 
 export {
-  initialize_server,
+  InitializeServer,
   configure_middleware,
 }
