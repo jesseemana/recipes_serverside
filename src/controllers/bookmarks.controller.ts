@@ -11,8 +11,7 @@ const userBookmarksHandler = async (
   const { user_id } = req.params;
 
   const user = await UserService.findUserById(user_id);
-  if (!user) return res.status(404).send('User Not Found.');
-    // throw new AppError('Not Found', 404, 'User Not Found.', true);
+  if (!user) return res.status(404).send('User not found.');
 
   const bookmarks = [];
 
@@ -21,7 +20,7 @@ const userBookmarksHandler = async (
     if (recipe) { bookmarks.push(recipe); }
   }
 
-  res.status(200).send(bookmarks);
+  return res.status(200).send(bookmarks);
 };
 
 
@@ -31,23 +30,20 @@ const addBookmarkHandler = async (
 ) => {
   const { user_id, recipe_id } = req.params;
 
-  const found_user = UserService.findUserById(user_id);
-  const found_recipe = RecipeService.findRecipeById(recipe_id);
-  const [user, recipe] = await Promise.all([found_user, found_recipe]);
-  if (!recipe || !user) { 
-    return res.status(404).send('User/Recipe Not found.');
-    // throw new AppError('Not Found', 404, 'User/Recipe Not found.', true);
-  }
+  const user = UserService.findUserById(user_id);
+  const recipe = RecipeService.findRecipeById(recipe_id);
+  const [found_user, found_recipe] = await Promise.all([user, recipe]);
 
-  if (user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send('Recipe Already Bookmarked');
-    // throw new AppError('Bad Request', 400, 'Recipe Is Already Bookmarked', true);
-  }
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
-  user.bookmarks.push(recipe_id);
-  await user.save();
+  if (found_user.bookmarks.includes(recipe_id))
+    return res.status(400).send('Recipe already bookmarked');
 
-  res.status(200).send('Recipe added to bookmarks');
+  found_user.bookmarks.push(recipe_id);
+  await found_user.save();
+
+  return res.status(200).send(`${found_recipe.name} recipe added to bookmarks`);
 };
 
 
@@ -57,23 +53,20 @@ const removeBookmarkHandler = async (
 ) => {
   const { user_id, recipe_id } = req.params;
 
-  const found_user = UserService.findUserById(user_id);
-  const found_recipe = RecipeService.findRecipeById(recipe_id);
-  const [user, recipe] = await Promise.all([found_user, found_recipe]);
-  if (!recipe || !user) {
-    return res.status(404).send('User/Recipe Not found.');
-    // throw new AppError('Not Found', 404, 'User/Recipe Not found.', true);
-  }
+  const user = UserService.findUserById(user_id);
+  const recipe = RecipeService.findRecipeById(recipe_id);
+  const [found_user, found_recipe] = await Promise.all([user, recipe]);
 
-  if (!user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send(`Recipe Is Not Bookmarked`);
-    // throw new AppError('Bad Request', 400, `Recipe Is Not Bookmarked`, true);
-  }
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
-  user.bookmarks = [ ...(user.bookmarks.filter((bookmark) => bookmark !== recipe_id)) ];
-  await user.save();
+  if (!found_user.bookmarks.includes(recipe_id)) 
+    return res.status(400).send(`Recipe is not bookmarked`);
 
-  res.status(200).send(`${recipe.name} recipe removed from bookmarks`);
+  found_user.bookmarks = [ ...(found_user.bookmarks.filter((bookmark) => bookmark !== recipe_id)) ];
+  await found_user.save();
+
+  return res.status(200).send(`${found_recipe.name} recipe removed from bookmarks`);
 };
 
 

@@ -4,7 +4,7 @@ import { AppError , cloudinary } from '../utils'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
 
-const getUserRecipes = ({ user_id }: {user_id: string}) => {
+const getUserRecipes = async ({ user_id }: { user_id: string }) => {
   const metricsLabels = { operation: 'findUserRecipes' }
   const timer = databaseResponseTimeHistogram.startTimer()
   // try {
@@ -16,10 +16,10 @@ const getUserRecipes = ({ user_id }: {user_id: string}) => {
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
   // }
 
-  return RecipeModel.find({ user_id })
+  return await RecipeModel.find({ user_id })
 }
 
-const getAllRecipes = () => {
+const getAllRecipes = async () => {
   const metricsLabels = { operation: 'getAllRecipes' }
   const timer = databaseResponseTimeHistogram.startTimer()
   // try {
@@ -31,7 +31,7 @@ const getAllRecipes = () => {
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false)
   // }
 
-  return RecipeModel.find({})
+  return await RecipeModel.find({})
 }
 
  const findRecipeById = async (id: string) => {

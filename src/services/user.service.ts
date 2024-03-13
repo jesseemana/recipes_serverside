@@ -7,12 +7,12 @@ const createUser = async (data: Partial<User>) => {
   return omit(user.toJSON(), 'password');
 };
 
-const findUserById = (id: string) => {
-  return UserModel.findById(id);
+const findUserById = async (id: string) => {
+  return await UserModel.findById(id).select('-password');
 };
 
-const findUserByEmail = (email: string) => {
-  return UserModel.findOne({ email });
+const findUserByEmail = async (email: string) => {
+  return await UserModel.findOne({ email }).select('-password');
 };
 
 export default {
