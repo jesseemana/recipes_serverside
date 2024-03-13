@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { BookmarksController } from '../controllers'
-import { require_user, validate_input } from '../middleware'
+import { requireUser, validateInput } from '../middleware'
 import { bookmarkRecipeSchema } from '../schema/bookmarks.schema'
 
 const router = Router()
@@ -24,7 +24,7 @@ const router = Router()
 //  *      404:
 //  *        description: No bookmarks found
 //  */
-router.get('/:user_id', require_user, BookmarksController.userBookmarksHandler)
+router.get('/:user_id', requireUser, BookmarksController.userBookmarksHandler)
 
 // /**
 //  * @openapi
@@ -58,11 +58,11 @@ router.get('/:user_id', require_user, BookmarksController.userBookmarksHandler)
 //  */
 router.route('/:user_id/:recipe_id')
   .post(
-    [require_user, validate_input(bookmarkRecipeSchema)], 
+    [requireUser, validateInput(bookmarkRecipeSchema)], 
     BookmarksController.addBookmarkHandler
   )
   .delete(
-    [require_user, validate_input(bookmarkRecipeSchema)], 
+    [requireUser, validateInput(bookmarkRecipeSchema)], 
     BookmarksController.removeBookmarkHandler
   )
 

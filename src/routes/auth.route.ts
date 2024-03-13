@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { AuthController } from '../controllers'
 import { createSessionSchema } from '../schema/user.schema'
-import { login_limiter, validate_input, require_user }from '../middleware'
+import { loginLimiter, validateInput, requireUser }from '../middleware'
 
 const router = Router()
 
@@ -24,7 +24,7 @@ const router = Router()
 //  *      403:
 //  *        description: Forbidden
 //  */
-router.get('/sessions', require_user, AuthController.findSessionsHandler)
+router.get('/sessions', requireUser, AuthController.findSessionsHandler)
 
 // /**
 //  * @openapi
@@ -51,7 +51,7 @@ router.get('/sessions', require_user, AuthController.findSessionsHandler)
 //  *        401:
 //  *          description: Invalid password
 //  */
-router.post('/login', [validate_input(createSessionSchema), login_limiter], AuthController.createSessionHandler)
+router.post('/login', [validateInput(createSessionSchema), loginLimiter], AuthController.createSessionHandler)
 
 // /**
 //  * @openapi
@@ -89,6 +89,6 @@ router.get('/refresh', AuthController.refreshTokenHandler)
 //  *          403:
 //  *              description: Forbidden
 //  */
-router.delete('/logout', require_user, AuthController.destroySessionHandler)
+router.delete('/logout', requireUser, AuthController.destroySessionHandler)
 
 export default router
