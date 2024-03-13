@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Jwt } from '../utils'
 
-const deserialize_user = (
+const deserializeUser = (
   req: Request, 
   res: Response, 
   next: NextFunction
@@ -14,4 +14,4 @@ const deserialize_user = (
   return next()
 }
 
-export default deserialize_user  
+export default deserializeUser
