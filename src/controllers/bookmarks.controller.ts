@@ -34,8 +34,7 @@ const addBookmarkHandler = async (
   const recipe = RecipeService.findRecipeById(recipe_id);
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
 
-  if (!found_user) return res.status(404).send('User not found.');
-  if (!found_recipe) return res.status(404).send('Recipe not found.');
+  if (!found_user || !found_recipe) return res.status(404).send('User or recipe not found.');
 
   if (found_user.bookmarks.includes(recipe_id))
     return res.status(400).send('Recipe already bookmarked');
@@ -57,8 +56,7 @@ const removeBookmarkHandler = async (
   const recipe = RecipeService.findRecipeById(recipe_id);
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
 
-  if (!found_user) return res.status(404).send('User not found.');
-  if (!found_recipe) return res.status(404).send('Recipe not found.');
+  if (!found_user || !found_recipe) return res.status(404).send('User or recipe not found.');
 
   if (!found_user.bookmarks.includes(recipe_id)) 
     return res.status(400).send(`Recipe is not bookmarked`);
