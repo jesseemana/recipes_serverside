@@ -21,14 +21,14 @@ export class Database {
     return this.unique_instance
   }
 
-  connect() { 
+  connect(): void { 
     mongoose.connect(this.dbUri)
     mongoose.connection.on('connected', () =>  log.info('Database connected...'))
     mongoose.connection.on('disconnected', () => log.warn('Database connection has been disconnected.'))
     mongoose.connection.on('error', (error: string) => log.error(`Error connecting to database: ${error}.`))
   }
 
-  disconnect() {
+  disconnect(): void {
     mongoose.connection.close(false)
     log.fatal('Database connection closed due to app termination.')  
   }
