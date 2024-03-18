@@ -10,8 +10,8 @@ const initializeServer = (app: Express, database: Database) => {
   const server = app.listen(PORT, () => {
     database.connect();
     startMetricsServer();
-    log.info(`Server running at: http://localhost:${PORT}...🚀`);
-  })
+    log.info(`Server running at: http://localhost:${PORT} 🚀`);
+  });
 
   const signals = ['SIGTERM', 'SIGINT'];
 
