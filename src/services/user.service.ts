@@ -5,18 +5,18 @@ import { User } from '../models/user.model';
 const createUser = async (data: Partial<User>) => {
   const user = await UserModel.create(data);
   return omit(user.toJSON(), 'password');
-};
+}
 
 const findUserById = async (id: string) => {
-  return await UserModel.findById(id).select('-password');
-};
+  return await UserModel.findById(id).select('-password').exec();
+}
 
 const findUserByEmail = async (email: string) => {
-  return await UserModel.findOne({ email }).select('-password');
-};
+  return await UserModel.findOne({ email }).select('-password').exec();
+}
 
 export default {
   createUser,
   findUserById,
   findUserByEmail,
-};
+}
