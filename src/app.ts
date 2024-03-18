@@ -43,16 +43,16 @@ app.use('/api/v2/users', userRoute);
 app.use('/api/v2/recipes', recipesRoute);
 app.use('/api/v2/bookmarks', bookmarksRoute);
 
-// Recording promethius metrics 
+// Recording metrics for API response time
 app.use(responseTime((req: Request, res: Response, time: number) => {
-  if (req.route.path) {
+  if (req.path) {
     restResponseTimeHistogram.observe(
       {
         method: req.method,
-        route: req.route.path,
+        route: req.path,
         status_code: res.statusCode
       }, 
-      time * 1000
+      time * 1000 // converting time from milliseconds
     );
   }
 }));
