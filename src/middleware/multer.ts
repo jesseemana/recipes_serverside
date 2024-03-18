@@ -11,11 +11,7 @@ const upload = multer({
 
   fileFilter: (_req, file: Express.Multer.File, cb: FileFilterCallback) => {
     let ext = path.extname(file.originalname);
-    if (
-      ext !== '.jpg' && 
-      ext !== '.png' && 
-      ext !== '.jpeg'
-    ) {
+    if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
       cb(new Error('Choose a supported file type.'));
       return;
     }
