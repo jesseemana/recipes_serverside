@@ -7,8 +7,8 @@ import { private_fields } from '../models/user.model';
 import { CreateUserInput } from '../schema/user.schema';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 
-const DEV_URL = 'http://localhost:8080/api/v2/users'
-const LIVE_URL = 'https://gourmands-portal.vercel.app/reset-password'
+const DEV_URL = 'http://localhost:8080/api/v2/users';
+const LIVE_URL = 'https://gourmands-portal.vercel.app';
 
 const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>, 
@@ -22,7 +22,7 @@ const createUserHandler = async (
     if (error.code === 11000) 
       return res.status(409).send('Email already in use.');
       // throw new AppError('Conflict', 409, `Email already in use.`, true);
-    return res.status(500).send('Internal server error.');
+    return res.status(500).send('Internal Server Error.');
     // throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
   }
 }
@@ -42,9 +42,9 @@ const forgortPasswordHandler = async (
 
   // create a one time link valid for 30 minutes
   const token = jwt.sign(user_payload, (process.env.SECRET_KEY + user.password), { expiresIn: '30m' });
-  const dev_link = `${DEV_URL.trim()}/reset/${user._id}/${token}`;
-  const live_link = `${LIVE_URL.trim()}/${user._id}/${token}`;
-  log.info(`Follow this link to update your password: ${dev_link}`);
+  const dev_link = `${DEV_URL.trim()}/${user._id}/reset/${token}`;
+  const live_link = `${LIVE_URL.trim()}/${user._id}/reset-password/${token}`;
+  log.info(`Password reset link: ${dev_link}`);
 
   sendEmail({
     to: email,
@@ -53,7 +53,7 @@ const forgortPasswordHandler = async (
     html: `<b>Follow this link to reset your password: <a>${live_link}</a>. Link expires in 30 minutes.</b>`
   });
 
-  res.status(200).send(`Password reset link sent to users' email.`);
+  return res.status(200).send(`Password reset link sent to users' email.`);
 };
 
 
