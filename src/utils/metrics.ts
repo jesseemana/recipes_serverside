@@ -1,31 +1,31 @@
-import express, { Request, Response } from 'express'
-import log from './logger'
-import client from 'prom-client'
+import express, { Request, Response } from 'express';
+import log from './logger';
+import client from 'prom-client';
 
-const app = express()
+const app = express();
 
 export const restResponseTimeHistogram = new client.Histogram({
   name: 'rest_response_time_duration_seconds',
   help: 'REST API response time in seconds',
-  labelNames: ['method', 'route', 'status_code']
-})
+  labelNames: ['method', 'route', 'status_code'],
+});
 
 export const databaseResponseTimeHistogram = new client.Histogram({
   name: 'database_response_time_duration_seconds',
   help: 'Database response time in seconds',
-  labelNames: ['operation', 'success']
-})
+  labelNames: ['operation', 'success'],
+});
 
 export const startMetricsServer = () => {
-  const collectDefaultMetrics = client.collectDefaultMetrics
+  const collectDefaultMetrics = client.collectDefaultMetrics;
 
-  collectDefaultMetrics()
+  collectDefaultMetrics();
 
-  app.get('/metrics', async (_: Request, res: Response) => {
-    res.set('Content-Type', client.register.contentType)
+  app.get('/metrics', async (_req: Request, res: Response) => {
+    res.set('Content-Type', client.register.contentType);
 
-    return res.send(await client.register.metrics())
-  })
+    return res.send(await client.register.metrics());
+  });
 
-  app.listen(9100, () => log.info('Metrics server started at: http://localhost:9100'))
+  app.listen(9100, () => log.info('Metrics server running at: http://localhost:9100'));
 }
