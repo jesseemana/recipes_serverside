@@ -6,18 +6,12 @@ import { updateAuthSchema } from '../schema/reset.schema';
 
 const router = Router();
 
-router.post(
-  '/register', 
-  validateInput(createUserSchema), 
-  UserController.createUserHandler
-);
+const { createUserHandler, resetPasswordHandler, forgortPasswordHandler } = UserController;
 
-router.patch(
-  '/:id/reset/:token', 
-  validateInput(updateAuthSchema), 
-  UserController.resetPasswordHandler
-);
+router.post('/register', validateInput(createUserSchema), createUserHandler);
 
-router.post('/forgot_password', UserController.forgortPasswordHandler);
+router.patch('/:id/reset/:token', validateInput(updateAuthSchema), resetPasswordHandler);
+
+router.post('/forgot_password', forgortPasswordHandler);
 
 export default router;

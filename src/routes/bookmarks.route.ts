@@ -1,9 +1,11 @@
-import { Router } from 'express'
-import { BookmarksController } from '../controllers'
-import { requireUser, validateInput } from '../middleware'
-import { bookmarkRecipeSchema } from '../schema/bookmarks.schema'
+import { Router } from 'express';
+import { BookmarksController } from '../controllers';
+import { requireUser, validateInput } from '../middleware';
+import { bookmarkRecipeSchema } from '../schema/bookmarks.schema';
 
-const router = Router()
+const router = Router();
+
+const { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } = BookmarksController;
 
 // /**
 //  * @openapi
@@ -24,7 +26,7 @@ const router = Router()
 //  *      404:
 //  *        description: No bookmarks found
 //  */
-router.get('/:user_id', requireUser, BookmarksController.userBookmarksHandler)
+router.get('/:user_id', requireUser, userBookmarksHandler);
 
 // /**
 //  * @openapi
@@ -59,11 +61,11 @@ router.get('/:user_id', requireUser, BookmarksController.userBookmarksHandler)
 router.route('/:user_id/:recipe_id')
   .post(
     [requireUser, validateInput(bookmarkRecipeSchema)], 
-    BookmarksController.addBookmarkHandler
+    addBookmarkHandler
   )
   .delete(
     [requireUser, validateInput(bookmarkRecipeSchema)], 
-    BookmarksController.removeBookmarkHandler
-  )
+    removeBookmarkHandler
+  );
 
-export default router  
+export default router;

@@ -1,25 +1,28 @@
-import { Router } from 'express'
-import { createRecipeSchema, updateRecipeSchema } from '../schema/recipe.schema'
-import { upload, requireUser, validateInput } from '../middleware'
-import { RecipeController, GetRecipeController } from '../controllers'
+import { Router } from 'express';
+import { upload, requireUser, validateInput } from '../middleware';
+import { RecipeController, GetRecipeController } from '../controllers';
+import { createRecipeSchema, updateRecipeSchema } from '../schema/recipe.schema';
 
-const router = Router()
+const router = Router();
+
+const { createRecipeHandler, updateRecipeHandler, deleteRecipeHandler } = RecipeController;
+const { getSingleRecipeHandler, getAllRecipesHandler, getUserRecipesHandler } = GetRecipeController;
 
 router.route('/')
-  .get(GetRecipeController.getAllRecipesHandler)
+  .get(getAllRecipesHandler)
   .post(
     [requireUser, validateInput(createRecipeSchema), upload.single('file')], 
-    RecipeController.createRecipeHandler,
-  )
+    createRecipeHandler,
+  );
 
 router.route('/:id')
-  .get(GetRecipeController.getSingleRecipeHandler)
-  .delete(requireUser, RecipeController.deleteRecipeHandler)
+  .get(getSingleRecipeHandler)
+  .delete(requireUser, deleteRecipeHandler)
   .patch(
     [requireUser, validateInput(updateRecipeSchema)], 
-    RecipeController.updateRecipeHandler,
-  )
+    updateRecipeHandler,
+  );
 
-router.get('/user/:user_id', GetRecipeController.getUserRecipesHandler)
+router.get('/user/:user_id', getUserRecipesHandler);
 
-export default router  
+export default router;
