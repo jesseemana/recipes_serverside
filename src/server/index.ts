@@ -1,7 +1,3 @@
-import InitializeServer from './initialize-app';
-import configure_middleware from './configure-middleware';
+import initializeServer from './initialize-app';
 
-export {
-  InitializeServer,
-  configure_middleware,
-}
+export { initializeServer }

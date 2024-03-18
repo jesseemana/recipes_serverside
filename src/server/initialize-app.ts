@@ -2,7 +2,7 @@ import { Express } from 'express';
 import { errorHandler } from '../middleware';
 import { log, Database, startMetricsServer } from '../utils';
 
-const InitializeServer = (app: Express, database: Database) => {
+const initializeServer = (app: Express, database: Database) => {
   const PORT = Number(process.env.PORT) || 8080;
   
   app.use(errorHandler);
@@ -22,7 +22,7 @@ const InitializeServer = (app: Express, database: Database) => {
       database.disconnect();
       log.info('Goodbye...😥💤💤');
       process.exit(0);
-    })
+    });
   }
 
   for (let i = 0; i < signals.length; i++) {
@@ -32,7 +32,7 @@ const InitializeServer = (app: Express, database: Database) => {
   return app;
 }
 
-export default InitializeServer;
+export default initializeServer;
 
 // import { cpus } from 'os'
 // import cluster from 'cluster'

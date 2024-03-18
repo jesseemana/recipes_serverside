@@ -1,6 +1,6 @@
 import Jwt from "./jwt";
 import log from "./logger";
-import SwaggerDocs from "./swagger";
+import swaggerDocs from "./swagger";
 import { AppError } from "./errors";
 import { Database } from "./database";
 import cloudinary from "./cloudinary";
@@ -17,7 +17,7 @@ export {
   cloudinary,
   corsOptions,
   sendEmail,
-  SwaggerDocs,
+  swaggerDocs,
   uploadPicture,
   startMetricsServer,
 }
