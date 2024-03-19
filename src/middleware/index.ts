@@ -1,15 +1,15 @@
-import upload from "./multer";
-import requireUser from "./require-user";
-import errorHandler from "./error-handler";
-import loginLimiter from "./login-limiter";
-import validateInput from "./validate-input";
-import deserializeUser from "./auth.middleware";
+import { upload } from "./multer";
+import { requireUser } from "./require-user";
+import { errorHandler } from "./error-handler";
+import { loginLimiter } from "./login-limiter";
+import { validateInput } from "./validate-input";
+import { deserializeUser } from "./auth.middleware";
 
 export {
   upload,
   loginLimiter,
+  validateInput,
   requireUser,
   errorHandler,
-  validateInput,
   deserializeUser,
 }

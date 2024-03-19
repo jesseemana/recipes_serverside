@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Jwt } from '../utils';
 
-const deserializeUser = (req: Request, res: Response, next: NextFunction) => {
+export const deserializeUser = (req: Request, res: Response, next: NextFunction) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     const token = req.headers.authorization.split(' ')[1].trim();
     if (!token) return next();
@@ -13,5 +13,3 @@ const deserializeUser = (req: Request, res: Response, next: NextFunction) => {
   }
   return next();
 }
-
-export default deserializeUser;
