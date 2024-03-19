@@ -8,6 +8,7 @@ import { sendEmail } from "./mailer";
 import corsOptions from "./cors-options";
 import { uploadPicture } from "./upload-picture";
 import { startMetricsServer } from "./metrics";
+import randomCode from "./code";
 
 export {
   Jwt,
@@ -17,6 +18,7 @@ export {
   cloudinary,
   corsOptions,
   sendEmail,
+  randomCode,
   swaggerDocs,
   uploadPicture,
   startMetricsServer,
