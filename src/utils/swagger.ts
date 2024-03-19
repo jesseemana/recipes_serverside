@@ -1,8 +1,8 @@
-import { Request, Response, Express } from 'express'
-import swaggerJsdoc from 'swagger-jsdoc'
-import swaggerUi from 'swagger-ui-express'
-import { version } from '../../package.json'
-import log from './logger'
+import { Request, Response, Express } from 'express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { version } from '../../package.json';
+import log from './logger';
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -34,17 +34,16 @@ const options: swaggerJsdoc.Options = {
   ],
 }
 
-const swaggerSpec = swaggerJsdoc(options)
+const swaggerSpec = swaggerJsdoc(options);
 
-function swaggerDocs(app: Express, port: number) {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+export const swaggerDocs = (app: Express, port: number) => {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  app.get('/api-docs.json', (req: Request, res: Response) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(swaggerSpec)
-  })
+  app.get('/api-docs.json', (_req: Request, res: Response) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+  });
 
-  log.info(`Docs available at: http://localhost:${port}/api-docs`)
+  log.info(`API docs available at: http://localhost:${port}/api-docs`);
 }
-
-export default swaggerDocs
+ 
