@@ -19,11 +19,10 @@ const createUserHandler = async (
     const user = await UserService.createUser(body);
     return res.status(201).send(`New user ${user.first_name} ${user.last_name} has been created.`);
   } catch (error: any) {
-    if (error.code === 11000) 
+    if (error.code === 11000) {
       return res.status(409).send('Email already in use.');
       // throw new AppError('Conflict', 409, `Email already in use.`, true);
-    return res.status(500).send('Internal Server Error.');
-    // throw new AppError('Internal Server Error', 500, `Something went wrong.`, true);
+    }
   }
 }
 
