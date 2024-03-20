@@ -9,7 +9,7 @@ export const deserializeUser = (req: Request, res: Response, next: NextFunction)
     if (decoded) { 
       res.locals.user = decoded; // alternative to req.user to avoid TS errors
     }
-    return next();
+    next();
   }
   return next();
 }
