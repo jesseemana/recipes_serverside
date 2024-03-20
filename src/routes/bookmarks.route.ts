@@ -10,7 +10,7 @@ const { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } = Book
 /**
  * @openapi
  * '/api/v2/bookmarks/:user_id':
- * get:
+ *  get:
  *    tags:
  *    - Bookmarks
  *    summary: Get user bookmarks
@@ -31,7 +31,7 @@ router.get('/:user_id', requireUser, userBookmarksHandler);
 /**
  * @openapi
  * '/api/v2/bookmarks/:user_id/:recipe_id':
- * post:
+ *  post:
  *     tags:
  *     - Bookmarks
  *     summary: Add a bookmark
@@ -44,7 +44,7 @@ router.get('/:user_id', requireUser, userBookmarksHandler);
  *         description: Forbidden
  *       404:
  *         description: User or recipe not found
- * delete:
+ *  delete:
  *       tags:
  *       - Bookmarks
  *       summary: Remove a bookmark
