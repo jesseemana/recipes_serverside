@@ -8,7 +8,7 @@ const router = Router();
 
 const { createUserHandler, resetPasswordHandler, forgortPasswordHandler } = UserController;
 
-router.post('/register', validateInput(createUserSchema), createUserHandler);
+router.post('/', validateInput(createUserSchema), createUserHandler);
 
 router.patch('/:id/reset/:token', validateInput(updateAuthSchema), resetPasswordHandler);
 
