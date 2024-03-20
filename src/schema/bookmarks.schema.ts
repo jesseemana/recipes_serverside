@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from 'zod'
+import { object, string, TypeOf } from 'zod';
 
 // /**
 //  * @openapi
@@ -46,12 +46,12 @@ import { object, string, TypeOf } from 'zod'
 export const bookmarkRecipeSchema = object({
   params: object({
     recipe_id: string({
-      required_error: 'Recipe id is required'
+      required_error: 'Recipe id is required.',
     }).trim(),
     user_id: string({
-      required_error: 'User id is required'
+      required_error: 'User id is required.',
     }).trim(),
   })
 })
 
-export type BookmarksInput = TypeOf<typeof bookmarkRecipeSchema>['params']
+export type BookmarksInput = TypeOf<typeof bookmarkRecipeSchema>['params'];

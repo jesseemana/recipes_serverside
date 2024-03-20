@@ -59,13 +59,7 @@ router.get('/:user_id', requireUser, userBookmarksHandler);
  *           description: User or recipe not found
  */
 router.route('/:user_id/:recipe_id')
-  .post(
-    [requireUser, validateInput(bookmarkRecipeSchema)], 
-    addBookmarkHandler
-  )
-  .delete(
-    [requireUser, validateInput(bookmarkRecipeSchema)], 
-    removeBookmarkHandler
-  );
+  .post([requireUser, validateInput(bookmarkRecipeSchema)], addBookmarkHandler)
+  .delete([requireUser, validateInput(bookmarkRecipeSchema)], removeBookmarkHandler);
 
 export default router;

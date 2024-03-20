@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AppError } from '../utils';
 import { UserService, RecipeService } from '../services';
-import { UpdateRecipeInput } from '../schema/recipe.schema';
+import { GetUserRecipeInput, UpdateRecipeInput } from '../schema/recipe.schema';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -35,7 +35,10 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
 }
 
 
-const getUserRecipesHandler = async (req: Request, res: Response) => {
+const getUserRecipesHandler = async (
+  req: Request<GetUserRecipeInput['params'], {}, {}>, 
+  res: Response
+) => {
   const { user_id } = req.params;
 
   const page = parseInt(req.query.page as string) || 1;

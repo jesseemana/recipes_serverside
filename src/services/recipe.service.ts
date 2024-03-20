@@ -4,34 +4,34 @@ import { AppError , cloudinary } from '../utils';
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
 import { databaseResponseTimeHistogram } from '../utils/metrics';
 
-const getUserRecipes = async (user_id: string, limit: number, index: number ) => {
+const getUserRecipes = async (user_id: string, limit: number, skip: number ) => {
   const metricsLabels = { operation: 'findUserRecipes' }
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
-  //   const result = await RecipeModel.find({ user_id });
-  //   timer({...metricsLabels, success: 'true'});
+  //   const result = await RecipeModel.find({ user_id }).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
-  return await RecipeModel.find({ user_id }).sort({ createdAt: - 1 }).limit(limit).skip(index).exec();
+  return await RecipeModel.find({ user_id }).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
 }
 
-const getAllRecipes = async (limit: number, index: number) => {
+const getAllRecipes = async (limit: number, skip: number) => {
   const metricsLabels = { operation: 'getAllRecipes' }
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
-  //   const result = await RecipeModel.find({});
-  //   timer({...metricsLabels, success: 'true'});
+  //   const result = await RecipeModel.find({}).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
-  return await RecipeModel.find({}).sort({ createdAt: - 1 }).limit(limit).skip(index).exec();
+  return await RecipeModel.find({}).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
 }
 
  const findRecipeById = async (id: string) => {
@@ -39,10 +39,10 @@ const getAllRecipes = async (limit: number, index: number) => {
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
   //   const result = await RecipeModel.findById(id);
-  //   timer({...metricsLabels, success: 'true'});
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
@@ -54,10 +54,10 @@ const getAllRecipes = async (limit: number, index: number) => {
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
   //   const result = await RecipeModel.estimatedDocumentCount({});
-  //   timer({...metricsLabels, success: 'true'});
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
@@ -69,10 +69,10 @@ const getAllRecipes = async (limit: number, index: number) => {
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
   //   const result = await RecipeModel.create(data);
-  //   timer({...metricsLabels, success: 'true'});
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
@@ -88,10 +88,10 @@ const getAllRecipes = async (limit: number, index: number) => {
   const timer = databaseResponseTimeHistogram.startTimer();
   // try {
   //   const result = await RecipeModel.findOneAndUpdate(query, update, options);
-  //   timer({...metricsLabels, success: 'true'});
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return result;
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
@@ -105,10 +105,10 @@ const getAllRecipes = async (limit: number, index: number) => {
   //   const delete_from_cloud = cloudinary.uploader.destroy(public_id);
   //   const delete_from_db = RecipeModel.findByIdAndDelete(id);
   //   await Promise.all([cloudinary.uploader.destroy(public_id), RecipeModel.findByIdAndDelete(id)]);
-  //   timer({...metricsLabels, success: 'true'});
+  //   timer({ ...metricsLabels, success: 'true' });
   //   return 'Recipe has been deleted successfully!';
   // } catch (error) {
-  //   timer({...metricsLabels, success: 'false'});
+  //   timer({ ...metricsLabels, success: 'false' });
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 

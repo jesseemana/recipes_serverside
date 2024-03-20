@@ -1,36 +1,36 @@
-import { User } from './user.model'
-import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { User } from './user.model';
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
 
 export class Recipe {
   @prop({ ref: () => User })
-  user: Ref<User>
+  user: Ref<User>;
 
   @prop({ required: true })
-  name: string
+  name: string;
 
   @prop({ required: true })
-  time: string
+  time: string;
 
   @prop({ required: true })
-  category: string
+  category: string;
 
   @prop({ required: true })
-  procedure: string
+  procedure: string;
 
   @prop({ required: true })
-  ingridients: string
+  ingridients: string;
 
   @prop({ required: true })
-  picture_path: string
+  picture_path: string;
 
   @prop()
-  cloudinary_id: string
+  cloudinary_id: string;
 }
 
 const RecipeModel = getModelForClass(Recipe, {
   schemaOptions: {
-    timestamps: true
+    timestamps: true,
   }
-})
+});
 
-export default RecipeModel
+export default RecipeModel;

@@ -10,18 +10,12 @@ const { getSingleRecipeHandler, getAllRecipesHandler, getUserRecipesHandler } = 
 
 router.route('/')
   .get(getAllRecipesHandler)
-  .post(
-    [requireUser, validateInput(createRecipeSchema), upload.single('file')], 
-    createRecipeHandler,
-  );
+  .post([requireUser, validateInput(createRecipeSchema), upload.single('file')], createRecipeHandler,);
 
 router.route('/:id')
   .get(getSingleRecipeHandler)
-  .delete(requireUser, deleteRecipeHandler)
-  .patch(
-    [requireUser, validateInput(updateRecipeSchema)], 
-    updateRecipeHandler,
-  );
+  .patch([requireUser, validateInput(updateRecipeSchema)], updateRecipeHandler)
+  .delete(requireUser, deleteRecipeHandler);
 
 router.get('/user/:user_id', getUserRecipesHandler);
 

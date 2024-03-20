@@ -67,13 +67,16 @@ async function refreshTokenHandler(req: Request, res: Response) {
 };
 
 
-async function destroySessionHandler (_req: Request, res: Response) {
-  const sessionId = String(res.locals.user.session._id);
+async function destroySessionHandler(_req: Request, res: Response) {
+  const user = String(res.locals.user._id);
+  const session_id = String(res.locals.user.session._id);
 
-  const session = await AuthService.findSessionById(sessionId);
+  const session = await AuthService.findSessionById(session_id);
   if (!session || !session.valid)
     return res.status(401).send('Session not found or is invalid.');
     // throw new AppError('Unauthorized', 401, 'Session is not found or is expired', true);
+
+  if (String(session.user) !== user) return res.sendStatus(401);
 
   await AuthService.destroySession({ _id: session._id }, { valid: false });
 

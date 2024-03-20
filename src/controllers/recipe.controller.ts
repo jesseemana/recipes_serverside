@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
 import { RecipeService } from '../services';
 import { AppError, uploadPicture } from '../utils';
-import { 
-  CreateRecipeInput, 
-  UpdateRecipeInput, 
-} from '../schema/recipe.schema';
+import { CreateRecipeInput, UpdateRecipeInput, } from '../schema/recipe.schema';
 
 
 const createRecipeHandler = async (
@@ -66,7 +63,7 @@ const deleteRecipeHandler = async (
 
   await RecipeService.deleteRecipe(id, recipe.cloudinary_id);
 
-  return res.status(200).send('Recipe has been deleted successfully!');
+  return res.status(200).send('Recipe has been deleted!');
 }
 
 
