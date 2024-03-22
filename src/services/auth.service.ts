@@ -8,33 +8,37 @@ import { User, private_fields } from '../models/user.model';
 
 
 const findAllSessions = async () => {
-  return await SessionModel.find({});
+  const sessions = await SessionModel.find({});
+  return sessions;
 }
 
-const createSession = async ({ userId }: { userId: string }) => {
-  return await SessionModel.create({ user: userId });
+const createSession = async (data: Session) => {
+  const session = new SessionModel(data);
+  await session.save();
+  return session;
 }
 
 const findSessionById = async (id: string) => {
-  return await SessionModel.findById(id);
+  const session = await SessionModel.findById(id);
+  return session;
 }
 
 const destroySession = async (query: FilterQuery<Session>, update: UpdateQuery<Session>) => {
-  return await SessionModel.findOneAndUpdate(query, update);
+  await SessionModel.findOneAndUpdate(query, update);
+  return true;
 }
 
-const signAccessToken = (user: DocumentType<User>, session: DocumentType<Session>) => {
+const signAccessToken = async (user: DocumentType<User>, session: DocumentType<Session>) => {
   const user_payload = omit(user.toJSON(), private_fields);
-  
   const private_key = String(process.env.ACCESS_TOKEN_PRIVATE_KEY);
   const time_to_live = String(process.env.ACCESS_TOKEN_TIME_TO_LIVE);
 
   const access_token = Jwt.signJwt({ ...user_payload, session }, private_key, { expiresIn: time_to_live });
 
-  return access_token ;
+  return access_token;
 }
 
-const signRefreshToken = (session: DocumentType<Session>) => {
+const signRefreshToken = async (session: DocumentType<Session>) => {
   const private_key = String(process.env.REFRESH_TOKEN_PRIVATE_KEY);
   const time_to_live = String(process.env.REFRESH_TOKEN_TIME_TO_LIVE);
   
@@ -44,10 +48,10 @@ const signRefreshToken = (session: DocumentType<Session>) => {
 }
 
 export default {
-  createSession,
-  destroySession,
   findAllSessions,
+  destroySession,
   findSessionById,
+  createSession,
   signAccessToken,
   signRefreshToken,
 }
