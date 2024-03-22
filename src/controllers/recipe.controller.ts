@@ -12,12 +12,11 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
 
   const recipes = await RecipeService.getAllRecipes(ITEMS_PER_PAGE, skip);
   if (!recipes.length) return res.status(404).send('No recipes found.');
-    // throw new AppError('Not Found', 404, 'There are no recipes found. Create some.', true);
 
   const recipes_with_user = await Promise.all(recipes.map(async(recipe) => {
     const user = await UserService.findUserById(String(recipe.user));
-    if (!user) return res.status(404).send(`User doesn't have any recipes.`);
-      // throw new AppError('Not Found', 404, `User doesn't have any recipes.`, true);
+    if (!user) 
+      return res.status(404).send(`User doesn't have any recipes.`);
 
     return { 
       ...recipe, 
@@ -47,11 +46,10 @@ const getUserRecipesHandler = async (
 
   const user = await UserService.findUserById(user_id);
   if (!user) return res.status(404).send('User not found.');
-    // throw new AppError('Not Found', 404, `User not found.`, true); 
-    
   const recipes = await RecipeService.getUserRecipes(user_id, ITEMS_PER_PAGE, skip);
-  if (!recipes.length) return res.status(404).send(`User doesn't have any recipes..`);
-    // throw new AppError('Not Found', 404, `User doesn't have any recipes..`, true);
+  if (!recipes.length) 
+    return res.status(404).send(`User doesn't have any recipes..`);
+
   const full_name = `${user.first_name} ${user.last_name}`;
 
   return res.status(200).json({ 
@@ -73,10 +71,9 @@ const getSingleRecipeHandler = async (
 
   const recipe = await RecipeService.findRecipeById(id);
   if (!recipe) return res.status(404).send('Recipe not found.');
-    // throw new AppError('Not Found', 404, `Recipe not found.`, true) ;
   const user = await UserService.findUserById(String(recipe.user));
   if (!user) return res.status(404).send('User not found.');
-    // throw new AppError('Not Found', 404, `User not found.`, true) ;
+
   const owner = `${user.first_name} ${user.last_name}`;
   
   return res.status(200).json({ recipe, owner, });
@@ -98,7 +95,6 @@ const createRecipeHandler = async (
     return res.status(400).send('Please provide a picture');
   } catch (error) {
     return res.status(500).send('Internal server error.');
-    // throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   }
 }
 
@@ -113,11 +109,9 @@ const updateRecipeHandler = async (
   
   const recipe = await RecipeService.findRecipeById(id);
   if (!recipe) return res.status(404).send('Recipe not found.');
-    // throw new AppError('Not Found', 404, 'Recipe not found', true);
 
   if (String(recipe.user) !== user) 
     return res.status(401).send('User cannot make this operation.');
-    // throw new AppError('Unauthorized', 401, 'User cannot this operation', true);
 
   const updated_recipe = await RecipeService.updateRecipe({ _id: id }, update_data, { new: true });
 
@@ -134,11 +128,9 @@ const deleteRecipeHandler = async (
   
   const recipe = await RecipeService.findRecipeById(id);
   if (!recipe) return res.status(404).send('Recipe not found.');
-    // throw new AppError('Not Found', 404, 'Recipe not found', true);
 
   if (String(recipe.user) !== user) 
     return res.status(401).send('User cannot make this operation.');
-    // throw new AppError('Unauthorized', 401, 'User cannot this operation', true);
 
   const deleted = await RecipeService.deleteRecipe(id, recipe.cloudinary_id);
   if (deleted) return res.status(200).send('Recipe has been deleted!');
