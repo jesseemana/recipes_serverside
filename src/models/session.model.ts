@@ -7,6 +7,12 @@ export class Session {
   
   @prop({ default: true })
   valid: boolean;
+
+  @prop({ required: true })
+  ip: string;
+
+  @prop({ required: true })
+  user_agent: string;
 }
 
 const SessionModel = getModelForClass(Session, {
