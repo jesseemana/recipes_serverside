@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { RecipeService, UserService } from '../services';
 import { AppError, uploadPicture } from '../utils';
-import { CreateRecipeInput, GetUserRecipeInput, UpdateRecipeInput, } from '../schema/recipe.schema';
+import { CreateRecipeInput, GetRecipeParams, UpdateRecipeInput, } from '../schema/recipe.schema';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -10,13 +10,14 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
   const skip = (page - 1) * ITEMS_PER_PAGE; // starting index of every page
   const count = await RecipeService.totalRecipes();
 
-  const recipes = await RecipeService.getAllRecipes(ITEMS_PER_PAGE, skip);
-  if (!recipes.length) return res.status(404).send('No recipes found.');
+  const found_recipes = await RecipeService.getAllRecipes(ITEMS_PER_PAGE, skip);
+  if (!found_recipes.length) return res.status(404).send('No recipes found.');
 
-  const recipes_with_user = await Promise.all(recipes.map(async(recipe) => {
+  const recipes = await Promise.all(found_recipes.map(async(recipe) => {
     const user = await UserService.findUserById(String(recipe.user));
-    if (!user) 
+    if (!user) {
       return res.status(404).send(`User doesn't have any recipes.`);
+    }
 
     return { 
       ...recipe, 
@@ -25,7 +26,7 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
   }));
 
   return res.status(200).json({
-    recipes: recipes_with_user,
+    recipes: recipes,
     pagination: {
       page: page,
       total_pages: Math.ceil(count / ITEMS_PER_PAGE),
@@ -35,7 +36,7 @@ const getAllRecipesHandler = async (req: Request, res: Response) => {
 
 
 const getUserRecipesHandler = async (
-  req: Request<GetUserRecipeInput['params'], {}, {}>, 
+  req: Request<GetRecipeParams['params'], {}, {}>, 
   res: Response
 ) => {
   const { user_id } = req.params;
@@ -47,8 +48,9 @@ const getUserRecipesHandler = async (
   const user = await UserService.findUserById(user_id);
   if (!user) return res.status(404).send('User not found.');
   const recipes = await RecipeService.getUserRecipes(user_id, ITEMS_PER_PAGE, skip);
-  if (!recipes.length) 
+  if (!recipes.length) {
     return res.status(404).send(`User doesn't have any recipes..`);
+  }
 
   const full_name = `${user.first_name} ${user.last_name}`;
 
@@ -57,7 +59,7 @@ const getUserRecipesHandler = async (
     full_name: full_name, 
     pagination: {
       page: page,
-      tota_pages: Math.ceil(total / ITEMS_PER_PAGE),
+      total_pages: Math.ceil(total / ITEMS_PER_PAGE),
     }
   });
 }
@@ -110,8 +112,9 @@ const updateRecipeHandler = async (
   const recipe = await RecipeService.findRecipeById(id);
   if (!recipe) return res.status(404).send('Recipe not found.');
 
-  if (String(recipe.user) !== user) 
+  if (String(recipe.user) !== user) {
     return res.status(401).send('User cannot make this operation.');
+  }
 
   const updated_recipe = await RecipeService.updateRecipe({ _id: id }, update_data, { new: true });
 
@@ -129,13 +132,14 @@ const deleteRecipeHandler = async (
   const recipe = await RecipeService.findRecipeById(id);
   if (!recipe) return res.status(404).send('Recipe not found.');
 
-  if (String(recipe.user) !== user) 
+  if (String(recipe.user) !== user) {
     return res.status(401).send('User cannot make this operation.');
+  }
 
   const deleted = await RecipeService.deleteRecipe(id, recipe.cloudinary_id);
   if (deleted) return res.status(200).send('Recipe has been deleted!');
 
-  return res.status(400).send('Failed to delete recipe.')
+  return res.status(400).send('Failed to delete recipe.');
 }
 
 
