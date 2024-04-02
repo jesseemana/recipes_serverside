@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { validateInput }from '../middleware';
 import { UserController } from '../controllers';
 import { createUserSchema } from '../schema/user.schema';
+import { validateInput, requireUser }from '../middleware';
 import { updateAuthSchema } from '../schema/reset.schema';
 
 const router = Router();
 
-const { createUserHandler, resetPasswordHandler, forgortPasswordHandler } = UserController;
+router.post('/', validateInput(createUserSchema), UserController.createUserHandler);
 
-router.post('/', validateInput(createUserSchema), createUserHandler);
+router.post('/me', requireUser, UserController.getCurrentUserHandler);
 
-router.patch('/:id/reset/:token', validateInput(updateAuthSchema), resetPasswordHandler);
+router.post('/forgot_password', UserController.forgortPasswordHandler);
 
-router.post('/forgot_password', forgortPasswordHandler);
+router.patch('/:id/reset/:token', validateInput(updateAuthSchema), UserController.resetPasswordHandler);
 
 export default router;
