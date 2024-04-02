@@ -7,9 +7,7 @@ const level = config.get<string>('logLevel');
 // NB: don't use pino-pretty in production
 const log = logger({
   level,
-  // transport: {
-  //   target: 'pino-pretty',
-  // },
+  // transport: { target: 'pino-pretty', },
   base: {
     pid: false
   },

@@ -1,5 +1,9 @@
-import { UploadResponse } from '../types';
 import cloudinary from './cloudinary';
+
+interface UploadResponse {
+  picture_path: string
+  cloudinary_id: string
+}
 
 export const uploadPicture = async (picture: string): Promise<UploadResponse> => {
   const response = await cloudinary.uploader.upload(picture);

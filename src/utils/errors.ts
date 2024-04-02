@@ -1,17 +1,19 @@
-import { HttpCode } from '../types';
+import { StatusCodes } from 'http-status-codes';
 
+// npm i http-status-codes
+// npm i --save-dev @types/http-status-codes
 export class AppError extends Error {
   public readonly name: string;
-  public readonly httpCode: HttpCode;
+  public readonly statusCode: StatusCodes;
   public readonly isOperational: boolean;
 
-  constructor(name: string, httpCode: HttpCode, description: string, isOperational: boolean) {
-    super(description);
+  constructor(name: string, statusCode: StatusCodes, message: string, isOperational: boolean) {
+    super(message);
 
     Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
 
     this.name = name;
-    this.httpCode = httpCode;
+    this.statusCode = statusCode;
     this.isOperational = isOperational;
 
     Error.captureStackTrace(this);

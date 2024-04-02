@@ -1,4 +1,4 @@
-import { object, string, TypeOf, z } from 'zod'
+import { object, string, TypeOf, z } from 'zod';
 
 export const createRecipeSchema = object({
   name: string({
@@ -14,15 +14,15 @@ export const createRecipeSchema = object({
   ingridients: string({
     required_error: 'Ingridients are required',
   }).toLowerCase().trim(),
-})
+});
 
-export const getUserRecipeSchema = object({
+export const getRecipeParamsSchema = object({
   params: object({
     user_id: string({
       required_error: 'User id is required.'
     }).trim()
-  })
-})
+  }),
+});
 
 export const updateRecipeSchema = object({
   params: object({
@@ -44,9 +44,9 @@ export const updateRecipeSchema = object({
     ingridients: string({
       required_error: 'Ingridients are required',
     }).toLowerCase().trim()
-  })
-})
+  }),
+});
 
-export type CreateRecipeInput = TypeOf<typeof createRecipeSchema>
-export type GetUserRecipeInput = TypeOf<typeof getUserRecipeSchema>
-export type UpdateRecipeInput = TypeOf<typeof updateRecipeSchema>
+export type CreateRecipeInput = TypeOf<typeof createRecipeSchema>;
+export type GetRecipeParams = TypeOf<typeof getRecipeParamsSchema>;
+export type UpdateRecipeInput = TypeOf<typeof updateRecipeSchema>;
