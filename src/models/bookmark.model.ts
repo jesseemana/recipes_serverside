@@ -10,10 +10,10 @@ export class Bookmark {
   recipe: Ref<Recipe>;
 }
 
-const BookmarksModel = getModelForClass(Bookmark, {
+const BookmarkModel = getModelForClass(Bookmark, {
   schemaOptions: {
     timestamps: true,
   }
 });
 
-export default BookmarksModel;
+export default BookmarkModel;
