@@ -8,11 +8,13 @@ const createUser = async (data: Partial<User>) => {
 }
 
 const findUserById = async (id: string) => {
-  return await UserModel.findById(id).select('-password').exec();
+  const user = await UserModel.findById(id).select('-password').exec();
+  return user;
 }
 
 const findUserByEmail = async (email: string) => {
-  return await UserModel.findOne({ email }).select('-password').exec();
+  const user = await UserModel.findOne({ email }).select('-password').exec();
+  return user;
 }
 
 export default {

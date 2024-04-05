@@ -1,5 +1,5 @@
-import { omit } from 'lodash'
-import { Jwt } from '../utils'
+import { omit } from 'lodash';
+import { Jwt } from '../utils';
 import { SessionModel } from '../models';
 import { Session } from '../models/session.model';
 import { DocumentType } from '@typegoose/typegoose';
