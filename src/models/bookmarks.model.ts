@@ -8,9 +8,6 @@ export class Bookmark {
 
   @prop({ ref: () => Recipe })
   recipe: Ref<Recipe>;
-
-  @prop({ default: true})
-  bookmarked: boolean;
 }
 
 const BookmarksModel = getModelForClass(Bookmark, {
