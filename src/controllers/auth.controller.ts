@@ -20,8 +20,9 @@ async function createSessionHandler(
   if (!user) { // return res.status(401).send('Email is incorrect.');
     throw new AppError('Unauthorized', 401, 'Email is incorrect.', true);
   }
-  if (!user.verifyPassword(password)) 
+  if (!user.verifyPassword(password)) {
     return res.status(401).send('Incorrect password.');
+  }
 
   let payload: any = {}
   payload['ip'] = req.ip;
@@ -53,10 +54,11 @@ async function refreshTokenHandler(req: Request, res: Response) {
     return res.status(401).send('Refresh token found.');
   }
 
-  const refresh_token = String(cookies.refresh_token);
-  const public_key = String(process.env.REFRESH_TOKEN_PUBLIC_KEY);
-
-  const decoded = Jwt.verifyToken<{ session: string }>(refresh_token, public_key);
+  const decoded = Jwt.verifyToken<{ session: string }>(
+    String(cookies.refresh_token), 
+    String(process.env.REFRESH_TOKEN_PUBLIC_KEY)
+  );
+  
   if (!decoded) return res.status(403).send('Refresh token found.');
 
   const session = await AuthService.findSessionById(decoded.session);
