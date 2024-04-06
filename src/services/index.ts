@@ -1,9 +1,11 @@
 import AuthService from './auth.service';
-import RecipeService from './recipe.service';
+import BookmarkService from './bookmark.service';
 import UserService from './user.service';
+import RecipeService from './recipe.service';
 
-export {
-  AuthService,
-  RecipeService,
-  UserService,
+export { 
+  RecipeService, 
+  AuthService, 
+  BookmarkService, 
+  UserService, 
 }
