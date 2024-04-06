@@ -16,7 +16,12 @@ const getUserRecipes = async (user_id: string, limit: number, skip: number ) => 
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
-  const recipes = await RecipeModel.find({ user_id }).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
+  const recipes = await RecipeModel.find({ user: user_id })
+    .sort({ createdAt: - 1 })
+    .limit(limit)
+    .skip(skip)
+    .exec();
+    
   return recipes;
 }
 
@@ -32,7 +37,12 @@ const getAllRecipes = async (limit: number, skip: number) => {
   //   throw new AppError('Internal Server Error', 500, 'Something went wrong', false);
   // }
 
-  const recipes = await RecipeModel.find({}).sort({ createdAt: - 1 }).limit(limit).skip(skip).exec();
+  const recipes = await RecipeModel.find({})
+    .sort({ createdAt: - 1 })
+    .limit(limit)
+    .skip(skip)
+    .exec();
+
   return recipes;
 }
 
@@ -127,10 +137,10 @@ const deleteRecipe = async (id: string, public_id: string) => {
 }
 
 export default {
-  getUserRecipes, 
-  getAllRecipes, 
   deleteRecipe,
   updateRecipe, 
+  getAllRecipes, 
+  getUserRecipes, 
   createRecipe, 
   totalRecipes, 
   findRecipeById,
