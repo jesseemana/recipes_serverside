@@ -17,7 +17,7 @@ const getUserRecipes = async (user_id: string, limit: number, skip: number ) => 
   // }
 
   const recipes = await RecipeModel.find({ user: user_id })
-    .sort({ createdAt: - 1 })
+    .sort({ createdAt: -1 })
     .limit(limit)
     .skip(skip)
     .exec();
@@ -38,7 +38,7 @@ const getAllRecipes = async (limit: number, skip: number) => {
   // }
 
   const recipes = await RecipeModel.find({})
-    .sort({ createdAt: - 1 })
+    .sort({ createdAt: -1 })
     .limit(limit)
     .skip(skip)
     .exec();
