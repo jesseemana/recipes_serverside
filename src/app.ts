@@ -9,7 +9,7 @@ import { initializeServer } from './server';
 import { deserializeUser } from './middleware';
 import { Database, swaggerDocs } from './utils';
 import { restResponseTimeHistogram } from './utils/metrics';
-import { authRoute, userRoute, recipesRoute, bookmarksRoute } from './routes';
+import { authRoute, userRoute, recipeRoute, bookmarksRoute } from './routes';
 
 const app = express();
 const database = Database.getInstance();
@@ -40,7 +40,7 @@ app.get('/health-check', (_req: Request, res: Response) => res.status(200).send(
 // Routes
 app.use('/api/v2/auth', authRoute);
 app.use('/api/v2/users', userRoute);
-app.use('/api/v2/recipes', recipesRoute);
+app.use('/api/v2/recipes', recipeRoute);
 app.use('/api/v2/bookmarks', bookmarksRoute);
 
 // Recording metrics for API response time
