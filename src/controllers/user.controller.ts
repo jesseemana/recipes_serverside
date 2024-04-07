@@ -1,15 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { omit } from 'lodash';
 import { UserService } from '../services';
-import { AppError, log, sendEmail } from '../utils';
-import { private_fields } from '../models/user.model';
 import { CreateUserInput } from '../schema/user.schema';
+import { AppError, log, sendEmail } from '../utils';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
-
-
-const DEV_URL = String(process.env.DEV_URL);
-const LIVE_URL = String(process.env.LIVE_URL);
 
 
 const getCurrentUserHandler =  async (_req: Request, res: Response) => {
@@ -44,25 +38,22 @@ const forgortPasswordHandler = async (
   const { email } = req.body;
 
   const user = await UserService.findUserByEmail(email);
-  if (!user) return res.status(404).send('User not found.');
-
-  const user_payload = omit(user.toJSON(), private_fields);
+  if (!user) return res.status(401).send('User not found.');
 
   // create a one time link valid for 30 minutes
-  const token = jwt.sign(
-    user_payload, 
-    (process.env.SECRET_KEY + user.password), 
-    { expiresIn: '30m' }
-  );
+  const token = jwt.sign(user.toObject(), (process.env.SECRET_KEY + user.password), { 
+    expiresIn: '30m', 
+    algorithm: 'RS256', 
+  });
 
-  const dev_link = `${DEV_URL.trim()}/${user._id}/reset/${token}`;
-  const live_link = `${LIVE_URL.trim()}/${user._id}/reset/${token}`;
+  const link = process.env.NODE_ENV === 'production' ? 
+    `${process.env.PROD_URL}/${user._id}/reset/${token}` : `${process.env.DEV_URL}/${user._id}/reset/${token}`;
 
   sendEmail({
     to: email,
     from: 'test@example.com',
-    subject: 'Reset Your Password',
-    html: `<b>Click <a href="${live_link}">here</a> to reset your password. Link expires in 30 minutes.</b>`
+    subject: 'Reset Your Password.',
+    html: `<b>Click <a href="${link}">here</a> to reset your password. Link expires in 30 minutes.</b>`
   });
 
   return res.status(200).send(`Password reset link sent to users' email.`);
@@ -95,6 +86,6 @@ const resetPasswordHandler = async (
 export default {
   getCurrentUserHandler,
   createUserHandler,
-  resetPasswordHandler,
   forgortPasswordHandler,
+  resetPasswordHandler,
 }
