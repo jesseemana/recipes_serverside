@@ -49,9 +49,14 @@ const forgortPasswordHandler = async (
   const user_payload = omit(user.toJSON(), private_fields);
 
   // create a one time link valid for 30 minutes
-  const token = jwt.sign(user_payload, (process.env.SECRET_KEY + user.password), { expiresIn: '30m' });
+  const token = jwt.sign(
+    user_payload, 
+    (process.env.SECRET_KEY + user.password), 
+    { expiresIn: '30m' }
+  );
+
   const dev_link = `${DEV_URL.trim()}/${user._id}/reset/${token}`;
-  const live_link = `${LIVE_URL.trim()}/${user._id}/reset-password/${token}`;
+  const live_link = `${LIVE_URL.trim()}/${user._id}/reset/${token}`;
 
   sendEmail({
     to: email,

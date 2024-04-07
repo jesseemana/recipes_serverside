@@ -1,11 +1,9 @@
 import { Router } from 'express';
+import { bookmarkRecipeSchema } from '../schema/bookmarks.schema';
 import { BookmarksController } from '../controllers';
 import { requireUser, validateInput } from '../middleware';
-import { bookmarkRecipeSchema } from '../schema/bookmarks.schema';
 
 const router = Router();
-
-const { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } = BookmarksController;
 
 /**
  * @openapi
@@ -26,7 +24,7 @@ const { userBookmarksHandler, addBookmarkHandler, removeBookmarkHandler } = Book
  *      404:
  *        description: No bookmarks found
  */
-router.get('/:user_id', requireUser, userBookmarksHandler);
+router.get('/:user_id', requireUser, BookmarksController.userBookmarksHandler);
 
 /**
  * @openapi
@@ -59,7 +57,13 @@ router.get('/:user_id', requireUser, userBookmarksHandler);
  *           description: User or recipe not found
  */
 router.route('/:user_id/:recipe_id')
-  .post([requireUser, validateInput(bookmarkRecipeSchema)], addBookmarkHandler)
-  .delete([requireUser, validateInput(bookmarkRecipeSchema)], removeBookmarkHandler);
+  .post(
+    [requireUser, validateInput(bookmarkRecipeSchema)], 
+    BookmarksController.addBookmarkHandler
+  )
+  .delete(
+    [requireUser, validateInput(bookmarkRecipeSchema)], 
+    BookmarksController.removeBookmarkHandler
+  );
 
 export default router;

@@ -1,11 +1,13 @@
-import AuthController from "./auth.controller";
-import RecipeController from "./recipe.controller";
-import BookmarksController from "./bookmarks.controller";
-import UserController from "./user.controller";
+import AuthController from './auth.controller';
+import RecipeController from './recipe.controller';
+import BookmarksController from './bookmarks.controller';
+import UserController from './user.controller';
+import BookmarkController from './bookmark.controller';
 
 export {
-  AuthController,
-  RecipeController,
   BookmarksController,
+  RecipeController,
+  AuthController,
   UserController,
+  BookmarkController, 
 }
