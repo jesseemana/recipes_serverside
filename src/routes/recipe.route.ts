@@ -27,9 +27,9 @@ router.route('/:id')
 
 // BOOKMARKS ROUTES
 router.get(
-  '/bookmarks/:user_id', 
-  requireUser, 
-  BookmarkController.userBookmarksHandler
+    '/bookmarks/:user_id', 
+    requireUser, 
+    BookmarkController.userBookmarksHandler
   );
 
 router.route('/:user_id/bookmark/:recipe_id')

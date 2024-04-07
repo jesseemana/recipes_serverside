@@ -1,11 +1,9 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers';
-import { createSessionSchema } from '../schema/user.schema';
 import { loginLimiter, validateInput, requireUser }from '../middleware';
+import { createSessionSchema } from '../schema/user.schema';
 
 const router = Router();
-
-const { findSessionsHandler, createSessionHandler, refreshTokenHandler, destroySessionHandler } = AuthController;
 
 /**
  * @openapi
@@ -26,7 +24,7 @@ const { findSessionsHandler, createSessionHandler, refreshTokenHandler, destroyS
  *      403:
  *        description: Forbidden
  */
-router.get('/sessions', requireUser, findSessionsHandler);
+router.get('/sessions', requireUser, AuthController.findSessionsHandler);
 
 /**
  * @openapi
@@ -51,7 +49,11 @@ router.get('/sessions', requireUser, findSessionsHandler);
  *        401:
  *          description: Invalid email/password
  */
-router.post('/login', [validateInput(createSessionSchema), loginLimiter], createSessionHandler);
+router.post(
+    '/login', 
+    [validateInput(createSessionSchema), loginLimiter], 
+    AuthController.createSessionHandler
+  );
 
 /**
  * @openapi
@@ -74,7 +76,7 @@ router.post('/login', [validateInput(createSessionSchema), loginLimiter], create
  *      404:
  *        description: User not found
  */
-router.get('/refresh', refreshTokenHandler);
+router.get('/refresh', AuthController.refreshTokenHandler);
 
 /**
  * @openapi
@@ -89,6 +91,6 @@ router.get('/refresh', refreshTokenHandler);
  *          403:
  *              description: Forbidden
  */
-router.delete('/logout', requireUser, destroySessionHandler);
+router.delete('/logout', requireUser, AuthController.destroySessionHandler);
 
 export default router;
