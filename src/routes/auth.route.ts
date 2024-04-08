@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { AuthController } from '../controllers';
 import { loginLimiter, validateInput, requireUser }from '../middleware';
+import { AuthController } from '../controllers';
 import { createSessionSchema } from '../schema/user.schema';
 
 const router = Router();
@@ -76,7 +76,7 @@ router.post(
  *      404:
  *        description: User not found
  */
-router.get('/refresh', AuthController.refreshTokenHandler);
+router.get('/refresh', requireUser, AuthController.refreshTokenHandler);
 
 /**
  * @openapi
