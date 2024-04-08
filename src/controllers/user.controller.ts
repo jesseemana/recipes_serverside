@@ -6,19 +6,17 @@ import { AppError, log, sendEmail } from '../utils';
 import { ResetAuthInput, UpdateAuthInput } from '../schema/reset.schema';
 
 
-const getCurrentUserHandler =  async (_req: Request, res: Response) => {
+const getCurrentUserHandler = async (_req: Request, res: Response) => {
   const user = res.locals.user;
-  if (!user) {
-    return res.status(401).send('Please log in first.');
-  }
-  return res.status(200).send({ user });
+  if (!user) return res.status(404).send('No user found.');
+  return res.status(200).send(user);
 }
 
 
-const createUserHandler = async (
+async function createUserHandler(
   req: Request<{}, {}, CreateUserInput>, 
   res: Response
-) => {
+) {
   try {
     const body = req.body;
     const user = await UserService.createUser(body);
@@ -31,10 +29,10 @@ const createUserHandler = async (
 }
 
 
-const forgortPasswordHandler = async (
+async function forgortPasswordHandler(
   req: Request<{}, {}, ResetAuthInput>, 
   res: Response
-) => {
+) {
   const { email } = req.body;
 
   const user = await UserService.findUserByEmail(email);
@@ -57,30 +55,26 @@ const forgortPasswordHandler = async (
   });
 
   return res.status(200).send(`Password reset link sent to users' email.`);
-};
+}
 
 
-const resetPasswordHandler = async (
+async function resetPasswordHandler(
   req: Request<UpdateAuthInput['params'], {}, UpdateAuthInput['body']>, 
   res: Response
-) => {
+) {
   const { id, token } = req.params;
   const { password } = req.body;
 
   const user = await UserService.findUserById(id);
   if (!user) return res.status(404).send('User not found.');
 
-  jwt.verify(
-    token, 
-    (String(process.env.SECRET_KEY) + user.password), 
-    async (err: any) => {
-      if (err) return res.sendStatus(403);
-      user.password = password;
-      await user.save();
-      return res.status(200).send(`Users' password has been updated.`);
-    }
-  );
-};
+  jwt.verify(token, (String(process.env.SECRET_KEY) + user.password), async (err: any) => {
+    if (err) return res.sendStatus(403);
+    user.password = password;
+    await user.save();
+    return res.status(200).send(`Users' password updated successfully.`);
+  });
+}
 
 
 export default {
