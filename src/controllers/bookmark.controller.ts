@@ -47,20 +47,19 @@ async function addBookmarkHandler(
   const recipe = RecipeService.findRecipeById(recipe_id);
 
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
-  if (!found_user || !found_recipe) {
-    return res.status(404).send('User or recipe not found.');
-  }
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
   const isBookmarked = await BookmarkService.isBookmarked({ 
     user_id: user_id, 
     recipe_id: recipe_id, 
   });
 
-  if (isBookmarked) return res.status(401).send('Recipe is already bookmarked by user.');
+  if (isBookmarked) return res.status(400).send('Recipe is already bookmarked by user.');
 
   const bookmark = await BookmarkService.createBookmark({ 
     user: found_user._id, 
-    recipe: found_recipe._id 
+    recipe: found_recipe._id, 
   });
 
   return res.status(200).json({
@@ -80,16 +79,15 @@ async function removeBookmarkHandler(
   const recipe = RecipeService.findRecipeById(recipe_id);
 
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
-  if (!found_user || !found_recipe) {
-    return res.status(404).send('User or recipe not found.');
-  }
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
   const isBookmarked = await BookmarkService.isBookmarked({ 
     user_id: user_id, 
     recipe_id: recipe_id, 
   });
 
-  if (!isBookmarked) return res.status(401).send('Recipe is not bookmarked by user.');
+  if (!isBookmarked) return res.status(400).send('Recipe is not bookmarked by user.');
 
   const removed = await BookmarkService.removeBookmark({ 
     user_id: user_id, 
