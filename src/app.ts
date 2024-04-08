@@ -38,10 +38,10 @@ swaggerDocs(app, Number(process.env.PORT) || 8080);
 app.get('/health-check', (_req: Request, res: Response) => res.status(200).send('OK'));
 
 // Routes
-app.use('/api/v2/auth', authRoute);
-app.use('/api/v2/users', userRoute);
-app.use('/api/v2/recipes', recipeRoute);
-app.use('/api/v2/bookmarks', bookmarksRoute);
+app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/users', userRoute);
+app.use('/api/v1/recipes', recipeRoute);
+app.use('/api/v1/bookmarks', bookmarksRoute);
 
 // Recording metrics for API response time
 app.use(responseTime((req: Request, res: Response, time: number) => {
