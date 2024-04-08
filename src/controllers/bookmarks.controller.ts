@@ -3,81 +3,70 @@ import { UserService, RecipeService } from '../services';
 import { BookmarksInput } from '../schema/bookmarks.schema';
 
 
-const userBookmarksHandler = async (
+async function userBookmarksHandler(
   req: Request<BookmarksInput, {}, {}>, 
   res: Response
-) => {
+) {
   const { user_id } = req.params;
 
   const user = await UserService.findUserById(user_id);
-  if (!user) {
-    return res.status(404).send('User not found.');
-  }
+  if (!user) return res.status(404).send('User not found.');
 
-  const bookmarks = [];
-
-  for (const bookmark of user.bookmarks) {
+  const bookmarks = await Promise.all(user.bookmarks.map(async(bookmark) => {
     const recipe = await RecipeService.findRecipeById(bookmark);
-    if (recipe) { 
-      bookmarks.push(recipe); 
-    }
-  }
+    if (!recipe) return;
+    return recipe;
+  }));
 
   return res.status(200).send(bookmarks);
 };
 
 
-const addBookmarkHandler = async (
+async function addBookmarkHandler(
   req: Request<BookmarksInput, {}, {}>, 
   res: Response
-) => {
+) {
   const { user_id, recipe_id } = req.params;
 
   const user = UserService.findUserById(user_id);
   const recipe = RecipeService.findRecipeById(recipe_id);
   
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
-  if (!found_user || !found_recipe) {
-    return res.status(404).send('User or recipe not found.');
-  }
-
-  if (found_user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send('Recipe already bookmarked.');
-  }
+  const bookmarked = found_user.bookmarks.find(bookmark => bookmark === recipe_id);
+  if (bookmarked) return res.status(400).send('Recipe already bookmarked.');
 
   found_user.bookmarks.push(recipe_id);
 
   await found_user.save();
 
-  return res.status(200).send(`${found_recipe.name} recipe added to bookmarks.`);
+  return res.status(200).send('Bookmark added.');
 };
 
 
-const removeBookmarkHandler = async (
+async function removeBookmarkHandler(
   req: Request<BookmarksInput, {}, {}>, 
   res: Response
-) => {
+) {
   const { user_id, recipe_id } = req.params;
 
   const user = UserService.findUserById(user_id);
   const recipe = RecipeService.findRecipeById(recipe_id);
 
   const [found_user, found_recipe] = await Promise.all([user, recipe]);
+  if (!found_user) return res.status(404).send('User not found.');
+  if (!found_recipe) return res.status(404).send('Recipe not found.');
 
-  if (!found_user || !found_recipe) {
-    return res.status(404).send('User or recipe not found.');
-  }
+  const bookmarked = found_user.bookmarks.find(bookmark => bookmark === recipe_id);
+  if (!bookmarked) return res.status(400).send('Recipe is not bookmarked.');
 
-  if (!found_user.bookmarks.includes(recipe_id)) {
-    return res.status(400).send(`Recipe is not bookmarked.`);
-  }
-
-  found_user.bookmarks = [ ...(found_user.bookmarks.filter((bookmark) => bookmark !== recipe_id)) ];
-
+  found_user.bookmarks = [...(found_user.bookmarks.filter(bookmark => bookmark !== recipe_id))];
+  
   await found_user.save();
 
-  return res.status(200).send(`${found_recipe.name} recipe removed from bookmarks.`);
+  return res.status(200).send('Bookmark removed.');
 };
 
 
