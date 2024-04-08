@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'; // argon2 is also a good alternative to bcrypt 🤷🏾‍♂️
 import { log }from '../utils';
 import { 
   pre, 
@@ -9,8 +9,6 @@ import {
   DocumentType, 
   getModelForClass, 
 } from '@typegoose/typegoose';
-
-export const private_fields = ['password', 'bookmarks'];
 
 @pre<User>('save', function() {
   if (this.isModified('password')) {
