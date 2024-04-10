@@ -43,12 +43,12 @@ async function addBookmarkHandler(
 ) {
   const { user_id, recipe_id } = req.params;
 
-  const user = UserService.findUserById(user_id);
-  const recipe = RecipeService.findRecipeById(recipe_id);
+  const user_promise = UserService.findUserById(user_id);
+  const recipe_promise = RecipeService.findRecipeById(recipe_id);
 
-  const [found_user, found_recipe] = await Promise.all([user, recipe]);
-  if (!found_user) return res.status(404).send('User not found.');
-  if (!found_recipe) return res.status(404).send('Recipe not found.');
+  const [user, recipe] = await Promise.all([user_promise, recipe_promise]);
+  if (!user) return res.status(404).send('User not found.');
+  if (!recipe) return res.status(404).send('Recipe not found.');
 
   const isBookmarked = await BookmarkService.isBookmarked({ 
     user_id: user_id, 
@@ -58,8 +58,8 @@ async function addBookmarkHandler(
   if (isBookmarked) return res.status(400).send('Recipe is already bookmarked by user.');
 
   const bookmark = await BookmarkService.createBookmark({ 
-    user: found_user._id, 
-    recipe: found_recipe._id, 
+    user: user._id, 
+    recipe: recipe._id, 
   });
 
   return res.status(200).json({
@@ -75,12 +75,12 @@ async function removeBookmarkHandler(
 ) {
   const { user_id, recipe_id } = req.params;
 
-  const user = UserService.findUserById(user_id);
-  const recipe = RecipeService.findRecipeById(recipe_id);
+  const user_promise = UserService.findUserById(user_id);
+  const recipe_promise = RecipeService.findRecipeById(recipe_id);
 
-  const [found_user, found_recipe] = await Promise.all([user, recipe]);
-  if (!found_user) return res.status(404).send('User not found.');
-  if (!found_recipe) return res.status(404).send('Recipe not found.');
+  const [user, recipe] = await Promise.all([user_promise, recipe_promise]);
+  if (!user) return res.status(404).send('User not found.');
+  if (!recipe) return res.status(404).send('Recipe not found.');
 
   const isBookmarked = await BookmarkService.isBookmarked({ 
     user_id: user_id, 
@@ -94,11 +94,11 @@ async function removeBookmarkHandler(
     recipe_id: recipe_id, 
   });
 
-  return res.status(200).json({
-    message: 'Bookmark removed.',
-    bookmark: removed,
-  });
+  if(!removed) return res.status(400).send('Failed to remove bookmark.');
+
+  return res.status(200).send('Bookmark removed.');
 }
+
 
 export default {
   userBookmarksHandler, 
