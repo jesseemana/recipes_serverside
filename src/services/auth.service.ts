@@ -41,7 +41,7 @@ const signAccessToken = (user: DocumentType<User>) => {
   const time_to_live = String(process.env.ACCESS_TOKEN_TIME_TO_LIVE);
 
   const access_token = Jwt.signJwt(
-    { user_payload }, // decode token(online) and check payload
+    user_payload, // decode token(online) and check payload
     String(process.env.ACCESS_TOKEN_PRIVATE_KEY), 
     { expiresIn: time_to_live }
   );
