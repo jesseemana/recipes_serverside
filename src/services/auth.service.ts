@@ -9,8 +9,8 @@ import { Session } from '../models/session.model';
 
 const findAllSessions = async () => {
   const sessions = await SessionModel.find({})
-    .limit(10)
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .limit(10);
 
   return sessions;
 }
@@ -30,8 +30,10 @@ async function destroySession(
   query: FilterQuery<Session>, 
   update: UpdateQuery<Session>
 ) {
-  await SessionModel.findOneAndUpdate(query, update);
-  return true;
+  const updated = await SessionModel.findOneAndUpdate(query, update);
+  if (updated) return true;
+
+  return false;
 }
 
 const signAccessToken = (user: DocumentType<User>) => {
