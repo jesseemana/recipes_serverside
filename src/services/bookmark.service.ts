@@ -16,9 +16,7 @@ const isBookmarked = async ({ user_id, recipe_id }: BookmarkType) => {
     user: user_id, 
     recipe: recipe_id, 
   });
-
   if (bookmarked) return true;
-  
   return false;
 }
 
@@ -42,8 +40,8 @@ const removeBookmark = async ({ user_id, recipe_id }: BookmarkType) => {
     user: user_id, 
     recipe: recipe_id, 
   });
-
-  return removed;
+  if (!removed) return false;
+  return true;
 }
 
 export default { 
